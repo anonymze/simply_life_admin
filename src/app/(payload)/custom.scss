@@ -1,0 +1,25 @@
+$success-color: #00aa50;
+$success-color-dark: #019a49;
+
+.list-header  {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+
+	h1 {
+		margin-right: auto;
+	}
+
+	a, button {
+		padding: 0.4rem 0.8rem;
+	}
+
+	a {
+		background-color: $success-color;
+		color: #fff;
+
+		&:hover {
+			background-color: $success-color-dark;
+		}
+	}
+}

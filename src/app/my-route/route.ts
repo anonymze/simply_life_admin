@@ -1,5 +1,6 @@
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import configPromise from '@payload-config';
+import { getPayload } from 'payload';
+
 
 export const GET = async () => {
   const payload = await getPayload({
@@ -7,7 +8,7 @@ export const GET = async () => {
   })
 
   const data = await payload.find({
-    collection: 'users',
+    collection: 'admins',
   })
 
   return Response.json(data)
