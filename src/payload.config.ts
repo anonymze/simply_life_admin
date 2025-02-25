@@ -19,7 +19,7 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
-	serverURL: "https://simply-life-admin.vercel.app",
+	// serverURL: "https://simply-life-admin.vercel.app",
 	// csrf: [
   //   // whitelist of domains to allow cookie auth from
 	// ],
