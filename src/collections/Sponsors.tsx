@@ -66,7 +66,7 @@ export const Sponsors: CollectionConfig = {
 			name: "latitude",
 			type: "number",
 			admin: {
-				step: 0.00001,
+				step: 0.00000000000001,
 			},
 			label: {
 				en: "Latitude",
@@ -77,7 +77,7 @@ export const Sponsors: CollectionConfig = {
 			name: "longitude",
 			type: "number",
 			admin: {
-				step: 0.00001,
+				step: 0.00000000000001,
 			},
 			label: {
 				en: "Longitude",
