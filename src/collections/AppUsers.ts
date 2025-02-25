@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import { ValidationError, type CollectionBeforeValidateHook, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
 
 
@@ -12,7 +12,7 @@ export const AppUsers: CollectionConfig = {
 	},
 	auth: {
 		maxLoginAttempts: 5,
-		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
+		tokenExpiration: 60 * 60 * 24 * 30, // 30 days		
 	},
 	admin: {
 		useAsTitle: "email",
@@ -28,6 +28,7 @@ export const AppUsers: CollectionConfig = {
 		},
 	},
 	fields: [
+		
 		{
 			name: "lastname",
 			type: "text",

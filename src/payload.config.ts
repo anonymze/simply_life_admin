@@ -2,7 +2,6 @@ import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
 import { en } from "@payloadcms/translations/languages/en";
-// storage-adapter-import-placeholder
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
@@ -27,7 +26,6 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
-
 		components: {
 			beforeLogin: ["/components/before-login.tsx"],
 			logout: {
@@ -55,7 +53,6 @@ export default buildConfig({
 			],
 		},
 	},
-
 	routes: {
 		admin: "/admin",
 	},
