@@ -98,6 +98,7 @@ export default buildConfig({
 	sharp,
 	plugins: [
 		payloadCloudPlugin(),
+		
 		vercelBlobStorage({
 			enabled: true, // Optional, defaults to true
 			// Specify which collections should use Vercel Blob
