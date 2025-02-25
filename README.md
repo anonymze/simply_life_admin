@@ -4,5 +4,8 @@ blank
 
 ## Attributes
 
-- **Database**: mongodb
-- **Storage Adapter**: localDisk
+# Reset - runs down() then up()
+payload migrate:reset
+
+# Fresh - drops everything and runs up()
+payload migrate:fresh

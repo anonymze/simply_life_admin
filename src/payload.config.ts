@@ -99,7 +99,7 @@ export default buildConfig({
 	db: vercelPostgresAdapter({
 		idType: "uuid",
     pool: {
-      connectionString: process.env.DATABASE_URL
+      connectionString: process.env.DATABASE_URI || "",
     },
   }),
 	sharp,
