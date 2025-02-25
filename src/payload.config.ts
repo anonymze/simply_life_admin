@@ -1,3 +1,4 @@
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
@@ -90,5 +91,19 @@ export default buildConfig({
 		},
 	}),
 	sharp,
-	plugins: [payloadCloudPlugin()],
+	plugins: [
+		payloadCloudPlugin(),
+		vercelBlobStorage({
+			enabled: true, // Optional, defaults to true
+			// Specify which collections should use Vercel Blob
+			collections: {
+				media: {
+					disableLocalStorage: true,
+					prefix: "media-simply-life",
+				},
+			},
+			// Token provided by Vercel once Blob storage is added to your Vercel project
+			token: process.env.BLOB_READ_WRITE_TOKEN,
+		}),
+	],
 });
