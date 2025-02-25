@@ -1,9 +1,10 @@
+// import { postgresAdapter } from "@payloadcms/db-postgres";
+import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
 import { en } from "@payloadcms/translations/languages/en";
-import { postgresAdapter } from "@payloadcms/db-postgres";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
@@ -89,12 +90,18 @@ export default buildConfig({
 	typescript: {
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
-	db: postgresAdapter({
-		// idType: "uuid",
-		pool: {
-			connectionString: process.env.DATABASE_URI || "",
-		},
-	}),
+	// db: postgresAdapter({
+	// 	idType: "uuid",
+	// 	pool: {
+	// 		connectionString: process.env.DATABASE_URI || "",
+	// 	},
+	// }),
+	db: vercelPostgresAdapter({
+		idType: "uuid",
+    pool: {
+      connectionString: process.env.DATABASE_URL
+    },
+  }),
 	sharp,
 	plugins: [
 		payloadCloudPlugin(),

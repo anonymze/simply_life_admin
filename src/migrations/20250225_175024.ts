@@ -5,7 +5,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
    CREATE TYPE "public"."enum_app_users_role" AS ENUM('coach', 'staff', 'player', 'visitor');
   CREATE TYPE "public"."enum_sponsors_category" AS ENUM('gold', 'silver', 'bronze', 'diamond');
   CREATE TABLE IF NOT EXISTS "admins" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"fullname" varchar NOT NULL,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
@@ -19,7 +19,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   CREATE TABLE IF NOT EXISTS "media" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"alt" varchar NOT NULL,
   	"prefix" varchar DEFAULT 'media-simply-life',
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
@@ -36,7 +36,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   CREATE TABLE IF NOT EXISTS "app_users" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"lastname" varchar NOT NULL,
   	"firstname" varchar NOT NULL,
   	"role" "enum_app_users_role" DEFAULT 'player' NOT NULL,
@@ -52,9 +52,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   CREATE TABLE IF NOT EXISTS "sponsors" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"name" varchar NOT NULL,
-  	"logo_id" uuid NOT NULL,
+  	"logo_id" integer NOT NULL,
   	"category" "enum_sponsors_category" NOT NULL,
   	"website" varchar,
   	"latitude" numeric,
@@ -64,7 +64,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   CREATE TABLE IF NOT EXISTS "payload_locked_documents" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"global_slug" varchar,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
@@ -73,16 +73,16 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "payload_locked_documents_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
-  	"parent_id" uuid NOT NULL,
+  	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
-  	"admins_id" uuid,
-  	"media_id" uuid,
-  	"app_users_id" uuid,
-  	"sponsors_id" uuid
+  	"admins_id" integer,
+  	"media_id" integer,
+  	"app_users_id" integer,
+  	"sponsors_id" integer
   );
   
   CREATE TABLE IF NOT EXISTS "payload_preferences" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"key" varchar,
   	"value" jsonb,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
@@ -92,14 +92,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "payload_preferences_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
-  	"parent_id" uuid NOT NULL,
+  	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
-  	"admins_id" uuid,
-  	"app_users_id" uuid
+  	"admins_id" integer,
+  	"app_users_id" integer
   );
   
   CREATE TABLE IF NOT EXISTS "payload_migrations" (
-  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
   	"name" varchar,
   	"batch" numeric,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,

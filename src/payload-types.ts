@@ -86,7 +86,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   globals: {};
   globalsSelect: {};
@@ -144,7 +144,7 @@ export interface AppUserAuthOperations {
  * via the `definition` "admins".
  */
 export interface Admin {
-  id: string;
+  id: number;
   fullname: string;
   updatedAt: string;
   createdAt: string;
@@ -162,7 +162,7 @@ export interface Admin {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   prefix?: string | null;
   updatedAt: string;
@@ -182,7 +182,7 @@ export interface Media {
  * via the `definition` "app_users".
  */
 export interface AppUser {
-  id: string;
+  id: number;
   lastname: string;
   firstname: string;
   role: 'coach' | 'staff' | 'player' | 'visitor';
@@ -202,9 +202,9 @@ export interface AppUser {
  * via the `definition` "sponsors".
  */
 export interface Sponsor {
-  id: string;
+  id: number;
   name: string;
-  logo: string | Media;
+  logo: number | Media;
   category: 'gold' | 'silver' | 'bronze' | 'diamond';
   website?: string | null;
   latitude?: number | null;
@@ -217,33 +217,33 @@ export interface Sponsor {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'admins';
-        value: string | Admin;
+        value: number | Admin;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'app_users';
-        value: string | AppUser;
+        value: number | AppUser;
       } | null)
     | ({
         relationTo: 'sponsors';
-        value: string | Sponsor;
+        value: number | Sponsor;
       } | null);
   globalSlug?: string | null;
   user:
     | {
         relationTo: 'admins';
-        value: string | Admin;
+        value: number | Admin;
       }
     | {
         relationTo: 'app_users';
-        value: string | AppUser;
+        value: number | AppUser;
       };
   updatedAt: string;
   createdAt: string;
@@ -253,15 +253,15 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user:
     | {
         relationTo: 'admins';
-        value: string | Admin;
+        value: number | Admin;
       }
     | {
         relationTo: 'app_users';
-        value: string | AppUser;
+        value: number | AppUser;
       };
   key?: string | null;
   value?:
@@ -281,7 +281,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
