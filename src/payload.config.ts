@@ -19,6 +19,10 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
+	// serverURL: "https://admin.simplylife.fr",
+	// csrf: [
+  //   // whitelist of domains to allow cookie auth from
+	// ],
 	admin: {
 		avatar: {
 			Component: "/components/settings.tsx",
@@ -86,6 +90,7 @@ export default buildConfig({
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
 	db: postgresAdapter({
+		idType: "uuid",
 		pool: {
 			connectionString: process.env.DATABASE_URI || "",
 		},
