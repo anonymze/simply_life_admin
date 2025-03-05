@@ -10,11 +10,11 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 import path from "path";
 
-import { SponsorCategories } from "./collections/sponsor-categories";
-import { AppUsers } from "./collections/app-users";
-import { Sponsors } from "./collections/sponsors";
-import { Admins } from "./collections/admins";
-import { Media } from "./collections/media";
+import { SponsorCategories } from "../sponsor-categories";
+import { AppUsers } from "../app-users";
+import { Sponsors } from "../sponsors";
+import { Admins } from "../admins";
+import { Media } from "../media";
 
 
 const filename = fileURLToPath(import.meta.url);

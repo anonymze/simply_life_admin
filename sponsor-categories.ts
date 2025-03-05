@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { canAccessApi } from "../utils/helper";
+import { canAccessApi } from "./src/utils/helper";
 
 
 export const SponsorCategories: CollectionConfig = {
