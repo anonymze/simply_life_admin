@@ -1,9 +1,9 @@
-import { ValidationError, type CollectionBeforeValidateHook, type CollectionConfig } from "payload";
+import { type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
 
 
 export const AppUsers: CollectionConfig = {
-	slug: "app_users",
+	slug: "app-users",
 	access: {
 		read: ({ req: { user } }) => canAccessApi(user, []),
 		create: ({ req: { user } }) => canAccessApi(user, []),

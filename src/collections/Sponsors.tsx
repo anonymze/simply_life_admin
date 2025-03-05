@@ -5,7 +5,7 @@ import { canAccessApi } from "../utils/helper";
 
 export const Sponsors: CollectionConfig = {
 	access: {
-		read: ({ req: { user } }) => canAccessApi(user, ["coach", "staff", "player"]),
+		read: ({ req: { user } }) => canAccessApi(user, ["coach", "staff", "player", "visitor"]),
 		create: ({ req: { user } }) => canAccessApi(user, []),
 		update: ({ req: { user } }) => canAccessApi(user, []),
 		delete: ({ req: { user } }) => canAccessApi(user, []),
@@ -46,9 +46,9 @@ export const Sponsors: CollectionConfig = {
 		},
 		{
 			name: "category",
-			type: "select",
+			type: "relationship",
 			required: true,
-			options: ["gold", "silver", "bronze", "diamond"],
+			relationTo: "sponsor-categories",
 			label: {
 				en: "Category",
 				fr: "Catégorie",

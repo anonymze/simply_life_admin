@@ -10,10 +10,11 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 import path from "path";
 
-import { Sponsors } from "./collections/Sponsors";
-import { AppUsers } from "./collections/AppUsers";
-import { Admins } from "./collections/Admins";
-import { Media } from "./collections/Media";
+import { SponsorCategories } from "./collections/sponsor-categories";
+import { AppUsers } from "./collections/app-users";
+import { Sponsors } from "./collections/sponsors";
+import { Admins } from "./collections/admins";
+import { Media } from "./collections/media";
 
 
 const filename = fileURLToPath(import.meta.url);
@@ -84,7 +85,7 @@ export default buildConfig({
 			},
 		},
 	},
-	collections: [Admins, Media, AppUsers, Sponsors],
+	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {

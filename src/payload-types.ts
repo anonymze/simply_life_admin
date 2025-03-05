@@ -63,14 +63,15 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     admins: AdminAuthOperations;
-    app_users: AppUserAuthOperations;
+    'app-users': AppUserAuthOperations;
   };
   blocks: {};
   collections: {
     admins: Admin;
     media: Media;
-    app_users: AppUser;
+    'app-users': AppUser;
     sponsors: Sponsor;
+    'sponsor-categories': SponsorCategory;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -79,8 +80,9 @@ export interface Config {
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    app_users: AppUsersSelect<false> | AppUsersSelect<true>;
+    'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
     sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
+    'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -96,7 +98,7 @@ export interface Config {
         collection: 'admins';
       })
     | (AppUser & {
-        collection: 'app_users';
+        collection: 'app-users';
       });
   jobs: {
     tasks: unknown;
@@ -179,7 +181,7 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "app_users".
+ * via the `definition` "app-users".
  */
 export interface AppUser {
   id: string;
@@ -205,10 +207,20 @@ export interface Sponsor {
   id: string;
   name: string;
   logo: string | Media;
-  category: 'gold' | 'silver' | 'bronze' | 'diamond';
+  category: string | SponsorCategory;
   website?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sponsor-categories".
+ */
+export interface SponsorCategory {
+  id: string;
+  name: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -228,12 +240,16 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'app_users';
+        relationTo: 'app-users';
         value: string | AppUser;
       } | null)
     | ({
         relationTo: 'sponsors';
         value: string | Sponsor;
+      } | null)
+    | ({
+        relationTo: 'sponsor-categories';
+        value: string | SponsorCategory;
       } | null);
   globalSlug?: string | null;
   user:
@@ -242,7 +258,7 @@ export interface PayloadLockedDocument {
         value: string | Admin;
       }
     | {
-        relationTo: 'app_users';
+        relationTo: 'app-users';
         value: string | AppUser;
       };
   updatedAt: string;
@@ -260,7 +276,7 @@ export interface PayloadPreference {
         value: string | Admin;
       }
     | {
-        relationTo: 'app_users';
+        relationTo: 'app-users';
         value: string | AppUser;
       };
   key?: string | null;
@@ -324,7 +340,7 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "app_users_select".
+ * via the `definition` "app-users_select".
  */
 export interface AppUsersSelect<T extends boolean = true> {
   lastname?: T;
@@ -351,6 +367,15 @@ export interface SponsorsSelect<T extends boolean = true> {
   website?: T;
   latitude?: T;
   longitude?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sponsor-categories_select".
+ */
+export interface SponsorCategoriesSelect<T extends boolean = true> {
+  name?: T;
   updatedAt?: T;
   createdAt?: T;
 }

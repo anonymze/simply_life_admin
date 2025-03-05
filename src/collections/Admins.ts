@@ -5,10 +5,10 @@ import { canAccessApi } from "@/utils/helper";
 export const Admins: CollectionConfig = {
 	slug: "admins",
 	access: {
-		// read: ({ req: { user } }) => canAccessApi(user, []),
-		// create: ({ req: { user } }) => canAccessApi(user, []),
-		// update: ({ req: { user } }) => canAccessApi(user, []),
-		// delete: ({ req: { user } }) => canAccessApi(user, []),
+		read: ({ req: { user } }) => canAccessApi(user, []),
+		create: ({ req: { user } }) => canAccessApi(user, []),
+		update: ({ req: { user } }) => canAccessApi(user, []),
+		delete: ({ req: { user } }) => canAccessApi(user, []),
 	},
 	labels: {
 		singular: {
