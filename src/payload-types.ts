@@ -208,7 +208,9 @@ export interface Sponsor {
   name: string;
   logo: string | Media;
   category: string | SponsorCategory;
+  phone?: string | null;
   website?: string | null;
+  address?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   updatedAt: string;
@@ -364,7 +366,9 @@ export interface SponsorsSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
   category?: T;
+  phone?: T;
   website?: T;
+  address?: T;
   latitude?: T;
   longitude?: T;
   updatedAt?: T;

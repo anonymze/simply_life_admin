@@ -55,11 +55,27 @@ export const Sponsors: CollectionConfig = {
 			},
 		},
 		{
+			name: "phone",
+			type: "text",
+			label: {
+				en: "Phone",
+				fr: "Téléphone",
+			},
+		},
+		{
 			name: "website",
 			type: "text",
 			label: {
 				en: "Website",
 				fr: "Site web",
+			},
+		},
+		{
+			name: "address",
+			type: "text",
+			label: {
+				en: "Address",
+				fr: "Adresse",
 			},
 		},
 		{
