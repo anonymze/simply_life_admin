@@ -1,4 +1,3 @@
-// import { postgresAdapter } from "@payloadcms/db-postgres";
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
