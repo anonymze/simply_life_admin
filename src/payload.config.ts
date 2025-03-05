@@ -39,8 +39,8 @@ export default buildConfig({
 				Button: "/components/logout.tsx",
 			},
 			graphics: {
-				Icon: "/components/logo.tsx",
 				Logo: "/components/logo.tsx",
+				Icon: "/components/logo.tsx",
 			},
 		},
 		meta: {
