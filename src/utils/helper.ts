@@ -8,7 +8,7 @@ const ORIGIN_APP = "simply-life-app://app";
 type originType = "mobile" | "app";
 
 export const canAccessApi = (req: PayloadRequest, roles: AppUser["role"][], originType?: originType): boolean => {
-	console.log(req.headers);
+	console.log(req.headers.get("cookie"));
 	if (!req.user) return false;
 	if (req.user.collection === "admins") return true;
 	if (originType && !verifyOrigin(req.headers?.get("origin"), originType)) return false;
