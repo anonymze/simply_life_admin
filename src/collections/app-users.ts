@@ -12,7 +12,7 @@ export const AppUsers: CollectionConfig = {
 	},
 	auth: {
 		maxLoginAttempts: 4,
-		tokenExpiration: 60 * 60 * 24 * 60, // 60 days
+		tokenExpiration: 2 * 60 * 24 * 60, // 60 days
 	},
 	admin: {
 		useAsTitle: "email",
