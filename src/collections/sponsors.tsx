@@ -5,7 +5,10 @@ import { canAccessApi } from "../utils/helper";
 
 export const Sponsors: CollectionConfig = {
 	access: {
-		read: ({ req: { user } }) => canAccessApi(user, ["coach", "staff", "player", "visitor"]),
+		read: (status) => {
+			console.log(status.req);
+			return canAccessApi(status.req.user, ["coach", "staff", "player", "visitor"])
+		},
 		create: ({ req: { user } }) => canAccessApi(user, []),
 		update: ({ req: { user } }) => canAccessApi(user, []),
 		delete: ({ req: { user } }) => canAccessApi(user, []),
