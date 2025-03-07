@@ -9,7 +9,7 @@ type originType = "mobile" | "app";
 
 export const canAccessApi = (req: PayloadRequest, roles: AppUser["role"][], originType?: originType): boolean => {
 	console.dir(req.headers.get('cookie'), { depth: null });
-	console.dir(req.headers.get('cookies'), { depth: null });
+	console.dir(req.headers, { depth: null });
 	if (!req.user) return false;
 	if (req.user.collection === "admins") return true;
 	if (originType && !verifyOrigin(req.headers?.get("origin"), originType)) return false;
