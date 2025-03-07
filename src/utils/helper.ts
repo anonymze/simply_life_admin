@@ -3,8 +3,8 @@ import { PayloadRequest } from "payload";
 import type { AppUser } from "../payload-types";
 
 
-const ORIGIN_MOBILE = "https://simplylife.app/mobile";
-const ORIGIN_APP = "https://simplylife.app/app";
+const ORIGIN_MOBILE = "simply-life-app://mobile";
+const ORIGIN_APP = "simply-life-app://app";
 type originType = "mobile" | "app";
 
 export const canAccessApi = (req: PayloadRequest, roles: AppUser["role"][], originType?: originType): boolean => {
