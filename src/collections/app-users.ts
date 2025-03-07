@@ -51,6 +51,7 @@ export const AppUsers: CollectionConfig = {
 			name: "role",
 			type: "select",
 			required: true,
+			saveToJWT: true,
 			label: {
 				en: "Role",
 				fr: "Rôle",
