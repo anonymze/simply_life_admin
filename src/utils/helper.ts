@@ -3,7 +3,7 @@ import { PayloadRequest } from "payload";
 import type { AppUser } from "../payload-types";
 
 
-const ORIGIN_MOBILE = "https://simplylife.app/mb";
+const ORIGIN_MOBILE = "https://simplylife.app/mobile";
 const ORIGIN_APP = "https://simplylife.app/app";
 type originType = "mobile" | "app";
 
