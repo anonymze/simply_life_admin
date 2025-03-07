@@ -9,7 +9,7 @@ type originType = "mobile" | "app";
 
 export const canAccessApi = (req: PayloadRequest, roles: AppUser["role"][], originType?: originType): boolean => {
 	// console.log("canAccessApi");
-	// console.log(req);
+	console.log(req);
 	// console.dir(req.headers, { depth: null });
 	if (!req.user) return false;
 	if (req.user.collection === "admins") return true;
