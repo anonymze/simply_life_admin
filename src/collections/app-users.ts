@@ -15,6 +15,14 @@ export const AppUsers: CollectionConfig = {
 		tokenExpiration: 60 * 60 * 24 * 60, // 60 days
 		// tokenExpiration: 3 * 60, // 3 min
 	},
+	hooks: {
+		afterOperation: [
+			async ({ req, operation }) => {
+				console.log(req.user);
+				console.log(operation);
+			},
+		],
+	},
 	admin: {
 		useAsTitle: "email",
 	},
