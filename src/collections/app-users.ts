@@ -5,14 +5,14 @@ import { canAccessApi } from "@/utils/helper";
 export const AppUsers: CollectionConfig = {
 	slug: "app-users",
 	access: {
-		read: ({ req: { user } }) => canAccessApi(user, []),
-		create: ({ req: { user } }) => canAccessApi(user, []),
-		update: ({ req: { user } }) => canAccessApi(user, []),
-		delete: ({ req: { user } }) => canAccessApi(user, []),
+		read: ({ req }) => canAccessApi(req, []),
+		create: ({ req }) => canAccessApi(req, []),
+		update: ({ req }) => canAccessApi(req, []),
+		delete: ({ req }) => canAccessApi(req, []),
 	},
 	auth: {
 		maxLoginAttempts: 5,
-		tokenExpiration: 60 * 60 * 24 * 30, // 30 days		
+		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
 	},
 	admin: {
 		useAsTitle: "email",
@@ -28,7 +28,6 @@ export const AppUsers: CollectionConfig = {
 		},
 	},
 	fields: [
-		
 		{
 			name: "lastname",
 			type: "text",
