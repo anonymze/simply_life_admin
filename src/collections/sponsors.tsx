@@ -10,6 +10,14 @@ export const Sponsors: CollectionConfig = {
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
 	},
+	hooks: {
+		afterOperation: [
+			async ({ req, operation }) => {
+				console.log(req.user);
+				console.log(operation);
+			},
+		],
+	},
 	slug: "sponsors",
 	labels: {
 		singular: {

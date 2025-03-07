@@ -1,5 +1,5 @@
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
@@ -22,7 +22,7 @@ const dirname = path.dirname(filename);
 export default buildConfig({
 	// serverURL: "https://simply-life-admin.vercel.app",
 	// csrf: [
-  //   // whitelist of domains to allow cookie auth from
+	//   // whitelist of domains to allow cookie auth from
 	// ],
 	admin: {
 		avatar: {
@@ -98,14 +98,14 @@ export default buildConfig({
 	// }),
 	db: vercelPostgresAdapter({
 		idType: "uuid",
-    pool: {
-      connectionString: process.env.DATABASE_URI || "",
-    },
-  }),
+		pool: {
+			connectionString: process.env.DATABASE_URI || "",
+		},
+	}),
 	sharp,
 	plugins: [
 		payloadCloudPlugin(),
-		
+
 		vercelBlobStorage({
 			enabled: true, // Optional, defaults to true
 			// Specify which collections should use Vercel Blob
@@ -120,4 +120,3 @@ export default buildConfig({
 		}),
 	],
 });
-
