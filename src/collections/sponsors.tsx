@@ -6,6 +6,7 @@ import { canAccessApi } from "../utils/helper";
 export const Sponsors: CollectionConfig = {
 	access: {
 		read: (status) => {
+			console.log("status");
 			console.log(status.req);
 			return canAccessApi(status.req.user, ["coach", "staff", "player", "visitor"])
 		},
