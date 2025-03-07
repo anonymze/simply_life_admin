@@ -11,8 +11,8 @@ export const AppUsers: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	auth: {
-		maxLoginAttempts: 5,
-		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
+		maxLoginAttempts: 4,
+		tokenExpiration: 60 * 60 * 24 * 60, // 60 days
 	},
 	admin: {
 		useAsTitle: "email",
