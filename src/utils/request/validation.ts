@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import type { z } from "zod";
 
-import { ParserRequest } from "./parser";
+import { ParserRequest } from "./_parser";
 
 
 type ExtractedDataRequest<T> =
