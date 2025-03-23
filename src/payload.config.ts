@@ -25,6 +25,9 @@ export default buildConfig({
 	//   // whitelist of domains to allow cookie auth from
 	// ],
 	admin: {
+		// you can change the binded routes in admin
+		// routes: {
+		// },
 		avatar: {
 			Component: "/components/settings.tsx",
 		},
@@ -59,9 +62,23 @@ export default buildConfig({
 			],
 		},
 	},
+	// binded routes from dashboard and api
 	routes: {
 		admin: "/admin",
+		api: "/api",
 	},
+	endpoints: [
+		{
+			root: true,
+			path: "/api/hello",
+			method: "get",
+			handler: (req) => {
+				return new Response("Hello from Payload CMS!");
+			},
+		},
+		
+	],
+
 	i18n: {
 		fallbackLanguage: "fr",
 		supportedLanguages: { fr, en },
