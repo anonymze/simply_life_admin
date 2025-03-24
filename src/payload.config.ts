@@ -67,18 +67,6 @@ export default buildConfig({
 		admin: "/admin",
 		api: "/api",
 	},
-	endpoints: [
-		{
-			root: true,
-			path: "/api/hello",
-			method: "get",
-			handler: (req) => {
-				return new Response("Hello from Payload CMS!");
-			},
-		},
-		
-	],
-
 	i18n: {
 		fallbackLanguage: "fr",
 		supportedLanguages: { fr, en },
