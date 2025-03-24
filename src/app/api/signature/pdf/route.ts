@@ -8,7 +8,7 @@ const ACCEPTED_CONTENT_TYPE = "multipart/form-data";
 
 const mediaSchema = z.object({
 	// IT'S BASE64 FOR NOW
-	file: z.string(),
+	file: z.array(z.string()),
 });
 
 export async function POST(req: NextRequest) {
