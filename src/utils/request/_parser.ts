@@ -59,7 +59,7 @@ export class ParserRequest {
 
 			return {
 				error: true,
-				messageError: "Data don't match the provided schema",
+				messageError: "Data does not match the provided schema",
 			} satisfies ParsedRequest;
 		}
 	}
@@ -80,7 +80,7 @@ export class ParserRequest {
 		} catch (_) {
 			return {
 				error: true,
-				messageError: "Content could not be parsed",
+				messageError: "Content could not be parsed. Please check you are sendind data.",
 			} satisfies ParsedRequest;
 		}
 	}
