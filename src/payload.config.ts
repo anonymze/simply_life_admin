@@ -22,7 +22,8 @@ const dirname = path.dirname(filename);
 export default buildConfig({
 	// serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000",
 	cors: {
-		origins: ["http://192.168.1.230:8081"]
+		origins: ["http://192.168.1.230:8081", "*"],
+		headers: ["Content-Type", "Authorization", "X-Origin", "Accept", "X-Requested-With"]
 	},
 	csrf: [
 		// Add your allowed origins here for CSRF protection
