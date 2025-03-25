@@ -12,15 +12,15 @@ const mediaSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-	console.log("req", req);
 	console.log("hihihihihi");
-	const { error, messageError, data } = await validateRequest(
-		req,
-		ACCEPTED_CONTENT_TYPE,
-		mediaSchema,
-	);
+	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
-	if (error) return jsonResponseBadRequest(messageError);
+	console.log("data", data);
+
+	if (error) {
+		console.log("error", error);
+		return jsonResponseBadRequest(messageError);
+	}
 
 	const { file } = data;
 
