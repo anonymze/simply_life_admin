@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 
 
-const ACCEPTED_CONTENT_TYPE = "application/json";
+const ACCEPTED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
 const mediaSchema = z.object({
 	// IT'S BASE64 FOR NOW

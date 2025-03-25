@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import type { z } from "zod";
 
-import { ParserRequest } from "./_parser";
+import { ContentTypeAccepted, ParserRequest } from "./_parser";
 
 
 type ExtractedDataRequest<T> =
@@ -22,7 +22,7 @@ type ExtractedDataRequest<T> =
  */
 export async function validateRequest<T>(
 	req: NextRequest,
-	acceptedContentType: "application/json" | "multipart/form-data",
+	acceptedContentType: ContentTypeAccepted,
 	dataSchema: z.ZodType<T>,
 ) {
 	const parserRequest = new ParserRequest(req, acceptedContentType);

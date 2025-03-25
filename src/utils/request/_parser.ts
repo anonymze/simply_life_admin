@@ -6,7 +6,7 @@ type ParsedRequest<T = undefined> =
 	| { error: true; messageError: string }
 	| { error: false; [key: string]: T | boolean };
 
-type ContentTypeAccepted = "multipart/form-data" | "application/json";
+export type ContentTypeAccepted = "multipart/form-data" | "application/json" | "application/x-www-form-urlencoded";
 
 export class ParserRequest {
 	constructor(
