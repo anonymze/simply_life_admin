@@ -15,8 +15,6 @@ export class ParserRequest {
 	) {}
 
 	validContentType() {
-		console.log(this.request.headers.get("content-type"));
-		console.log(this.contentType);
 		if (this.request.headers.get("content-type")?.startsWith(this.contentType)) {
 			return {
 				error: false,
@@ -32,16 +30,17 @@ export class ParserRequest {
 
 	validData<T>(data: unknown, dataSchema: z.ZodType<T>) {
 		try {
+			const nameParamFile = "file[]";
 			let dataToParse = data;
 
-			if (this.contentType === "multipart/form-data") {
+			if (this.contentType === "multipart/form-data" || this.contentType === "application/x-www-form-urlencoded") {
 				const dataFormData: Record<string, unknown> = {};
-				const files = (data as FormData).getAll("files[]");
+				const files = (data as FormData).getAll(nameParamFile);
 				
 				dataFormData.files = files;
 				
 				for (const [key, value] of (data as FormData).entries()) {
-					if (key === "files[]") continue;
+					if (key === nameParamFile) continue;
 					dataFormData[key] = value;
 				}
 				

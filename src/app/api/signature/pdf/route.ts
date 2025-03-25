@@ -13,17 +13,17 @@ const mediaSchema = z.object({
 
 export async function POST(req: NextRequest) {
 	console.log(await req.formData());
+	
+	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
-	// const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
+	if (error) {
+		console.log(messageError);
+		return jsonResponseBadRequest(messageError);
+	}
 
-	// if (error) {
-	// 	console.log(messageError);
-	// 	return jsonResponseBadRequest(messageError);
-	// }
+	const { file } = data;
 
-	// const { file } = data;
-
-	// console.log(file);
+	console.log(file);
 
 	return jsonResponsePost({ message: "Hello from Payload CMS!" });
 }
