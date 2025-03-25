@@ -20,10 +20,18 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
-	// serverURL: "https://simply-life-admin.vercel.app",
-	// csrf: [
-	//   // whitelist of domains to allow cookie auth from
-	// ],
+	serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000",
+	cors: [
+		"*",
+		// Add your allowed origins here
+		// "simply-life-app://mobile",
+		// "http://localhost:3000",
+	],
+	csrf: [
+		// Add your allowed origins here for CSRF protection
+		// "simply-life-app://mobile",
+		// "http://localhost:3000",
+	],
 	admin: {
 		// you can change the binded routes in admin
 		// routes: {
