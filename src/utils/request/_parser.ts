@@ -15,6 +15,8 @@ export class ParserRequest {
 	) {}
 
 	validContentType() {
+		console.log(this.request.headers.get("content-type"));
+		console.log(this.contentType);
 		if (this.request.headers.get("content-type")?.startsWith(this.contentType)) {
 			return {
 				error: false,
