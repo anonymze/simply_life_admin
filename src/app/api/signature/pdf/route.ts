@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
 	console.log("hihihihihi");
 	console.log(req.body);
 	console.dir(req, { depth: null });
+	const ki = await req.json();
+	console.log(ki);
 	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
 	console.log("data", data);
