@@ -13,6 +13,8 @@ const mediaSchema = z.object({
 
 export async function POST(req: NextRequest) {
 	console.log("hihihihihi");
+	console.dir(req, { depth: null });
+	console.log(req.body);
 	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
 	console.log("data", data);
