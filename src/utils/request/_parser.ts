@@ -36,6 +36,11 @@ export class ParserRequest {
 			if (this.contentType === "multipart/form-data" || this.contentType === "application/x-www-form-urlencoded") {
 				const dataFormData: Record<string, unknown> = {};
 				const files = (data as FormData).getAll(nameParamFile);
+
+				console.log("DATA");
+				console.log(data);
+				console.log("FILES");
+				console.log(files);
 				
 				dataFormData.files = files;
 				
@@ -46,6 +51,9 @@ export class ParserRequest {
 				
 				dataToParse = dataFormData;
 			}
+
+			console.log("DATA TO PARSE");
+			console.log(dataToParse);
 
 			dataSchema.parse(dataToParse)
 
