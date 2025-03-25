@@ -20,6 +20,7 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
+	// TODO
 	serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "https://simply-life-admin.vercel.app",
 	cors: {
 		origins: ["http://localhost:3000", "http://192.168.1.230:8081", "*", "http://localhost:8081"],
