@@ -12,6 +12,8 @@ const mediaSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+	console.log(await req.formData());
+	
 	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
 	if (error) {
