@@ -26,7 +26,7 @@ export class ParserRequest {
 
 		return {
 			error: true,
-			messageError: "Content-Type must be multipart/form-data",
+			messageError: "Content-Type does not match the accepted type",
 		} satisfies ParsedRequest;
 	}
 
