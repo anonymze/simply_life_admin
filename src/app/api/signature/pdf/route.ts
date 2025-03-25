@@ -21,9 +21,7 @@ export async function POST(req: NextRequest) {
 		return jsonResponseBadRequest(messageError);
 	}
 
-	const { file } = data;
-
-	console.log(file);
+	console.log(data);
 
 	return jsonResponsePost({ message: "Hello from Payload CMS!" });
 }
