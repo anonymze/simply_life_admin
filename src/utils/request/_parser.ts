@@ -68,7 +68,7 @@ export class ParserRequest {
 
 	async parseBody() {
 		try {
-			if (this.contentType === "multipart/form-data") {
+			if (this.contentType === "multipart/form-data" || this.contentType === "application/x-www-form-urlencoded") {
 				return {
 					error: false,
 					dataParsed: await this.request.formData(),
