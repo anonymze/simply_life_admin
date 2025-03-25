@@ -27,7 +27,10 @@ export default buildConfig({
 	// 	// "simply-life-app://mobile",
 	// 	// "http://localhost:3000",
 	// ],
-	cors: ["*"],
+	cors: {
+		origins: ["*"],
+		// headers: ["Content-Type", "Authorization", "X-Origin"],
+	},
 	csrf: [
 		// Add your allowed origins here for CSRF protection
 		// "simply-life-app://mobile",
