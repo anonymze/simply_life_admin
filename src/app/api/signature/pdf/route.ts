@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 	console.log("data", data);
 
 	if (error) {
-		console.log("error", error);
+		console.log("error", messageError);
 		return jsonResponseBadRequest(messageError);
 	}
 
