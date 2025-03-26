@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
 
 		console.log("ici");
 		console.log(test);
-	} catch (err) {}
+	} catch (err) {
+		console.log(err);
+	}
 
 	return jsonResponsePost({ message: "Hello from Payload CMS!" });
 }
