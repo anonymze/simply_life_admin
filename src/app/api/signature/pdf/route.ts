@@ -14,6 +14,7 @@ const mediaSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+	console.log(req.headers);
 	if (!isValidToken(req.cookies)) return jsonResponseUnauthorized();
 
 	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
