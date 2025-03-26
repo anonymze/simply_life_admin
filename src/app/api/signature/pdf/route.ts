@@ -10,7 +10,7 @@ const ACCEPTED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 const mediaSchema = z.object({
 	// IT'S BASE64 FOR NOW
 	files: z.array(z.string()).min(1),
-	jwt: z.string(),
+	// jwt: z.string(),
 });
 
 export async function POST(req: NextRequest) {
