@@ -23,10 +23,10 @@ export async function POST(req: NextRequest) {
 	}
 
 	const headers = new Headers(req.headers);
-	headers.set("payload-token", data.jwt);
+	headers.append('Cookie', `payload-token=${data.jwt}`);
 
 	const auth = await payload.auth({
-		headers: req.headers,
+		headers: headers,
 	});
 
 	console.log(auth.user);
