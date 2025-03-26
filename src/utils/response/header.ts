@@ -16,19 +16,5 @@ export async function isValidToken(cookies: RequestCookies) {
 	console.log(token);
 	if (!token) return false;
 
-	try {
-		const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/verify/${token.value}`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-		const data = await req.json();
-
-		console.log("ici");
-		console.log(data);
-		return true;
-	} catch (err) {
-		return false;
-	}
+	return true;
 }
