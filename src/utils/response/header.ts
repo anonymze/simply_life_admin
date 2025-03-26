@@ -12,12 +12,13 @@ export function createResponseHeader(getCookieApiToken: boolean) {
  */
 export async function isValidToken(cookies: RequestCookies) {
 	const token = cookies.get("payload-token");
+	console.log(cookies)
+	console.log(token)
 	if (!token) return false;
 
 	try {
 		const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/verify/${token.value}`, {
 			method: "POST", 
-			credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},
