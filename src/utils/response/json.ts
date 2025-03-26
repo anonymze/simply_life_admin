@@ -1,4 +1,4 @@
-import { getResponseHeader } from "./header";
+import { createResponseHeader } from "./header";
 
 
 interface JsonResponseCore {
@@ -50,7 +50,7 @@ export function jsonResponseGet(body: unknown, withCookieApiToken = true) {
 		body,
 		status: 200,
 		statusText: "OK",
-		headers: getResponseHeader(withCookieApiToken),
+		headers: createResponseHeader(withCookieApiToken),
 	});
 }
 
@@ -59,7 +59,7 @@ export function jsonResponsePost(body: unknown, withCookieApiToken = true) {
 		body,
 		status: 201,
 		statusText: "OK",
-		headers: getResponseHeader(withCookieApiToken),
+		headers: createResponseHeader(withCookieApiToken),
 	});
 }
 
@@ -68,7 +68,7 @@ export function jsonResponsePatch(body: unknown, withCookieApiToken = true) {
 		body,
 		status: 200,
 		statusText: "OK",
-		headers: getResponseHeader(withCookieApiToken),
+		headers: createResponseHeader(withCookieApiToken),
 	});
 }
 
@@ -76,6 +76,6 @@ export function responseDelete(withCookieApiToken = true) {
 	return new Response(null, {
 		status: 204,
 		statusText: "OK",
-		headers: getResponseHeader(withCookieApiToken),
+		headers: createResponseHeader(withCookieApiToken),
 	});
 }
