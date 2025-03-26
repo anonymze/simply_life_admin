@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 		return jsonResponseBadRequest(messageError);
 	}
 
-	const headers = new Headers(req.headers);
+	const headers = new Headers();
 	headers.append('Cookie', `payload-token=${data.jwt}`);
 
 	const auth = await payload.auth({
