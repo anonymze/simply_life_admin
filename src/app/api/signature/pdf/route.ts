@@ -21,8 +21,10 @@ export async function POST(req: NextRequest) {
 	}
 
 	try {
+		console.log(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/verify/${data.jwt}`);
 		const request = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/verify/${data.jwt}`, {
 			method: "POST",
+			credentials: "include",
 			headers: {
 				"Content-Type": "application/json",
 			},
