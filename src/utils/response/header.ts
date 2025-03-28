@@ -12,8 +12,6 @@ export function createResponseHeader(getCookieApiToken: boolean) {
  */
 export async function isValidToken(cookies: RequestCookies) {
 	const token = cookies.get("payload-token");
-	console.log(cookies);
-	console.log(token);
 	if (!token) return false;
 
 	return true;

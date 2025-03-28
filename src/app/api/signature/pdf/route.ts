@@ -2,8 +2,8 @@ import { jsonResponseBadRequest, jsonResponsePost, jsonResponseUnauthorized } fr
 import { validateRequest } from "@/utils/request/validation";
 import { isValidToken } from "@/utils/response/header";
 import { NextRequest } from "next/server";
-import { writeFileSync } from 'fs';
-import { join } from 'path';
+import { writeFileSync } from "fs";
+import { join } from "path";
 import { z } from "zod";
 
 
@@ -15,12 +15,13 @@ const mediaSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-	console.log(req.cookies.getAll())
+	if (!isValidToken(req.cookies)) return jsonResponseUnauthorized();
+
 	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
 	if (error) return jsonResponseBadRequest(messageError);
 
-	console.log(data.files)
+	console.dir(data.files, { depth: null})
 
 	return jsonResponsePost({ message: "OK" });
 }
