@@ -7,14 +7,20 @@ import { join } from 'path';
 import { z } from "zod";
 
 
-const ACCEPTED_CONTENT_TYPE = "application/x-www-form-urlencoded";
+const ACCEPTED_CONTENT_TYPE = "application/json";
 
 const mediaSchema = z.object({
 	// IT'S BASE64 FOR NOW
 	files: z.array(z.string()).min(1),
-	jwt: z.string(),
 });
 
 export async function POST(req: NextRequest) {
+	console.log(req.cookies.getAll())
+	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
+
+	if (error) return jsonResponseBadRequest(messageError);
+
+	console.log(data.files)
+
 	return jsonResponsePost({ message: "OK" });
 }
