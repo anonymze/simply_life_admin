@@ -22,6 +22,12 @@ const dirname = path.dirname(filename);
 export default buildConfig({
 	serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
 	// cors: ["*"],
+	cors: {
+		origins: ["http://192.168.1.230:8081"], // Add your allowed origin here
+		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		// allowedHeaders: ['Content-Type', 'Authorization'],
+		headers: ['Content-Type', 'Authorization', 'Accept']
+	},
 	csrf: [
 		// Add your allowed origins here for CSRF protection
 		// "simply-life-app://mobile",

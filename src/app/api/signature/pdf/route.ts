@@ -2,7 +2,8 @@ import { jsonResponseBadRequest, jsonResponsePost, jsonResponseUnauthorized } fr
 import { validateRequest } from "@/utils/request/validation";
 import { isValidToken } from "@/utils/response/header";
 import { NextRequest } from "next/server";
-import payload from "payload";
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 import { z } from "zod";
 
 
@@ -15,24 +16,5 @@ const mediaSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
-
-	if (error) {
-		console.log(messageError);
-		return jsonResponseBadRequest(messageError);
-	}
-
-	const headers = new Headers();
-	headers.append('Cookie', `payload-token=${data.jwt}`);
-
-	const auth = await payload.auth({
-		headers: headers,
-	});
-
-	console.log(auth.user);
-
-	if (!auth.user) {
-		return jsonResponseUnauthorized("Invalid JWT");
-	}
-	return jsonResponsePost({ message: "Hello from Payload CMS!" });
+	return jsonResponsePost({ message: "OK" });
 }
