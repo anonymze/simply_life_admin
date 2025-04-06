@@ -1,49 +1,49 @@
 {
-  "name": "simply-life-admin",
-  "version": "1.0.0",
-  "description": "Simply Life Admin",
-  "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "generate": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
-  },
-  "dependencies": {
-    "@payloadcms/db-postgres": "^3.24.0",
-    "@payloadcms/db-vercel-postgres": "^3.24.0",
-    "@payloadcms/next": "^3.24.0",
-    "@payloadcms/payload-cloud": "^3.24.0",
-    "@payloadcms/richtext-lexical": "^3.24.0",
-    "@payloadcms/storage-vercel-blob": "^3.24.0",
-    "@payloadcms/translations": "^3.24.0",
-    "cross-env": "^7.0.3",
-    "graphql": "^16.8.1",
-    "lucide-react": "^0.475.0",
-    "next": "15.1.5",
-    "payload": "^3.24.0",
-    "prettier": "^3.5.2",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "sharp": "0.32.6",
-    "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "@types/node": "^22.5.4",
-    "@types/react": "19.0.7",
-    "@types/react-dom": "19.0.3",
-    "typescript": "5.7.3"
-  },
-  "engines": {
-    "node": "^18.20.2 || >=20.9.0",
-    "pnpm": "^9"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp"
-    ]
-  },
-  "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a"
+	"name": "simply-life-admin",
+	"version": "1.0.0",
+	"description": "Simply Life Admin",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+		"generate": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap && cross-env NODE_OPTIONS=--no-deprecation payload generate:types && cross-env NODE_OPTIONS=--no-deprecation payload generate:db-schema",
+		"dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+		"build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+		"start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+	},
+	"dependencies": {
+		"@payloadcms/db-postgres": "^3.24.0",
+		"@payloadcms/db-vercel-postgres": "^3.24.0",
+		"@payloadcms/next": "^3.24.0",
+		"@payloadcms/payload-cloud": "^3.24.0",
+		"@payloadcms/richtext-lexical": "^3.24.0",
+		"@payloadcms/storage-vercel-blob": "^3.24.0",
+		"@payloadcms/translations": "^3.24.0",
+		"cross-env": "^7.0.3",
+		"graphql": "^16.8.1",
+		"lucide-react": "^0.475.0",
+		"next": "15.1.5",
+		"payload": "^3.24.0",
+		"prettier": "^3.5.2",
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
+		"sharp": "0.32.6",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@types/node": "^22.5.4",
+		"@types/react": "19.0.7",
+		"@types/react-dom": "19.0.3",
+		"typescript": "5.7.3"
+	},
+	"engines": {
+		"node": "^18.20.2 || >=20.9.0",
+		"pnpm": "^9"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"sharp"
+		]
+	},
+	"packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a"
 }

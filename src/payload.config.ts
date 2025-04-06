@@ -1,3 +1,4 @@
+import { pgTable, serial, uuid } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
@@ -112,7 +113,22 @@ export default buildConfig({
 	// 	},
 	// }),
 	db: vercelPostgresAdapter({
-		idType: "uuid",
+		// create table for database that is not handled by payload
+		// beforeSchemaInit: [
+		// 	({ schema, adapter }) => {
+		// 		return {
+		// 			...schema,
+		// 			tables: {
+		// 				...schema.tables,
+		// 				addedTable: pgTable('added_table', {
+		// 					// id: serial('id').notNull(),
+		// 					id: uuid('id').defaultRandom().primaryKey(),
+		// 				}),
+		// 			},
+		// 		}
+		// 	},
+		// ],
+		idType: "uuid",		
 		pool: {
 			connectionString: process.env.DATABASE_URI || "",
 		},
