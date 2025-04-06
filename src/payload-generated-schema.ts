@@ -236,7 +236,7 @@ export const chat_rooms = pgTable(
   "chat_rooms",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    user: uuid("user_id")
+    app_user: uuid("app_user_id")
       .notNull()
       .references(() => app_users.id, {
         onDelete: "set null",
@@ -261,11 +261,56 @@ export const chat_rooms = pgTable(
       .notNull(),
   },
   (columns) => ({
-    chat_rooms_user_idx: index("chat_rooms_user_idx").on(columns.user),
+    chat_rooms_app_user_idx: index("chat_rooms_app_user_idx").on(
+      columns.app_user,
+    ),
     chat_rooms_updated_at_idx: index("chat_rooms_updated_at_idx").on(
       columns.updatedAt,
     ),
     chat_rooms_created_at_idx: index("chat_rooms_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const signatures = pgTable(
+  "signatures",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    signatures_app_user_idx: index("signatures_app_user_idx").on(
+      columns.app_user,
+    ),
+    signatures_file_idx: index("signatures_file_idx").on(columns.file),
+    signatures_updated_at_idx: index("signatures_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    signatures_created_at_idx: index("signatures_created_at_idx").on(
       columns.createdAt,
     ),
   }),
@@ -317,6 +362,7 @@ export const payload_locked_documents_rels = pgTable(
     sponsorsID: uuid("sponsors_id"),
     "sponsor-categoriesID": uuid("sponsor_categories_id"),
     "chat-roomsID": uuid("chat_rooms_id"),
+    signaturesID: uuid("signatures_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -342,6 +388,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_chat_rooms_id_idx: index(
       "payload_locked_documents_rels_chat_rooms_id_idx",
     ).on(columns["chat-roomsID"]),
+    payload_locked_documents_rels_signatures_id_idx: index(
+      "payload_locked_documents_rels_signatures_id_idx",
+    ).on(columns.signaturesID),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -376,6 +425,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["chat-roomsID"]],
       foreignColumns: [chat_rooms.id],
       name: "payload_locked_documents_rels_chat_rooms_fk",
+    }).onDelete("cascade"),
+    signaturesIdFk: foreignKey({
+      columns: [columns["signaturesID"]],
+      foreignColumns: [signatures.id],
+      name: "payload_locked_documents_rels_signatures_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -503,10 +557,22 @@ export const relations_sponsor_categories = relations(
   () => ({}),
 );
 export const relations_chat_rooms = relations(chat_rooms, ({ one }) => ({
-  user: one(app_users, {
-    fields: [chat_rooms.user],
+  app_user: one(app_users, {
+    fields: [chat_rooms.app_user],
     references: [app_users.id],
-    relationName: "user",
+    relationName: "app_user",
+  }),
+}));
+export const relations_signatures = relations(signatures, ({ one }) => ({
+  app_user: one(app_users, {
+    fields: [signatures.app_user],
+    references: [app_users.id],
+    relationName: "app_user",
+  }),
+  file: one(media, {
+    fields: [signatures.file],
+    references: [media.id],
+    relationName: "file",
   }),
 }));
 export const relations_payload_locked_documents_rels = relations(
@@ -546,6 +612,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels["chat-roomsID"]],
       references: [chat_rooms.id],
       relationName: "chat-rooms",
+    }),
+    signaturesID: one(signatures, {
+      fields: [payload_locked_documents_rels.signaturesID],
+      references: [signatures.id],
+      relationName: "signatures",
     }),
   }),
 );
@@ -598,6 +669,7 @@ type DatabaseSchema = {
   sponsors: typeof sponsors;
   sponsor_categories: typeof sponsor_categories;
   chat_rooms: typeof chat_rooms;
+  signatures: typeof signatures;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -609,6 +681,7 @@ type DatabaseSchema = {
   relations_sponsors: typeof relations_sponsors;
   relations_sponsor_categories: typeof relations_sponsor_categories;
   relations_chat_rooms: typeof relations_chat_rooms;
+  relations_signatures: typeof relations_signatures;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

@@ -16,10 +16,10 @@ export const ChatRooms: CollectionConfig = {
 	slug: "chat-rooms",
 	fields: [
 		{
-			name: "user",
+			name: "app_user",
 			type: "relationship",
-			required: true,
 			relationTo: "app-users",
+			required: true,
 			hasMany: false,
 		},
 		{

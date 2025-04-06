@@ -73,6 +73,7 @@ export interface Config {
     sponsors: Sponsor;
     'sponsor-categories': SponsorCategory;
     'chat-rooms': ChatRoom;
+    signatures: Signature;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -85,6 +86,7 @@ export interface Config {
     sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
     'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
+    signatures: SignaturesSelect<false> | SignaturesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -234,11 +236,22 @@ export interface SponsorCategory {
  */
 export interface ChatRoom {
   id: string;
-  user: string | AppUser;
+  app_user: string | AppUser;
   name: string;
   description: string;
   color?: string | null;
   category?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "signatures".
+ */
+export interface Signature {
+  id: string;
+  app_user: string | AppUser;
+  file: string | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -272,6 +285,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'chat-rooms';
         value: string | ChatRoom;
+      } | null)
+    | ({
+        relationTo: 'signatures';
+        value: string | Signature;
       } | null);
   globalSlug?: string | null;
   user:
@@ -408,11 +425,21 @@ export interface SponsorCategoriesSelect<T extends boolean = true> {
  * via the `definition` "chat-rooms_select".
  */
 export interface ChatRoomsSelect<T extends boolean = true> {
-  user?: T;
+  app_user?: T;
   name?: T;
   description?: T;
   color?: T;
   category?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "signatures_select".
+ */
+export interface SignaturesSelect<T extends boolean = true> {
+  app_user?: T;
+  file?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -11,6 +11,7 @@ import sharp from "sharp";
 import path from "path";
 
 import { SponsorCategories } from "./collections/sponsor-categories";
+import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
 import { AppUsers } from "./collections/app-users";
 import { Sponsors } from "./collections/sponsors";
@@ -22,12 +23,12 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
-	serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
+	serverURL: process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.NEXT_PUBLIC_SERVER_URL,
 	// cors: ["*"],
 	cors: {
-		origins: ["http://192.168.1.230:8081"], // Add your allowed origin here
+		// Add your allowed origin here
+		origins: ["http://192.168.1.230:8081"], 
 		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		// allowedHeaders: ['Content-Type', 'Authorization'],
 		headers: ['Content-Type', 'Authorization', 'Accept']
 	},
 	csrf: [
@@ -100,7 +101,7 @@ export default buildConfig({
 			},
 		},
 	},
-	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories, ChatRooms],
+	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories, ChatRooms, Signatures],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
