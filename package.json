@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "generate": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap && cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "generate": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"

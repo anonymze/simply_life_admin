@@ -1,4 +1,6 @@
 import { jsonResponseBadRequest, jsonResponsePost, jsonResponseUnauthorized } from "@/utils/response/json";
+// To avoid installing Drizzle, you can import everything that drizzle has from our re-export path.
+import { eq, sql, and } from '@payloadcms/db-postgres/drizzle';
 import { validateRequest } from "@/utils/request/validation";
 import { isValidToken } from "@/utils/response/header";
 import { NextRequest } from "next/server";
@@ -15,13 +17,16 @@ const mediaSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+	sql`SELECT 1`
 	if (!isValidToken(req.cookies)) return jsonResponseUnauthorized();
 
 	const { error, messageError, data } = await validateRequest(req, ACCEPTED_CONTENT_TYPE, mediaSchema);
 
 	if (error) return jsonResponseBadRequest(messageError);
 
-	console.dir(data.files, { depth: null})
+	// console.dir(data.files[0], { depth: null})
+
+	// const signatures = await payload.db.drizzle.query.signatures.findMany()
 
 	return jsonResponsePost({ message: "OK" });
 }

@@ -72,6 +72,7 @@ export interface Config {
     'app-users': AppUser;
     sponsors: Sponsor;
     'sponsor-categories': SponsorCategory;
+    'chat-rooms': ChatRoom;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +84,7 @@ export interface Config {
     'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
     sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
     'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
+    'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -228,6 +230,20 @@ export interface SponsorCategory {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-rooms".
+ */
+export interface ChatRoom {
+  id: string;
+  user: string | AppUser;
+  name: string;
+  description: string;
+  color?: string | null;
+  category?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -252,6 +268,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'sponsor-categories';
         value: string | SponsorCategory;
+      } | null)
+    | ({
+        relationTo: 'chat-rooms';
+        value: string | ChatRoom;
       } | null);
   globalSlug?: string | null;
   user:
@@ -380,6 +400,19 @@ export interface SponsorsSelect<T extends boolean = true> {
  */
 export interface SponsorCategoriesSelect<T extends boolean = true> {
   name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-rooms_select".
+ */
+export interface ChatRoomsSelect<T extends boolean = true> {
+  user?: T;
+  name?: T;
+  description?: T;
+  color?: T;
+  category?: T;
   updatedAt?: T;
   createdAt?: T;
 }

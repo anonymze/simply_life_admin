@@ -10,6 +10,7 @@ import sharp from "sharp";
 import path from "path";
 
 import { SponsorCategories } from "./collections/sponsor-categories";
+import { ChatRooms } from "./collections/chat-rooms";
 import { AppUsers } from "./collections/app-users";
 import { Sponsors } from "./collections/sponsors";
 import { Admins } from "./collections/admins";
@@ -98,7 +99,7 @@ export default buildConfig({
 			},
 		},
 	},
-	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories],
+	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories, ChatRooms],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {

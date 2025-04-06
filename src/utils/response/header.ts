@@ -13,6 +13,7 @@ export function createResponseHeader(getCookieApiToken: boolean) {
 export async function isValidToken(cookies: RequestCookies) {
 	const token = cookies.get("payload-token");
 	if (!token) return false;
+	// TODO check jwt 
 
 	return true;
 }
