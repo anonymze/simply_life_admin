@@ -29,10 +29,6 @@ export const Signatures: CollectionConfig = {
 				// await addLocalesToRequestFromData(req)
 				// i don't use it because it uses file key automatically
 				// await addDataAndFileToRequest(req);
-				// await req.payload.update({
-				// 	collection: "signatures",
-				// 	data: {},
-				// });
 
 				try {
 					const data = await req.json?.();
@@ -42,6 +38,11 @@ export const Signatures: CollectionConfig = {
 					}
 
 					console.log(data);
+
+					// await req.payload.update({
+					// 	collection: "signatures",
+					// 	data: {},
+					// });
 
 					return new Response("OK");
 				} catch (error) {

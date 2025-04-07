@@ -74,6 +74,7 @@ export interface Config {
     'sponsor-categories': SponsorCategory;
     'chat-rooms': ChatRoom;
     signatures: Signature;
+    messages: Message;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -87,6 +88,7 @@ export interface Config {
     'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     signatures: SignaturesSelect<false> | SignaturesSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -257,6 +259,18 @@ export interface Signature {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: string;
+  app_user: string | AppUser;
+  chat_room: string | ChatRoom;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -289,6 +303,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'signatures';
         value: string | Signature;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: string | Message;
       } | null);
   globalSlug?: string | null;
   user:
@@ -440,6 +458,17 @@ export interface ChatRoomsSelect<T extends boolean = true> {
 export interface SignaturesSelect<T extends boolean = true> {
   app_user?: T;
   file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  app_user?: T;
+  chat_room?: T;
+  message?: T;
   updatedAt?: T;
   createdAt?: T;
 }

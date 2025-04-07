@@ -15,6 +15,7 @@ import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
 import { AppUsers } from "./collections/app-users";
 import { Sponsors } from "./collections/sponsors";
+import { Messages } from "./collections/messages";
 import { Admins } from "./collections/admins";
 import { Media } from "./collections/media";
 
@@ -23,13 +24,14 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
-	serverURL: process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.NEXT_PUBLIC_SERVER_URL,
+	serverURL:
+		process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.NEXT_PUBLIC_SERVER_URL,
 	// cors: ["*"],
 	cors: {
 		// Add your allowed origin here
-		origins: ["http://192.168.1.230:8081"], 
+		origins: ["http://192.168.1.230:8081"],
 		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		headers: ['Content-Type', 'Authorization', 'Accept']
+		headers: ["Content-Type", "Authorization", "Accept"],
 	},
 	csrf: [
 		// Add your allowed origins here for CSRF protection
@@ -101,7 +103,7 @@ export default buildConfig({
 			},
 		},
 	},
-	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories, ChatRooms, Signatures],
+	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories, ChatRooms, Signatures, Messages],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
@@ -129,7 +131,7 @@ export default buildConfig({
 		// 		}
 		// 	},
 		// ],
-		idType: "uuid",		
+		idType: "uuid",
 		pool: {
 			connectionString: process.env.DATABASE_URI || "",
 		},
