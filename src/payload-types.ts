@@ -240,9 +240,10 @@ export interface ChatRoom {
   id: string;
   app_user: string | AppUser;
   name: string;
-  description: string;
+  description?: string | null;
   color?: string | null;
   category?: string | null;
+  private?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -448,6 +449,7 @@ export interface ChatRoomsSelect<T extends boolean = true> {
   description?: T;
   color?: T;
   category?: T;
+  private?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -15,6 +15,7 @@ import {
   varchar,
   timestamp,
   numeric,
+  boolean,
   serial,
   integer,
   jsonb,
@@ -242,9 +243,10 @@ export const chat_rooms = pgTable(
         onDelete: "set null",
       }),
     name: varchar("name").notNull(),
-    description: varchar("description").notNull(),
+    description: varchar("description"),
     color: varchar("color"),
     category: varchar("category"),
+    private: boolean("private"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -316,6 +318,50 @@ export const signatures = pgTable(
   }),
 );
 
+export const messages = pgTable(
+  "messages",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    chat_room: uuid("chat_room_id")
+      .notNull()
+      .references(() => chat_rooms.id, {
+        onDelete: "set null",
+      }),
+    message: varchar("message").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    messages_app_user_idx: index("messages_app_user_idx").on(columns.app_user),
+    messages_chat_room_idx: index("messages_chat_room_idx").on(
+      columns.chat_room,
+    ),
+    messages_updated_at_idx: index("messages_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    messages_created_at_idx: index("messages_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -363,6 +409,7 @@ export const payload_locked_documents_rels = pgTable(
     "sponsor-categoriesID": uuid("sponsor_categories_id"),
     "chat-roomsID": uuid("chat_rooms_id"),
     signaturesID: uuid("signatures_id"),
+    messagesID: uuid("messages_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -391,6 +438,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_signatures_id_idx: index(
       "payload_locked_documents_rels_signatures_id_idx",
     ).on(columns.signaturesID),
+    payload_locked_documents_rels_messages_id_idx: index(
+      "payload_locked_documents_rels_messages_id_idx",
+    ).on(columns.messagesID),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -430,6 +480,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["signaturesID"]],
       foreignColumns: [signatures.id],
       name: "payload_locked_documents_rels_signatures_fk",
+    }).onDelete("cascade"),
+    messagesIdFk: foreignKey({
+      columns: [columns["messagesID"]],
+      foreignColumns: [messages.id],
+      name: "payload_locked_documents_rels_messages_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -575,6 +630,18 @@ export const relations_signatures = relations(signatures, ({ one }) => ({
     relationName: "file",
   }),
 }));
+export const relations_messages = relations(messages, ({ one }) => ({
+  app_user: one(app_users, {
+    fields: [messages.app_user],
+    references: [app_users.id],
+    relationName: "app_user",
+  }),
+  chat_room: one(chat_rooms, {
+    fields: [messages.chat_room],
+    references: [chat_rooms.id],
+    relationName: "chat_room",
+  }),
+}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -617,6 +684,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.signaturesID],
       references: [signatures.id],
       relationName: "signatures",
+    }),
+    messagesID: one(messages, {
+      fields: [payload_locked_documents_rels.messagesID],
+      references: [messages.id],
+      relationName: "messages",
     }),
   }),
 );
@@ -670,6 +742,7 @@ type DatabaseSchema = {
   sponsor_categories: typeof sponsor_categories;
   chat_rooms: typeof chat_rooms;
   signatures: typeof signatures;
+  messages: typeof messages;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -682,6 +755,7 @@ type DatabaseSchema = {
   relations_sponsor_categories: typeof relations_sponsor_categories;
   relations_chat_rooms: typeof relations_chat_rooms;
   relations_signatures: typeof relations_signatures;
+  relations_messages: typeof relations_messages;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

@@ -5,6 +5,7 @@ import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
 import { en } from "@payloadcms/translations/languages/en";
+import { openapi, swaggerUI } from 'payload-oapi';
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
@@ -138,8 +139,13 @@ export default buildConfig({
 	}),
 	sharp,
 	plugins: [
-		payloadCloudPlugin(),
-
+		payloadCloudPlugin({
+			// storage: false,
+			// email: false, 
+			// uploadCaching: false,
+		}),
+		openapi({ openapiVersion: '3.0', metadata: { title: 'SIMPLY LIFE API', version: '1.0.0' } }),
+		swaggerUI({}),
 		vercelBlobStorage({
 			enabled: true, // Optional, defaults to true
 			// Specify which collections should use Vercel Blob

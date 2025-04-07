@@ -30,9 +30,8 @@ export const ChatRooms: CollectionConfig = {
 		{
 			name: "description",
 			type: "text",
-			required: true,
+			required: false,
 		},
-
 		{
 			name: "color",
 			type: "text",
@@ -41,6 +40,11 @@ export const ChatRooms: CollectionConfig = {
 		{
 			name: "category",
 			type: "text",
+			required: false,
+		},
+		{
+			name: "private",
+			type: "checkbox",
 			required: false,
 		},
 	],
