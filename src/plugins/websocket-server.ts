@@ -50,65 +50,67 @@ export const websocketServerPlugin =
 	(incomingConfig: Config): Config => {
 		let config = { ...incomingConfig };
 
-		if (pluginOptions.collections) {
-			config.collections = (config.collections || []).map((collection) => {
-				if (!pluginOptions.collections?.includes(collection.slug)) return collection;
+		if (!pluginOptions.collections?.length) return config;
 
-				return {
-					...collection,
-					hooks: {
-						...collection.hooks,
-						/**
-						 * Hook that runs after a document is deleted
-						 * Broadcasts the deletion to all connected WebSocket clients
-						 */
-						// afterDelete: [
-						// 	async ({ doc }) => {
-						// 		if (wss) {
-						// 			const message = JSON.stringify({
-						// 				type: "COLLECTION_CHANGED",
-						// 				collection: collection.slug,
-						// 				operation: "delete",
-						// 				doc,
-						// 			});
-						// 			wss.clients.forEach((client) => {
-						// 				if (client.readyState === ws.OPEN) {
-						// 					client.send(message);
-						// 				}
-						// 			});
-						// 		}
-						// 	},
-						// ],
-						/**
-						 * Hook that runs after a document is changed (created/updated)
-						 * Broadcasts the change to all connected WebSocket clients
-						 */
-						afterChange: [
-							async ({ doc, operation }) => {
-								if (!wss || operation !== "create") return doc;
+		config.collections = (config.collections || []).map((collection) => {
+			if (!pluginOptions.collections?.includes(collection.slug)) return collection;
 
-								const roomConnections = chatRooms.get(doc.chat_room.id);
+			return {
+				...collection,
+				hooks: {
+					...collection.hooks,
+					/**
+					 * Hook that runs after a document is deleted
+					 * Broadcasts the deletion to all connected WebSocket clients
+					 */
+					// afterDelete: [
+					// 	async ({ doc }) => {
+					// 		if (wss) {
+					// 			const message = JSON.stringify({
+					// 				type: "COLLECTION_CHANGED",
+					// 				collection: collection.slug,
+					// 				operation: "delete",
+					// 				doc,
+					// 			});
+					// 			wss.clients.forEach((client) => {
+					// 				if (client.readyState === ws.OPEN) {
+					// 					client.send(message);
+					// 				}
+					// 			});
+					// 		}
+					// 	},
+					// ],
+					/**
+					 * Hook that runs after a document is changed (created/updated)
+					 * Broadcasts the change to all connected WebSocket clients
+					 */
+					afterChange: [
+						async ({ doc, operation }) => {
+							if (!wss || operation !== "create") return doc;
 
-								console.log(roomConnections);
+							const roomConnections = chatRooms.get(doc.chat_room.id);
 
-								if (!roomConnections) return doc;
+							console.log(roomConnections);
 
-								const message = doc as Message;
+							if (!roomConnections) return doc;
 
-								roomConnections.forEach((client) => {
-									if (client.readyState === ws.OPEN) {
-										client.send(JSON.stringify({
-                      type: "MESSAGE_RECEIVED",
-                      message,
-                    }));
-									}
-								});
-							},
-						],
-					},
-				};
-			});
-		}
+							const message = doc as Message;
+
+							roomConnections.forEach((client) => {
+								if (client.readyState === ws.OPEN) {
+									client.send(
+										JSON.stringify({
+											type: "MESSAGE_RECEIVED",
+											message,
+										})
+									);
+								}
+							});
+						},
+					],
+				},
+			};
+		});
 
 		/**
 		 * Initializes the WebSocket server when Payload starts
