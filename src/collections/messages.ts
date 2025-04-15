@@ -34,7 +34,5 @@ export const Messages: CollectionConfig = {
 			type: "text",
 			required: true,
 		},
-
 	],
-
 };

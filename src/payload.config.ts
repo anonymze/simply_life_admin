@@ -1,4 +1,3 @@
-import { pgTable, serial, uuid } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
@@ -12,6 +11,7 @@ import sharp from "sharp";
 import path from "path";
 
 import { SponsorCategories } from "./collections/sponsor-categories";
+import { websocketServerPlugin } from "./plugins/websocket-server";
 import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
 import { AppUsers } from "./collections/app-users";
@@ -139,6 +139,9 @@ export default buildConfig({
 	}),
 	sharp,
 	plugins: [
+		websocketServerPlugin({
+			collections: ["messages"],
+		}),
 		payloadCloudPlugin({
 			// storage: false,
 			// email: false, 
