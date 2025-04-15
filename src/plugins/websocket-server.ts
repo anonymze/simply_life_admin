@@ -4,6 +4,8 @@ import type { Config } from "payload";
 import { z } from "zod";
 
 
+const DEFAULT_PORT = 8082;
+
 const joinChatSchema = z.object({
 	type: z.literal("JOIN_CHAT"),
 	chatId: z.string().min(1),
@@ -122,7 +124,7 @@ export const websocketServerPlugin =
 			if (wss) return;
 
 			try {
-				const port = pluginOptions.port || 8082;
+				const port = pluginOptions.port || DEFAULT_PORT;
 				wss = new WebSocketServer({ port });
 				console.log(`✅ WebSocket server started successfully on port ${port}`);
 
