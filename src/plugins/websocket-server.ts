@@ -127,7 +127,7 @@ export const websocketServerPlugin =
 
 			try {
 				const port = pluginOptions.port || DEFAULT_PORT;
-				wss = new WebSocketServer();
+				wss = new WebSocketServer({ port: 8081 });
 				console.log(`✅ WebSocket server started successfully on port ${port}`);
 
 				wss.on("connection", (client) => {
