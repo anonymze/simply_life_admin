@@ -155,6 +155,7 @@ export const websocketServerPlugin =
 				});
 			} catch (error) {
 				console.error("❌ Failed to start WebSocket server:", error);
+        
 			}
 		};
 
