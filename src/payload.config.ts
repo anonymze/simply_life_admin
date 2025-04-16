@@ -141,7 +141,6 @@ export default buildConfig({
 	plugins: [
 		websocketServerPlugin({
 			collections: ["messages"],
-			port: 8082,
 		}),
 		payloadCloudPlugin({
 			// storage: false,
