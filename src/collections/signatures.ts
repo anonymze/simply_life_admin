@@ -64,6 +64,10 @@ export const Signatures: CollectionConfig = {
 			name: "file",
 			type: "upload",
 			relationTo: "media",
+			label: {
+				en: "Signature",
+				fr: "Signature",
+			},
 			required: true,
 		},
 	],

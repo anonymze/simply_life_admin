@@ -127,7 +127,10 @@ export const websocketServerPlugin =
 
 			try {
 				const port = pluginOptions.port || DEFAULT_PORT;
-				wss = new WebSocketServer({ port });
+				// noServer : true means it attachs himself to current http server
+				// becarefull if you deploy to serverless functions because it's ephemeral and does not support long-lived tcp connections
+				// false means it creates a http server for himself
+				wss = new WebSocketServer({ port, noServer: true });
 				console.log(`✅ WebSocket server started successfully on port ${port}`);
 
 				wss.on("connection", (client) => {
@@ -155,7 +158,6 @@ export const websocketServerPlugin =
 				});
 			} catch (error) {
 				console.error("❌ Failed to start WebSocket server:", error);
-        
 			}
 		};
 

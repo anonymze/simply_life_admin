@@ -23,9 +23,9 @@ import {
 } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
 import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
 export const enum_app_users_role = pgEnum("enum_app_users_role", [
-  "coach",
-  "staff",
-  "player",
+  "associate",
+  "employee",
+  "independent",
   "visitor",
 ]);
 
@@ -114,7 +114,11 @@ export const app_users = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     lastname: varchar("lastname").notNull(),
     firstname: varchar("firstname").notNull(),
-    role: enum_app_users_role("role").notNull().default("player"),
+    phone: varchar("phone"),
+    photo: uuid("photo_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
+    role: enum_app_users_role("role").notNull().default("independent"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -146,6 +150,7 @@ export const app_users = pgTable(
     }),
   },
   (columns) => ({
+    app_users_photo_idx: index("app_users_photo_idx").on(columns.photo),
     app_users_updated_at_idx: index("app_users_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -362,6 +367,228 @@ export const messages = pgTable(
   }),
 );
 
+export const suppliers = pgTable(
+  "suppliers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name").notNull(),
+    logo: uuid("logo_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    contact_info_lastname: varchar("contact_info_lastname"),
+    contact_info_firstname: varchar("contact_info_firstname"),
+    contact_info_email: varchar("contact_info_email"),
+    contact_info_phone: varchar("contact_info_phone"),
+    connexion_password: varchar("connexion_password"),
+    other_information_theme: varchar("other_information_theme"),
+    other_information_subscription_fee: varchar(
+      "other_information_subscription_fee",
+    ),
+    other_information_duration: varchar("other_information_duration"),
+    other_information_rentability: varchar("other_information_rentability"),
+    other_information_rentability_n1: varchar(
+      "other_information_rentability_n1",
+    ),
+    other_information_commission: varchar("other_information_commission"),
+    other_information_commission_public_offer: varchar(
+      "other_information_commission_public_offer",
+    ),
+    other_information_commission_offer_group_valorem: varchar(
+      "other_information_commission_offer_group_valorem",
+    ),
+    other_information_scpi: varchar("other_information_scpi"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    suppliers_logo_idx: index("suppliers_logo_idx").on(columns.logo),
+    suppliers_updated_at_idx: index("suppliers_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    suppliers_created_at_idx: index("suppliers_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const product_suppliers = pgTable(
+  "product_suppliers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name").notNull(),
+    logo: uuid("logo_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    product_suppliers_logo_idx: index("product_suppliers_logo_idx").on(
+      columns.logo,
+    ),
+    product_suppliers_updated_at_idx: index(
+      "product_suppliers_updated_at_idx",
+    ).on(columns.updatedAt),
+    product_suppliers_created_at_idx: index(
+      "product_suppliers_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
+export const product_suppliers_rels = pgTable(
+  "product_suppliers_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: uuid("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    suppliersID: uuid("suppliers_id"),
+  },
+  (columns) => ({
+    order: index("product_suppliers_rels_order_idx").on(columns.order),
+    parentIdx: index("product_suppliers_rels_parent_idx").on(columns.parent),
+    pathIdx: index("product_suppliers_rels_path_idx").on(columns.path),
+    product_suppliers_rels_suppliers_id_idx: index(
+      "product_suppliers_rels_suppliers_id_idx",
+    ).on(columns.suppliersID),
+    parentFk: foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [product_suppliers.id],
+      name: "product_suppliers_rels_parent_fk",
+    }).onDelete("cascade"),
+    suppliersIdFk: foreignKey({
+      columns: [columns["suppliersID"]],
+      foreignColumns: [suppliers.id],
+      name: "product_suppliers_rels_suppliers_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
+export const category_suppliers_offers = pgTable(
+  "category_suppliers_offers",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    name: varchar("name").notNull(),
+    description: varchar("description"),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+  },
+  (columns) => ({
+    _orderIdx: index("category_suppliers_offers_order_idx").on(columns._order),
+    _parentIDIdx: index("category_suppliers_offers_parent_id_idx").on(
+      columns._parentID,
+    ),
+    category_suppliers_offers_file_idx: index(
+      "category_suppliers_offers_file_idx",
+    ).on(columns.file),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [category_suppliers.id],
+      name: "category_suppliers_offers_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
+export const category_suppliers = pgTable(
+  "category_suppliers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name").notNull(),
+    logo: uuid("logo_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    category_suppliers_logo_idx: index("category_suppliers_logo_idx").on(
+      columns.logo,
+    ),
+    category_suppliers_updated_at_idx: index(
+      "category_suppliers_updated_at_idx",
+    ).on(columns.updatedAt),
+    category_suppliers_created_at_idx: index(
+      "category_suppliers_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
+export const category_suppliers_rels = pgTable(
+  "category_suppliers_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: uuid("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    "product-suppliersID": uuid("product_suppliers_id"),
+  },
+  (columns) => ({
+    order: index("category_suppliers_rels_order_idx").on(columns.order),
+    parentIdx: index("category_suppliers_rels_parent_idx").on(columns.parent),
+    pathIdx: index("category_suppliers_rels_path_idx").on(columns.path),
+    category_suppliers_rels_product_suppliers_id_idx: index(
+      "category_suppliers_rels_product_suppliers_id_idx",
+    ).on(columns["product-suppliersID"]),
+    parentFk: foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [category_suppliers.id],
+      name: "category_suppliers_rels_parent_fk",
+    }).onDelete("cascade"),
+    "product-suppliersIdFk": foreignKey({
+      columns: [columns["product-suppliersID"]],
+      foreignColumns: [product_suppliers.id],
+      name: "category_suppliers_rels_product_suppliers_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -410,6 +637,9 @@ export const payload_locked_documents_rels = pgTable(
     "chat-roomsID": uuid("chat_rooms_id"),
     signaturesID: uuid("signatures_id"),
     messagesID: uuid("messages_id"),
+    suppliersID: uuid("suppliers_id"),
+    "product-suppliersID": uuid("product_suppliers_id"),
+    "category-suppliersID": uuid("category_suppliers_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -441,6 +671,15 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_messages_id_idx: index(
       "payload_locked_documents_rels_messages_id_idx",
     ).on(columns.messagesID),
+    payload_locked_documents_rels_suppliers_id_idx: index(
+      "payload_locked_documents_rels_suppliers_id_idx",
+    ).on(columns.suppliersID),
+    payload_locked_documents_rels_product_suppliers_id_idx: index(
+      "payload_locked_documents_rels_product_suppliers_id_idx",
+    ).on(columns["product-suppliersID"]),
+    payload_locked_documents_rels_category_suppliers_id_idx: index(
+      "payload_locked_documents_rels_category_suppliers_id_idx",
+    ).on(columns["category-suppliersID"]),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -485,6 +724,21 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["messagesID"]],
       foreignColumns: [messages.id],
       name: "payload_locked_documents_rels_messages_fk",
+    }).onDelete("cascade"),
+    suppliersIdFk: foreignKey({
+      columns: [columns["suppliersID"]],
+      foreignColumns: [suppliers.id],
+      name: "payload_locked_documents_rels_suppliers_fk",
+    }).onDelete("cascade"),
+    "product-suppliersIdFk": foreignKey({
+      columns: [columns["product-suppliersID"]],
+      foreignColumns: [product_suppliers.id],
+      name: "payload_locked_documents_rels_product_suppliers_fk",
+    }).onDelete("cascade"),
+    "category-suppliersIdFk": foreignKey({
+      columns: [columns["category-suppliersID"]],
+      foreignColumns: [category_suppliers.id],
+      name: "payload_locked_documents_rels_category_suppliers_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -594,7 +848,13 @@ export const payload_migrations = pgTable(
 
 export const relations_admins = relations(admins, () => ({}));
 export const relations_media = relations(media, () => ({}));
-export const relations_app_users = relations(app_users, () => ({}));
+export const relations_app_users = relations(app_users, ({ one }) => ({
+  photo: one(media, {
+    fields: [app_users.photo],
+    references: [media.id],
+    relationName: "photo",
+  }),
+}));
 export const relations_sponsors = relations(sponsors, ({ one }) => ({
   logo: one(media, {
     fields: [sponsors.logo],
@@ -642,6 +902,87 @@ export const relations_messages = relations(messages, ({ one }) => ({
     relationName: "chat_room",
   }),
 }));
+export const relations_suppliers = relations(suppliers, ({ one }) => ({
+  logo: one(media, {
+    fields: [suppliers.logo],
+    references: [media.id],
+    relationName: "logo",
+  }),
+}));
+export const relations_product_suppliers_rels = relations(
+  product_suppliers_rels,
+  ({ one }) => ({
+    parent: one(product_suppliers, {
+      fields: [product_suppliers_rels.parent],
+      references: [product_suppliers.id],
+      relationName: "_rels",
+    }),
+    suppliersID: one(suppliers, {
+      fields: [product_suppliers_rels.suppliersID],
+      references: [suppliers.id],
+      relationName: "suppliers",
+    }),
+  }),
+);
+export const relations_product_suppliers = relations(
+  product_suppliers,
+  ({ one, many }) => ({
+    logo: one(media, {
+      fields: [product_suppliers.logo],
+      references: [media.id],
+      relationName: "logo",
+    }),
+    _rels: many(product_suppliers_rels, {
+      relationName: "_rels",
+    }),
+  }),
+);
+export const relations_category_suppliers_offers = relations(
+  category_suppliers_offers,
+  ({ one }) => ({
+    _parentID: one(category_suppliers, {
+      fields: [category_suppliers_offers._parentID],
+      references: [category_suppliers.id],
+      relationName: "offers",
+    }),
+    file: one(media, {
+      fields: [category_suppliers_offers.file],
+      references: [media.id],
+      relationName: "file",
+    }),
+  }),
+);
+export const relations_category_suppliers_rels = relations(
+  category_suppliers_rels,
+  ({ one }) => ({
+    parent: one(category_suppliers, {
+      fields: [category_suppliers_rels.parent],
+      references: [category_suppliers.id],
+      relationName: "_rels",
+    }),
+    "product-suppliersID": one(product_suppliers, {
+      fields: [category_suppliers_rels["product-suppliersID"]],
+      references: [product_suppliers.id],
+      relationName: "product-suppliers",
+    }),
+  }),
+);
+export const relations_category_suppliers = relations(
+  category_suppliers,
+  ({ one, many }) => ({
+    logo: one(media, {
+      fields: [category_suppliers.logo],
+      references: [media.id],
+      relationName: "logo",
+    }),
+    offers: many(category_suppliers_offers, {
+      relationName: "offers",
+    }),
+    _rels: many(category_suppliers_rels, {
+      relationName: "_rels",
+    }),
+  }),
+);
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -689,6 +1030,21 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.messagesID],
       references: [messages.id],
       relationName: "messages",
+    }),
+    suppliersID: one(suppliers, {
+      fields: [payload_locked_documents_rels.suppliersID],
+      references: [suppliers.id],
+      relationName: "suppliers",
+    }),
+    "product-suppliersID": one(product_suppliers, {
+      fields: [payload_locked_documents_rels["product-suppliersID"]],
+      references: [product_suppliers.id],
+      relationName: "product-suppliers",
+    }),
+    "category-suppliersID": one(category_suppliers, {
+      fields: [payload_locked_documents_rels["category-suppliersID"]],
+      references: [category_suppliers.id],
+      relationName: "category-suppliers",
     }),
   }),
 );
@@ -743,6 +1099,12 @@ type DatabaseSchema = {
   chat_rooms: typeof chat_rooms;
   signatures: typeof signatures;
   messages: typeof messages;
+  suppliers: typeof suppliers;
+  product_suppliers: typeof product_suppliers;
+  product_suppliers_rels: typeof product_suppliers_rels;
+  category_suppliers_offers: typeof category_suppliers_offers;
+  category_suppliers: typeof category_suppliers;
+  category_suppliers_rels: typeof category_suppliers_rels;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -756,6 +1118,12 @@ type DatabaseSchema = {
   relations_chat_rooms: typeof relations_chat_rooms;
   relations_signatures: typeof relations_signatures;
   relations_messages: typeof relations_messages;
+  relations_suppliers: typeof relations_suppliers;
+  relations_product_suppliers_rels: typeof relations_product_suppliers_rels;
+  relations_product_suppliers: typeof relations_product_suppliers;
+  relations_category_suppliers_offers: typeof relations_category_suppliers_offers;
+  relations_category_suppliers_rels: typeof relations_category_suppliers_rels;
+  relations_category_suppliers: typeof relations_category_suppliers;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

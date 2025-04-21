@@ -48,6 +48,34 @@ export const AppUsers: CollectionConfig = {
 			},
 		},
 		{
+			name: "email",
+			type: "email",
+			required: true,
+			label: {
+				en: "Email",
+				fr: "Email",
+			},
+		},
+		{
+			name: "phone",
+			type: "text",
+			required: false,
+			label: {
+				en: "Phone",
+				fr: "Téléphone",
+			},
+		},
+		{
+			name: "photo",
+			type: "upload",
+			relationTo: "media",
+			required: false,
+			label: {
+				en: "Photo",
+				fr: "Photo",
+			},
+		},
+		{
 			name: "role",
 			type: "select",
 			required: true,
@@ -59,24 +87,24 @@ export const AppUsers: CollectionConfig = {
 			options: [
 				{
 					label: {
-						en: "Coach",
-						fr: "Coach",
+						en: "Associate",
+						fr: "Associé",
 					},
-					value: "coach",
+					value: "associate",
 				},
 				{
 					label: {
-						en: "Staff",
-						fr: "Personnel",
+						en: "Employee",
+						fr: "Employé",
 					},
-					value: "staff",
+					value: "employee",
 				},
 				{
 					label: {
-						en: "Player",
-						fr: "Joueur",
+						en: "Independent",
+						fr: "Indépendant",
 					},
-					value: "player",
+					value: "independent",
 				},
 				{
 					label: {
@@ -86,7 +114,7 @@ export const AppUsers: CollectionConfig = {
 					value: "visitor",
 				},
 			],
-			defaultValue: "player",
+			defaultValue: "independent",
 		},
 	],
 };

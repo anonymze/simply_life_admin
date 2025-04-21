@@ -4,16 +4,19 @@ import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
 import { en } from "@payloadcms/translations/languages/en";
-import { openapi, swaggerUI } from 'payload-oapi';
+import { openapi, swaggerUI } from "payload-oapi";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 import path from "path";
 
 import { SponsorCategories } from "./collections/sponsor-categories";
+import { CategorySuppliers } from "./collections/category-suppliers";
 import { websocketServerPlugin } from "./plugins/websocket-server";
+import { ProductSuppliers } from "./collections/product-suppliers";
 import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
+import { Suppliers } from "./collections/suppliers";
 import { AppUsers } from "./collections/app-users";
 import { Sponsors } from "./collections/sponsors";
 import { Messages } from "./collections/messages";
@@ -89,13 +92,13 @@ export default buildConfig({
 			en: {
 				custom: {
 					textBeforeLogin:
-						"Welcome to the Simply Life administration. Manage your professional players easily and efficiently.",
+						"Welcome to the Simply Life administration. Simplify your employees daily lives simply and effectively.",
 				},
 			},
 			fr: {
 				custom: {
 					textBeforeLogin:
-						"Bienvenue sur l'administration de Simply Life. Gérer vos joueurs professionnels de manière simple et efficace.",
+						"Bienvenue sur l'administration de Simply Life. Simplifier le quotidien de vos employées de manière simple et efficace.",
 				},
 				general: {
 					createNew: "Créer un nouvel élément",
@@ -104,7 +107,19 @@ export default buildConfig({
 			},
 		},
 	},
-	collections: [Admins, Media, AppUsers, Sponsors, SponsorCategories, ChatRooms, Signatures, Messages],
+	collections: [
+		Admins,
+		Media,
+		AppUsers,
+		Sponsors,
+		SponsorCategories,
+		ChatRooms,
+		Signatures,
+		Messages,
+		Suppliers,
+		ProductSuppliers,
+		CategorySuppliers,
+	],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
@@ -144,10 +159,10 @@ export default buildConfig({
 		}),
 		payloadCloudPlugin({
 			// storage: false,
-			// email: false, 
+			// email: false,
 			// uploadCaching: false,
 		}),
-		openapi({ openapiVersion: '3.0', metadata: { title: 'SIMPLY LIFE API', version: '1.0.0' } }),
+		openapi({ openapiVersion: "3.0", metadata: { title: "SIMPLY LIFE API", version: "1.0.0" } }),
 		swaggerUI({}),
 		vercelBlobStorage({
 			enabled: true, // Optional, defaults to true

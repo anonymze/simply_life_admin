@@ -8,10 +8,10 @@ export const Messages: CollectionConfig = {
 		hidden: true,
 	},
 	access: {
-		read: ({ req }) => canAccessApi(req, ["coach", "staff", "player", "visitor"]),
-		create: ({ req }) => canAccessApi(req, ["coach", "staff"]),
-		update: ({ req }) => canAccessApi(req, ["coach", "staff"]),
-		delete: ({ req }) => canAccessApi(req, ["coach", "staff"]),
+		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		create: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		update: ({ req }) => canAccessApi(req, []),
+		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "messages",
 	fields: [
@@ -32,6 +32,10 @@ export const Messages: CollectionConfig = {
 		{
 			name: "message",
 			type: "text",
+			label: {
+				en: "Message",
+				fr: "Message",
+			},
 			required: true,
 		},
 	],

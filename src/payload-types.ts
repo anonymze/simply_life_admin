@@ -75,6 +75,9 @@ export interface Config {
     'chat-rooms': ChatRoom;
     signatures: Signature;
     messages: Message;
+    suppliers: Supplier;
+    'product-suppliers': ProductSupplier;
+    'category-suppliers': CategorySupplier;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -89,6 +92,9 @@ export interface Config {
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     signatures: SignaturesSelect<false> | SignaturesSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
+    suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
+    'product-suppliers': ProductSuppliersSelect<false> | ProductSuppliersSelect<true>;
+    'category-suppliers': CategorySuppliersSelect<false> | CategorySuppliersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -193,7 +199,9 @@ export interface AppUser {
   id: string;
   lastname: string;
   firstname: string;
-  role: 'coach' | 'staff' | 'player' | 'visitor';
+  phone?: string | null;
+  photo?: (string | null) | Media;
+  role: 'associate' | 'employee' | 'independent' | 'visitor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -272,6 +280,70 @@ export interface Message {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliers".
+ */
+export interface Supplier {
+  id: string;
+  name: string;
+  logo: string | Media;
+  contact_info?: {
+    lastname?: string | null;
+    firstname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  connexion?: {
+    id?: string | null;
+    password?: string | null;
+  };
+  other_information?: {
+    theme?: string | null;
+    subscription_fee?: string | null;
+    duration?: string | null;
+    rentability?: string | null;
+    rentability_n1?: string | null;
+    commission?: string | null;
+    commission_public_offer?: string | null;
+    commission_offer_group_valorem?: string | null;
+    scpi?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-suppliers".
+ */
+export interface ProductSupplier {
+  id: string;
+  name: string;
+  logo: string | Media;
+  suppliers: (string | Supplier)[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category-suppliers".
+ */
+export interface CategorySupplier {
+  id: string;
+  name: string;
+  logo: string | Media;
+  product_suppliers: (string | ProductSupplier)[];
+  offers?:
+    | {
+        name: string;
+        description?: string | null;
+        file: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -308,6 +380,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'messages';
         value: string | Message;
+      } | null)
+    | ({
+        relationTo: 'suppliers';
+        value: string | Supplier;
+      } | null)
+    | ({
+        relationTo: 'product-suppliers';
+        value: string | ProductSupplier;
+      } | null)
+    | ({
+        relationTo: 'category-suppliers';
+        value: string | CategorySupplier;
       } | null);
   globalSlug?: string | null;
   user:
@@ -403,6 +487,8 @@ export interface MediaSelect<T extends boolean = true> {
 export interface AppUsersSelect<T extends boolean = true> {
   lastname?: T;
   firstname?: T;
+  phone?: T;
+  photo?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -471,6 +557,73 @@ export interface MessagesSelect<T extends boolean = true> {
   app_user?: T;
   chat_room?: T;
   message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliers_select".
+ */
+export interface SuppliersSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  contact_info?:
+    | T
+    | {
+        lastname?: T;
+        firstname?: T;
+        email?: T;
+        phone?: T;
+      };
+  connexion?:
+    | T
+    | {
+        id?: T;
+        password?: T;
+      };
+  other_information?:
+    | T
+    | {
+        theme?: T;
+        subscription_fee?: T;
+        duration?: T;
+        rentability?: T;
+        rentability_n1?: T;
+        commission?: T;
+        commission_public_offer?: T;
+        commission_offer_group_valorem?: T;
+        scpi?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-suppliers_select".
+ */
+export interface ProductSuppliersSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  suppliers?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category-suppliers_select".
+ */
+export interface CategorySuppliersSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  product_suppliers?: T;
+  offers?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        file?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
