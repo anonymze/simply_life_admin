@@ -3,6 +3,16 @@ import { canAccessApi } from "@/utils/helper";
 
 
 export const ProductSuppliers: CollectionConfig = {
+	labels: {
+		singular: {
+			en: "Product supplier",
+			fr: "Produit de fournisseurs",
+		},
+		plural: {
+			en: "Product suppliers",
+			fr: "Produits de fournisseurs",
+		},
+	},
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),

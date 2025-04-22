@@ -73,12 +73,12 @@ export default buildConfig({
 				{
 					rel: "icon",
 					type: "image/png",
-					url: "/favicon.png",
+					url: "/favicon.ico",
 				},
 				{
 					rel: "apple-touch-icon",
 					type: "image/png",
-					url: "/favicon.png",
+					url: "/favicon.ico",
 				},
 			],
 		},

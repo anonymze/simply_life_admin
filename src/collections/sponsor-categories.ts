@@ -13,12 +13,12 @@ export const SponsorCategories: CollectionConfig = {
 	},
 	labels: {
 		singular: {
-			en: "Sponsor category",	
-			fr: "Catégorie de sponsor",
+			en: "Contacts type",	
+			fr: "Type de contacts",
 		},
 		plural: {
-			en: "Sponsor categories",
-			fr: "Catégories de sponsors",
+			en: "Contact types",
+			fr: "Types de contacts",
 		},
 	},
 	admin: {

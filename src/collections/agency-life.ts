@@ -3,6 +3,16 @@ import { canAccessApi } from "@/utils/helper";
 
 
 export const AgencyLife: CollectionConfig = {
+	labels: {
+		singular: {
+			en: "Agency life",
+			fr: "Vie d'agence",
+		},
+		plural: {
+			en: "Agency lives",
+			fr: "Vies d'agence",
+		},
+	},
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),

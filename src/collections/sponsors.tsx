@@ -13,12 +13,12 @@ export const Sponsors: CollectionConfig = {
 	slug: "sponsors",
 	labels: {
 		singular: {
-			en: "Sponsor",
-			fr: "Sponsor",
+			en: "Contacts",
+			fr: "Contacts",
 		},
 		plural: {
-			en: "Sponsors",
-			fr: "Sponsors",
+			en: "Contacts",
+			fr: "Contacts",
 		},
 	},
 	admin: {
@@ -30,8 +30,8 @@ export const Sponsors: CollectionConfig = {
 			type: "text",
 			required: true,
 			label: {
-				en: "Sponsor name",
-				fr: "Nom du sponsor",
+				en: "Contact name",
+				fr: "Nom du contact",
 			},
 		},
 		{
