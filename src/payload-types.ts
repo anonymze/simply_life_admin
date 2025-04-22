@@ -78,6 +78,9 @@ export interface Config {
     suppliers: Supplier;
     'product-suppliers': ProductSupplier;
     'category-suppliers': CategorySupplier;
+    'agency-life': AgencyLife;
+    fidnet: Fidnet;
+    fundesys: Fundesy;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -95,6 +98,9 @@ export interface Config {
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     'product-suppliers': ProductSuppliersSelect<false> | ProductSuppliersSelect<true>;
     'category-suppliers': CategorySuppliersSelect<false> | CategorySuppliersSelect<true>;
+    'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
+    fidnet: FidnetSelect<false> | FidnetSelect<true>;
+    fundesys: FundesysSelect<false> | FundesysSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -344,6 +350,44 @@ export interface CategorySupplier {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agency-life".
+ */
+export interface AgencyLife {
+  id: string;
+  title: string;
+  annotation?: string | null;
+  type: 'general';
+  'events-start': string;
+  'events-end': string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fidnet".
+ */
+export interface Fidnet {
+  id: string;
+  date: string;
+  file: string | Media;
+  video: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fundesys".
+ */
+export interface Fundesy {
+  id: string;
+  date: string;
+  file: string | Media;
+  video: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -392,6 +436,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'category-suppliers';
         value: string | CategorySupplier;
+      } | null)
+    | ({
+        relationTo: 'agency-life';
+        value: string | AgencyLife;
+      } | null)
+    | ({
+        relationTo: 'fidnet';
+        value: string | Fidnet;
+      } | null)
+    | ({
+        relationTo: 'fundesys';
+        value: string | Fundesy;
       } | null);
   globalSlug?: string | null;
   user:
@@ -624,6 +680,41 @@ export interface CategorySuppliersSelect<T extends boolean = true> {
         file?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agency-life_select".
+ */
+export interface AgencyLifeSelect<T extends boolean = true> {
+  title?: T;
+  annotation?: T;
+  type?: T;
+  'events-start'?: T;
+  'events-end'?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fidnet_select".
+ */
+export interface FidnetSelect<T extends boolean = true> {
+  date?: T;
+  file?: T;
+  video?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fundesys_select".
+ */
+export interface FundesysSelect<T extends boolean = true> {
+  date?: T;
+  file?: T;
+  video?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -28,6 +28,9 @@ export const enum_app_users_role = pgEnum("enum_app_users_role", [
   "independent",
   "visitor",
 ]);
+export const enum_agency_life_type = pgEnum("enum_agency_life_type", [
+  "general",
+]);
 
 export const admins = pgTable(
   "admins",
@@ -589,6 +592,136 @@ export const category_suppliers_rels = pgTable(
   }),
 );
 
+export const agency_life = pgTable(
+  "agency_life",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title").notNull(),
+    annotation: varchar("annotation"),
+    type: enum_agency_life_type("type").notNull().default("general"),
+    "events-start": timestamp("events_start", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    "events-end": timestamp("events_end", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    agency_life_updated_at_idx: index("agency_life_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    agency_life_created_at_idx: index("agency_life_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const fidnet = pgTable(
+  "fidnet",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    date: timestamp("date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    video: uuid("video_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    fidnet_file_idx: index("fidnet_file_idx").on(columns.file),
+    fidnet_video_idx: index("fidnet_video_idx").on(columns.video),
+    fidnet_updated_at_idx: index("fidnet_updated_at_idx").on(columns.updatedAt),
+    fidnet_created_at_idx: index("fidnet_created_at_idx").on(columns.createdAt),
+  }),
+);
+
+export const fundesys = pgTable(
+  "fundesys",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    date: timestamp("date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    video: uuid("video_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    fundesys_file_idx: index("fundesys_file_idx").on(columns.file),
+    fundesys_video_idx: index("fundesys_video_idx").on(columns.video),
+    fundesys_updated_at_idx: index("fundesys_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    fundesys_created_at_idx: index("fundesys_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -640,6 +773,9 @@ export const payload_locked_documents_rels = pgTable(
     suppliersID: uuid("suppliers_id"),
     "product-suppliersID": uuid("product_suppliers_id"),
     "category-suppliersID": uuid("category_suppliers_id"),
+    "agency-lifeID": uuid("agency_life_id"),
+    fidnetID: uuid("fidnet_id"),
+    fundesysID: uuid("fundesys_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -680,6 +816,15 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_category_suppliers_id_idx: index(
       "payload_locked_documents_rels_category_suppliers_id_idx",
     ).on(columns["category-suppliersID"]),
+    payload_locked_documents_rels_agency_life_id_idx: index(
+      "payload_locked_documents_rels_agency_life_id_idx",
+    ).on(columns["agency-lifeID"]),
+    payload_locked_documents_rels_fidnet_id_idx: index(
+      "payload_locked_documents_rels_fidnet_id_idx",
+    ).on(columns.fidnetID),
+    payload_locked_documents_rels_fundesys_id_idx: index(
+      "payload_locked_documents_rels_fundesys_id_idx",
+    ).on(columns.fundesysID),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -739,6 +884,21 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["category-suppliersID"]],
       foreignColumns: [category_suppliers.id],
       name: "payload_locked_documents_rels_category_suppliers_fk",
+    }).onDelete("cascade"),
+    "agency-lifeIdFk": foreignKey({
+      columns: [columns["agency-lifeID"]],
+      foreignColumns: [agency_life.id],
+      name: "payload_locked_documents_rels_agency_life_fk",
+    }).onDelete("cascade"),
+    fidnetIdFk: foreignKey({
+      columns: [columns["fidnetID"]],
+      foreignColumns: [fidnet.id],
+      name: "payload_locked_documents_rels_fidnet_fk",
+    }).onDelete("cascade"),
+    fundesysIdFk: foreignKey({
+      columns: [columns["fundesysID"]],
+      foreignColumns: [fundesys.id],
+      name: "payload_locked_documents_rels_fundesys_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -983,6 +1143,31 @@ export const relations_category_suppliers = relations(
     }),
   }),
 );
+export const relations_agency_life = relations(agency_life, () => ({}));
+export const relations_fidnet = relations(fidnet, ({ one }) => ({
+  file: one(media, {
+    fields: [fidnet.file],
+    references: [media.id],
+    relationName: "file",
+  }),
+  video: one(media, {
+    fields: [fidnet.video],
+    references: [media.id],
+    relationName: "video",
+  }),
+}));
+export const relations_fundesys = relations(fundesys, ({ one }) => ({
+  file: one(media, {
+    fields: [fundesys.file],
+    references: [media.id],
+    relationName: "file",
+  }),
+  video: one(media, {
+    fields: [fundesys.video],
+    references: [media.id],
+    relationName: "video",
+  }),
+}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -1046,6 +1231,21 @@ export const relations_payload_locked_documents_rels = relations(
       references: [category_suppliers.id],
       relationName: "category-suppliers",
     }),
+    "agency-lifeID": one(agency_life, {
+      fields: [payload_locked_documents_rels["agency-lifeID"]],
+      references: [agency_life.id],
+      relationName: "agency-life",
+    }),
+    fidnetID: one(fidnet, {
+      fields: [payload_locked_documents_rels.fidnetID],
+      references: [fidnet.id],
+      relationName: "fidnet",
+    }),
+    fundesysID: one(fundesys, {
+      fields: [payload_locked_documents_rels.fundesysID],
+      references: [fundesys.id],
+      relationName: "fundesys",
+    }),
   }),
 );
 export const relations_payload_locked_documents = relations(
@@ -1091,6 +1291,7 @@ export const relations_payload_migrations = relations(
 
 type DatabaseSchema = {
   enum_app_users_role: typeof enum_app_users_role;
+  enum_agency_life_type: typeof enum_agency_life_type;
   admins: typeof admins;
   media: typeof media;
   app_users: typeof app_users;
@@ -1105,6 +1306,9 @@ type DatabaseSchema = {
   category_suppliers_offers: typeof category_suppliers_offers;
   category_suppliers: typeof category_suppliers;
   category_suppliers_rels: typeof category_suppliers_rels;
+  agency_life: typeof agency_life;
+  fidnet: typeof fidnet;
+  fundesys: typeof fundesys;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -1124,6 +1328,9 @@ type DatabaseSchema = {
   relations_category_suppliers_offers: typeof relations_category_suppliers_offers;
   relations_category_suppliers_rels: typeof relations_category_suppliers_rels;
   relations_category_suppliers: typeof relations_category_suppliers;
+  relations_agency_life: typeof relations_agency_life;
+  relations_fidnet: typeof relations_fidnet;
+  relations_fundesys: typeof relations_fundesys;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

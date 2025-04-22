@@ -12,31 +12,57 @@ export const AgencyLife: CollectionConfig = {
 	slug: "agency-life",
 	fields: [
 		{
-			name: "date",
+			name: "title",
+			type: "text",
+			label: {
+				en: "Title",
+				fr: "Titre",
+			},
+			required: true,
+		},
+		{
+			name: "annotation",
+			type: "text",
+			label: {
+				en: "Annotation",
+				fr: "Annotation",
+			},
+			required: false,
+		},
+		{
+			name: "type",
+			type: "select",
+			required: true,
+			label: {
+				en: "Events type",
+				fr: "Type d'évènements",
+			},
+			options: [
+				{
+					label: {
+						en: "General",
+						fr: "Général",
+					},
+					value: "general",
+				},
+			],
+			defaultValue: "general",
+		},
+		{
+			name: "events-start",
 			type: "date",
 			label: {
-				en: "Date",
-				fr: "Date",
+				en: "Events start",
+				fr: "Date de début de l'évènement",
 			},
 			required: true,
 		},
 		{
-			name: "file",
-			type: "upload",
-			relationTo: "media",
+			name: "events-end",
+			type: "date",
 			label: {
-				en: "File",
-				fr: "Fichier",
-			},
-			required: true,
-		},
-		{
-			name: "video",
-			type: "upload",
-			relationTo: "media",
-			label: {
-				en: "Video",
-				fr: "Vidéo",
+				en: "Events end",
+				fr: "Date de fin de l'évènement",
 			},
 			required: true,
 		},
