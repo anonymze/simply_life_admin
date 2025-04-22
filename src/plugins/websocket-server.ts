@@ -125,6 +125,8 @@ export const websocketServerPlugin =
 			// Check if WebSocket server is already initialized
 			if (wss) return;
 
+			return;
+
 			try {
 				const port = pluginOptions.port || DEFAULT_PORT;
 				// noServer : true means it attachs himself to current http server
