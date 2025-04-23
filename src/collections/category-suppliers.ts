@@ -1,6 +1,5 @@
 import { getPayload, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
-import payloadConfig from "@/payload.config";
 import config from "@payload-config";
 
 

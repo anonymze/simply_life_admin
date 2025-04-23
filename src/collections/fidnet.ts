@@ -1,5 +1,6 @@
-import { type CollectionConfig } from "payload";
+import { getPayload, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
+import config from "@payload-config";
 
 
 export const Fidnet: CollectionConfig = {
@@ -34,9 +35,24 @@ export const Fidnet: CollectionConfig = {
 			name: "file",
 			type: "upload",
 			relationTo: "media",
+			// @ts-expect-error
+			validate: async (data: string) => {
+				const payload = await getPayload({
+					config,
+				});
+				const file = await payload.findByID({
+					collection: "media",
+					id: data,
+				});
+
+				if (file.mimeType !== "application/pdf") return "Le fichier doit être au format PDF.";
+			},
 			label: {
 				en: "File",
 				fr: "Fichier",
+			},
+			admin: {
+				description: "Le fichier doit être au format PDF.",
 			},
 			required: true,
 		},
@@ -47,6 +63,21 @@ export const Fidnet: CollectionConfig = {
 			label: {
 				en: "Video",
 				fr: "Vidéo",
+			},
+				// @ts-expect-error
+				validate: async (data: string) => {
+					const payload = await getPayload({
+						config,
+					});
+					const file = await payload.findByID({
+						collection: "media",
+						id: data,
+					});
+
+				if (file.mimeType?.startsWith("video/") === false) return "Le fichier doit être une vidéo.";
+			},
+			admin: {
+				description: "Le fichier doit être au format MP4.",
 			},
 			required: true,
 		},

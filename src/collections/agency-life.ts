@@ -15,8 +15,8 @@ export const AgencyLife: CollectionConfig = {
 			fr: "Vie d'agence",
 		},
 		plural: {
-			en: "Agency lives",
-			fr: "Vies d'agence",
+			en: "Agency life",
+			fr: "Vie d'agence",
 		},
 	},
 	admin: {
@@ -64,6 +64,11 @@ export const AgencyLife: CollectionConfig = {
 		{
 			name: "events-start",
 			type: "date",
+			admin: {
+				date: {
+					pickerAppearance: "dayAndTime",
+				},
+			},
 			label: {
 				en: "Events start",
 				fr: "Date de début de l'évènement",
@@ -73,6 +78,11 @@ export const AgencyLife: CollectionConfig = {
 		{
 			name: "events-end",
 			type: "date",
+			admin: {
+				date: {
+					pickerAppearance: "dayAndTime",
+				},
+			},
 			label: {
 				en: "Events end",
 				fr: "Date de fin de l'évènement",

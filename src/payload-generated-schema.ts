@@ -15,13 +15,14 @@ import {
   varchar,
   timestamp,
   numeric,
-  boolean,
-  serial,
   integer,
+  serial,
+  boolean,
   jsonb,
   pgEnum,
 } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
 import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
+export const enum__locales = pgEnum("enum__locales", ["fr", "en"]);
 export const enum_app_users_role = pgEnum("enum_app_users_role", [
   "associate",
   "employee",
@@ -74,54 +75,44 @@ export const admins = pgTable(
   }),
 );
 
-export const media = pgTable(
-  "media",
+export const category_suppliers_offers = pgTable(
+  "category_suppliers_offers",
   {
-    id: uuid("id").defaultRandom().primaryKey(),
-    alt: varchar("alt").notNull(),
-    prefix: varchar("prefix").default("media-simply-life"),
-    updatedAt: timestamp("updated_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp("created_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    url: varchar("url"),
-    thumbnailURL: varchar("thumbnail_u_r_l"),
-    filename: varchar("filename"),
-    mimeType: varchar("mime_type"),
-    filesize: numeric("filesize"),
-    width: numeric("width"),
-    height: numeric("height"),
-    focalX: numeric("focal_x"),
-    focalY: numeric("focal_y"),
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    name: varchar("name").notNull(),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    description: varchar("description"),
   },
   (columns) => ({
-    media_updated_at_idx: index("media_updated_at_idx").on(columns.updatedAt),
-    media_created_at_idx: index("media_created_at_idx").on(columns.createdAt),
-    media_filename_idx: uniqueIndex("media_filename_idx").on(columns.filename),
+    _orderIdx: index("category_suppliers_offers_order_idx").on(columns._order),
+    _parentIDIdx: index("category_suppliers_offers_parent_id_idx").on(
+      columns._parentID,
+    ),
+    category_suppliers_offers_file_idx: index(
+      "category_suppliers_offers_file_idx",
+    ).on(columns.file),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [category_suppliers.id],
+      name: "category_suppliers_offers_parent_id_fk",
+    }).onDelete("cascade"),
   }),
 );
 
-export const app_users = pgTable(
-  "app_users",
+export const category_suppliers = pgTable(
+  "category_suppliers",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    lastname: varchar("lastname").notNull(),
-    firstname: varchar("firstname").notNull(),
-    phone: varchar("phone"),
-    photo: uuid("photo_id").references(() => media.id, {
+    name: varchar("name").notNull(),
+    logo: uuid("logo_id").references(() => media.id, {
       onDelete: "set null",
     }),
-    role: enum_app_users_role("role").notNull().default("independent"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -136,31 +127,46 @@ export const app_users = pgTable(
     })
       .defaultNow()
       .notNull(),
-    email: varchar("email").notNull(),
-    resetPasswordToken: varchar("reset_password_token"),
-    resetPasswordExpiration: timestamp("reset_password_expiration", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    }),
-    salt: varchar("salt"),
-    hash: varchar("hash"),
-    loginAttempts: numeric("login_attempts").default("0"),
-    lockUntil: timestamp("lock_until", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    }),
   },
   (columns) => ({
-    app_users_photo_idx: index("app_users_photo_idx").on(columns.photo),
-    app_users_updated_at_idx: index("app_users_updated_at_idx").on(
-      columns.updatedAt,
+    category_suppliers_logo_idx: index("category_suppliers_logo_idx").on(
+      columns.logo,
     ),
-    app_users_created_at_idx: index("app_users_created_at_idx").on(
-      columns.createdAt,
-    ),
-    app_users_email_idx: uniqueIndex("app_users_email_idx").on(columns.email),
+    category_suppliers_updated_at_idx: index(
+      "category_suppliers_updated_at_idx",
+    ).on(columns.updatedAt),
+    category_suppliers_created_at_idx: index(
+      "category_suppliers_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
+export const category_suppliers_rels = pgTable(
+  "category_suppliers_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: uuid("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    "product-suppliersID": uuid("product_suppliers_id"),
+  },
+  (columns) => ({
+    order: index("category_suppliers_rels_order_idx").on(columns.order),
+    parentIdx: index("category_suppliers_rels_parent_idx").on(columns.parent),
+    pathIdx: index("category_suppliers_rels_path_idx").on(columns.path),
+    category_suppliers_rels_product_suppliers_id_idx: index(
+      "category_suppliers_rels_product_suppliers_id_idx",
+    ).on(columns["product-suppliersID"]),
+    parentFk: foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [category_suppliers.id],
+      name: "category_suppliers_rels_parent_fk",
+    }).onDelete("cascade"),
+    "product-suppliersIdFk": foreignKey({
+      columns: [columns["product-suppliersID"]],
+      foreignColumns: [product_suppliers.id],
+      name: "category_suppliers_rels_product_suppliers_fk",
+    }).onDelete("cascade"),
   }),
 );
 
@@ -211,88 +217,21 @@ export const sponsors = pgTable(
   }),
 );
 
-export const sponsor_categories = pgTable(
-  "sponsor_categories",
+export const fidnet = pgTable(
+  "fidnet",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    name: varchar("name").notNull(),
-    updatedAt: timestamp("updated_at", {
+    date: timestamp("date", {
       mode: "string",
       withTimezone: true,
       precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp("created_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  (columns) => ({
-    sponsor_categories_updated_at_idx: index(
-      "sponsor_categories_updated_at_idx",
-    ).on(columns.updatedAt),
-    sponsor_categories_created_at_idx: index(
-      "sponsor_categories_created_at_idx",
-    ).on(columns.createdAt),
-  }),
-);
-
-export const chat_rooms = pgTable(
-  "chat_rooms",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    app_user: uuid("app_user_id")
-      .notNull()
-      .references(() => app_users.id, {
-        onDelete: "set null",
-      }),
-    name: varchar("name").notNull(),
-    description: varchar("description"),
-    color: varchar("color"),
-    category: varchar("category"),
-    private: boolean("private"),
-    updatedAt: timestamp("updated_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp("created_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  (columns) => ({
-    chat_rooms_app_user_idx: index("chat_rooms_app_user_idx").on(
-      columns.app_user,
-    ),
-    chat_rooms_updated_at_idx: index("chat_rooms_updated_at_idx").on(
-      columns.updatedAt,
-    ),
-    chat_rooms_created_at_idx: index("chat_rooms_created_at_idx").on(
-      columns.createdAt,
-    ),
-  }),
-);
-
-export const signatures = pgTable(
-  "signatures",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    app_user: uuid("app_user_id")
-      .notNull()
-      .references(() => app_users.id, {
-        onDelete: "set null",
-      }),
+    }).notNull(),
     file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    video: uuid("video_id")
       .notNull()
       .references(() => media.id, {
         onDelete: "set null",
@@ -313,60 +252,10 @@ export const signatures = pgTable(
       .notNull(),
   },
   (columns) => ({
-    signatures_app_user_idx: index("signatures_app_user_idx").on(
-      columns.app_user,
-    ),
-    signatures_file_idx: index("signatures_file_idx").on(columns.file),
-    signatures_updated_at_idx: index("signatures_updated_at_idx").on(
-      columns.updatedAt,
-    ),
-    signatures_created_at_idx: index("signatures_created_at_idx").on(
-      columns.createdAt,
-    ),
-  }),
-);
-
-export const messages = pgTable(
-  "messages",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    app_user: uuid("app_user_id")
-      .notNull()
-      .references(() => app_users.id, {
-        onDelete: "set null",
-      }),
-    chat_room: uuid("chat_room_id")
-      .notNull()
-      .references(() => chat_rooms.id, {
-        onDelete: "set null",
-      }),
-    message: varchar("message").notNull(),
-    updatedAt: timestamp("updated_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp("created_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  (columns) => ({
-    messages_app_user_idx: index("messages_app_user_idx").on(columns.app_user),
-    messages_chat_room_idx: index("messages_chat_room_idx").on(
-      columns.chat_room,
-    ),
-    messages_updated_at_idx: index("messages_updated_at_idx").on(
-      columns.updatedAt,
-    ),
-    messages_created_at_idx: index("messages_created_at_idx").on(
-      columns.createdAt,
-    ),
+    fidnet_file_idx: index("fidnet_file_idx").on(columns.file),
+    fidnet_video_idx: index("fidnet_video_idx").on(columns.video),
+    fidnet_updated_at_idx: index("fidnet_updated_at_idx").on(columns.updatedAt),
+    fidnet_created_at_idx: index("fidnet_created_at_idx").on(columns.createdAt),
   }),
 );
 
@@ -428,16 +317,97 @@ export const suppliers = pgTable(
   }),
 );
 
+export const fundesys = pgTable(
+  "fundesys",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    date: timestamp("date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    video: uuid("video_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    fundesys_file_idx: index("fundesys_file_idx").on(columns.file),
+    fundesys_video_idx: index("fundesys_video_idx").on(columns.video),
+    fundesys_updated_at_idx: index("fundesys_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    fundesys_created_at_idx: index("fundesys_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const media = pgTable(
+  "media",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    alt: varchar("alt").notNull(),
+    prefix: varchar("prefix").default("media-simply-life"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    url: varchar("url"),
+    thumbnailURL: varchar("thumbnail_u_r_l"),
+    filename: varchar("filename"),
+    mimeType: varchar("mime_type"),
+    filesize: numeric("filesize"),
+    width: numeric("width"),
+    height: numeric("height"),
+    focalX: numeric("focal_x"),
+    focalY: numeric("focal_y"),
+  },
+  (columns) => ({
+    media_updated_at_idx: index("media_updated_at_idx").on(columns.updatedAt),
+    media_created_at_idx: index("media_created_at_idx").on(columns.createdAt),
+    media_filename_idx: uniqueIndex("media_filename_idx").on(columns.filename),
+  }),
+);
+
 export const product_suppliers = pgTable(
   "product_suppliers",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
+    logo: uuid("logo_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -495,46 +465,11 @@ export const product_suppliers_rels = pgTable(
   }),
 );
 
-export const category_suppliers_offers = pgTable(
-  "category_suppliers_offers",
-  {
-    _order: integer("_order").notNull(),
-    _parentID: uuid("_parent_id").notNull(),
-    id: varchar("id").primaryKey(),
-    name: varchar("name").notNull(),
-    description: varchar("description"),
-    file: uuid("file_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
-  },
-  (columns) => ({
-    _orderIdx: index("category_suppliers_offers_order_idx").on(columns._order),
-    _parentIDIdx: index("category_suppliers_offers_parent_id_idx").on(
-      columns._parentID,
-    ),
-    category_suppliers_offers_file_idx: index(
-      "category_suppliers_offers_file_idx",
-    ).on(columns.file),
-    _parentIDFk: foreignKey({
-      columns: [columns["_parentID"]],
-      foreignColumns: [category_suppliers.id],
-      name: "category_suppliers_offers_parent_id_fk",
-    }).onDelete("cascade"),
-  }),
-);
-
-export const category_suppliers = pgTable(
-  "category_suppliers",
+export const sponsor_categories = pgTable(
+  "sponsor_categories",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -551,44 +486,65 @@ export const category_suppliers = pgTable(
       .notNull(),
   },
   (columns) => ({
-    category_suppliers_logo_idx: index("category_suppliers_logo_idx").on(
-      columns.logo,
-    ),
-    category_suppliers_updated_at_idx: index(
-      "category_suppliers_updated_at_idx",
+    sponsor_categories_updated_at_idx: index(
+      "sponsor_categories_updated_at_idx",
     ).on(columns.updatedAt),
-    category_suppliers_created_at_idx: index(
-      "category_suppliers_created_at_idx",
+    sponsor_categories_created_at_idx: index(
+      "sponsor_categories_created_at_idx",
     ).on(columns.createdAt),
   }),
 );
 
-export const category_suppliers_rels = pgTable(
-  "category_suppliers_rels",
+export const app_users = pgTable(
+  "app_users",
   {
-    id: serial("id").primaryKey(),
-    order: integer("order"),
-    parent: uuid("parent_id").notNull(),
-    path: varchar("path").notNull(),
-    "product-suppliersID": uuid("product_suppliers_id"),
+    id: uuid("id").defaultRandom().primaryKey(),
+    lastname: varchar("lastname").notNull(),
+    firstname: varchar("firstname").notNull(),
+    phone: varchar("phone"),
+    photo: uuid("photo_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
+    role: enum_app_users_role("role").notNull().default("independent"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    email: varchar("email").notNull(),
+    resetPasswordToken: varchar("reset_password_token"),
+    resetPasswordExpiration: timestamp("reset_password_expiration", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    salt: varchar("salt"),
+    hash: varchar("hash"),
+    loginAttempts: numeric("login_attempts").default("0"),
+    lockUntil: timestamp("lock_until", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
   },
   (columns) => ({
-    order: index("category_suppliers_rels_order_idx").on(columns.order),
-    parentIdx: index("category_suppliers_rels_parent_idx").on(columns.parent),
-    pathIdx: index("category_suppliers_rels_path_idx").on(columns.path),
-    category_suppliers_rels_product_suppliers_id_idx: index(
-      "category_suppliers_rels_product_suppliers_id_idx",
-    ).on(columns["product-suppliersID"]),
-    parentFk: foreignKey({
-      columns: [columns["parent"]],
-      foreignColumns: [category_suppliers.id],
-      name: "category_suppliers_rels_parent_fk",
-    }).onDelete("cascade"),
-    "product-suppliersIdFk": foreignKey({
-      columns: [columns["product-suppliersID"]],
-      foreignColumns: [product_suppliers.id],
-      name: "category_suppliers_rels_product_suppliers_fk",
-    }).onDelete("cascade"),
+    app_users_photo_idx: index("app_users_photo_idx").on(columns.photo),
+    app_users_updated_at_idx: index("app_users_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    app_users_created_at_idx: index("app_users_created_at_idx").on(
+      columns.createdAt,
+    ),
+    app_users_email_idx: uniqueIndex("app_users_email_idx").on(columns.email),
   }),
 );
 
@@ -634,25 +590,20 @@ export const agency_life = pgTable(
   }),
 );
 
-export const fidnet = pgTable(
-  "fidnet",
+export const chat_rooms = pgTable(
+  "chat_rooms",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    date: timestamp("date", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    }).notNull(),
-    file: uuid("file_id")
+    app_user: uuid("app_user_id")
       .notNull()
-      .references(() => media.id, {
+      .references(() => app_users.id, {
         onDelete: "set null",
       }),
-    video: uuid("video_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
+    name: varchar("name").notNull(),
+    description: varchar("description"),
+    color: varchar("color"),
+    category: varchar("category"),
+    private: boolean("private"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -669,28 +620,72 @@ export const fidnet = pgTable(
       .notNull(),
   },
   (columns) => ({
-    fidnet_file_idx: index("fidnet_file_idx").on(columns.file),
-    fidnet_video_idx: index("fidnet_video_idx").on(columns.video),
-    fidnet_updated_at_idx: index("fidnet_updated_at_idx").on(columns.updatedAt),
-    fidnet_created_at_idx: index("fidnet_created_at_idx").on(columns.createdAt),
+    chat_rooms_app_user_idx: index("chat_rooms_app_user_idx").on(
+      columns.app_user,
+    ),
+    chat_rooms_updated_at_idx: index("chat_rooms_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    chat_rooms_created_at_idx: index("chat_rooms_created_at_idx").on(
+      columns.createdAt,
+    ),
   }),
 );
 
-export const fundesys = pgTable(
-  "fundesys",
+export const messages = pgTable(
+  "messages",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    date: timestamp("date", {
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    chat_room: uuid("chat_room_id")
+      .notNull()
+      .references(() => chat_rooms.id, {
+        onDelete: "set null",
+      }),
+    message: varchar("message").notNull(),
+    updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
       precision: 3,
-    }).notNull(),
-    file: uuid("file_id")
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    messages_app_user_idx: index("messages_app_user_idx").on(columns.app_user),
+    messages_chat_room_idx: index("messages_chat_room_idx").on(
+      columns.chat_room,
+    ),
+    messages_updated_at_idx: index("messages_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    messages_created_at_idx: index("messages_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const signatures = pgTable(
+  "signatures",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    app_user: uuid("app_user_id")
       .notNull()
-      .references(() => media.id, {
+      .references(() => app_users.id, {
         onDelete: "set null",
       }),
-    video: uuid("video_id")
+    file: uuid("file_id")
       .notNull()
       .references(() => media.id, {
         onDelete: "set null",
@@ -711,12 +706,14 @@ export const fundesys = pgTable(
       .notNull(),
   },
   (columns) => ({
-    fundesys_file_idx: index("fundesys_file_idx").on(columns.file),
-    fundesys_video_idx: index("fundesys_video_idx").on(columns.video),
-    fundesys_updated_at_idx: index("fundesys_updated_at_idx").on(
+    signatures_app_user_idx: index("signatures_app_user_idx").on(
+      columns.app_user,
+    ),
+    signatures_file_idx: index("signatures_file_idx").on(columns.file),
+    signatures_updated_at_idx: index("signatures_updated_at_idx").on(
       columns.updatedAt,
     ),
-    fundesys_created_at_idx: index("fundesys_created_at_idx").on(
+    signatures_created_at_idx: index("signatures_created_at_idx").on(
       columns.createdAt,
     ),
   }),
@@ -763,19 +760,19 @@ export const payload_locked_documents_rels = pgTable(
     parent: uuid("parent_id").notNull(),
     path: varchar("path").notNull(),
     adminsID: uuid("admins_id"),
-    mediaID: uuid("media_id"),
-    "app-usersID": uuid("app_users_id"),
-    sponsorsID: uuid("sponsors_id"),
-    "sponsor-categoriesID": uuid("sponsor_categories_id"),
-    "chat-roomsID": uuid("chat_rooms_id"),
-    signaturesID: uuid("signatures_id"),
-    messagesID: uuid("messages_id"),
-    suppliersID: uuid("suppliers_id"),
-    "product-suppliersID": uuid("product_suppliers_id"),
     "category-suppliersID": uuid("category_suppliers_id"),
-    "agency-lifeID": uuid("agency_life_id"),
+    sponsorsID: uuid("sponsors_id"),
     fidnetID: uuid("fidnet_id"),
+    suppliersID: uuid("suppliers_id"),
     fundesysID: uuid("fundesys_id"),
+    mediaID: uuid("media_id"),
+    "product-suppliersID": uuid("product_suppliers_id"),
+    "sponsor-categoriesID": uuid("sponsor_categories_id"),
+    "app-usersID": uuid("app_users_id"),
+    "agency-lifeID": uuid("agency_life_id"),
+    "chat-roomsID": uuid("chat_rooms_id"),
+    messagesID: uuid("messages_id"),
+    signaturesID: uuid("signatures_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -786,45 +783,45 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_admins_id_idx: index(
       "payload_locked_documents_rels_admins_id_idx",
     ).on(columns.adminsID),
-    payload_locked_documents_rels_media_id_idx: index(
-      "payload_locked_documents_rels_media_id_idx",
-    ).on(columns.mediaID),
-    payload_locked_documents_rels_app_users_id_idx: index(
-      "payload_locked_documents_rels_app_users_id_idx",
-    ).on(columns["app-usersID"]),
-    payload_locked_documents_rels_sponsors_id_idx: index(
-      "payload_locked_documents_rels_sponsors_id_idx",
-    ).on(columns.sponsorsID),
-    payload_locked_documents_rels_sponsor_categories_id_idx: index(
-      "payload_locked_documents_rels_sponsor_categories_id_idx",
-    ).on(columns["sponsor-categoriesID"]),
-    payload_locked_documents_rels_chat_rooms_id_idx: index(
-      "payload_locked_documents_rels_chat_rooms_id_idx",
-    ).on(columns["chat-roomsID"]),
-    payload_locked_documents_rels_signatures_id_idx: index(
-      "payload_locked_documents_rels_signatures_id_idx",
-    ).on(columns.signaturesID),
-    payload_locked_documents_rels_messages_id_idx: index(
-      "payload_locked_documents_rels_messages_id_idx",
-    ).on(columns.messagesID),
-    payload_locked_documents_rels_suppliers_id_idx: index(
-      "payload_locked_documents_rels_suppliers_id_idx",
-    ).on(columns.suppliersID),
-    payload_locked_documents_rels_product_suppliers_id_idx: index(
-      "payload_locked_documents_rels_product_suppliers_id_idx",
-    ).on(columns["product-suppliersID"]),
     payload_locked_documents_rels_category_suppliers_id_idx: index(
       "payload_locked_documents_rels_category_suppliers_id_idx",
     ).on(columns["category-suppliersID"]),
-    payload_locked_documents_rels_agency_life_id_idx: index(
-      "payload_locked_documents_rels_agency_life_id_idx",
-    ).on(columns["agency-lifeID"]),
+    payload_locked_documents_rels_sponsors_id_idx: index(
+      "payload_locked_documents_rels_sponsors_id_idx",
+    ).on(columns.sponsorsID),
     payload_locked_documents_rels_fidnet_id_idx: index(
       "payload_locked_documents_rels_fidnet_id_idx",
     ).on(columns.fidnetID),
+    payload_locked_documents_rels_suppliers_id_idx: index(
+      "payload_locked_documents_rels_suppliers_id_idx",
+    ).on(columns.suppliersID),
     payload_locked_documents_rels_fundesys_id_idx: index(
       "payload_locked_documents_rels_fundesys_id_idx",
     ).on(columns.fundesysID),
+    payload_locked_documents_rels_media_id_idx: index(
+      "payload_locked_documents_rels_media_id_idx",
+    ).on(columns.mediaID),
+    payload_locked_documents_rels_product_suppliers_id_idx: index(
+      "payload_locked_documents_rels_product_suppliers_id_idx",
+    ).on(columns["product-suppliersID"]),
+    payload_locked_documents_rels_sponsor_categories_id_idx: index(
+      "payload_locked_documents_rels_sponsor_categories_id_idx",
+    ).on(columns["sponsor-categoriesID"]),
+    payload_locked_documents_rels_app_users_id_idx: index(
+      "payload_locked_documents_rels_app_users_id_idx",
+    ).on(columns["app-usersID"]),
+    payload_locked_documents_rels_agency_life_id_idx: index(
+      "payload_locked_documents_rels_agency_life_id_idx",
+    ).on(columns["agency-lifeID"]),
+    payload_locked_documents_rels_chat_rooms_id_idx: index(
+      "payload_locked_documents_rels_chat_rooms_id_idx",
+    ).on(columns["chat-roomsID"]),
+    payload_locked_documents_rels_messages_id_idx: index(
+      "payload_locked_documents_rels_messages_id_idx",
+    ).on(columns.messagesID),
+    payload_locked_documents_rels_signatures_id_idx: index(
+      "payload_locked_documents_rels_signatures_id_idx",
+    ).on(columns.signaturesID),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -835,70 +832,70 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [admins.id],
       name: "payload_locked_documents_rels_admins_fk",
     }).onDelete("cascade"),
-    mediaIdFk: foreignKey({
-      columns: [columns["mediaID"]],
-      foreignColumns: [media.id],
-      name: "payload_locked_documents_rels_media_fk",
-    }).onDelete("cascade"),
-    "app-usersIdFk": foreignKey({
-      columns: [columns["app-usersID"]],
-      foreignColumns: [app_users.id],
-      name: "payload_locked_documents_rels_app_users_fk",
+    "category-suppliersIdFk": foreignKey({
+      columns: [columns["category-suppliersID"]],
+      foreignColumns: [category_suppliers.id],
+      name: "payload_locked_documents_rels_category_suppliers_fk",
     }).onDelete("cascade"),
     sponsorsIdFk: foreignKey({
       columns: [columns["sponsorsID"]],
       foreignColumns: [sponsors.id],
       name: "payload_locked_documents_rels_sponsors_fk",
     }).onDelete("cascade"),
-    "sponsor-categoriesIdFk": foreignKey({
-      columns: [columns["sponsor-categoriesID"]],
-      foreignColumns: [sponsor_categories.id],
-      name: "payload_locked_documents_rels_sponsor_categories_fk",
-    }).onDelete("cascade"),
-    "chat-roomsIdFk": foreignKey({
-      columns: [columns["chat-roomsID"]],
-      foreignColumns: [chat_rooms.id],
-      name: "payload_locked_documents_rels_chat_rooms_fk",
-    }).onDelete("cascade"),
-    signaturesIdFk: foreignKey({
-      columns: [columns["signaturesID"]],
-      foreignColumns: [signatures.id],
-      name: "payload_locked_documents_rels_signatures_fk",
-    }).onDelete("cascade"),
-    messagesIdFk: foreignKey({
-      columns: [columns["messagesID"]],
-      foreignColumns: [messages.id],
-      name: "payload_locked_documents_rels_messages_fk",
+    fidnetIdFk: foreignKey({
+      columns: [columns["fidnetID"]],
+      foreignColumns: [fidnet.id],
+      name: "payload_locked_documents_rels_fidnet_fk",
     }).onDelete("cascade"),
     suppliersIdFk: foreignKey({
       columns: [columns["suppliersID"]],
       foreignColumns: [suppliers.id],
       name: "payload_locked_documents_rels_suppliers_fk",
     }).onDelete("cascade"),
+    fundesysIdFk: foreignKey({
+      columns: [columns["fundesysID"]],
+      foreignColumns: [fundesys.id],
+      name: "payload_locked_documents_rels_fundesys_fk",
+    }).onDelete("cascade"),
+    mediaIdFk: foreignKey({
+      columns: [columns["mediaID"]],
+      foreignColumns: [media.id],
+      name: "payload_locked_documents_rels_media_fk",
+    }).onDelete("cascade"),
     "product-suppliersIdFk": foreignKey({
       columns: [columns["product-suppliersID"]],
       foreignColumns: [product_suppliers.id],
       name: "payload_locked_documents_rels_product_suppliers_fk",
     }).onDelete("cascade"),
-    "category-suppliersIdFk": foreignKey({
-      columns: [columns["category-suppliersID"]],
-      foreignColumns: [category_suppliers.id],
-      name: "payload_locked_documents_rels_category_suppliers_fk",
+    "sponsor-categoriesIdFk": foreignKey({
+      columns: [columns["sponsor-categoriesID"]],
+      foreignColumns: [sponsor_categories.id],
+      name: "payload_locked_documents_rels_sponsor_categories_fk",
+    }).onDelete("cascade"),
+    "app-usersIdFk": foreignKey({
+      columns: [columns["app-usersID"]],
+      foreignColumns: [app_users.id],
+      name: "payload_locked_documents_rels_app_users_fk",
     }).onDelete("cascade"),
     "agency-lifeIdFk": foreignKey({
       columns: [columns["agency-lifeID"]],
       foreignColumns: [agency_life.id],
       name: "payload_locked_documents_rels_agency_life_fk",
     }).onDelete("cascade"),
-    fidnetIdFk: foreignKey({
-      columns: [columns["fidnetID"]],
-      foreignColumns: [fidnet.id],
-      name: "payload_locked_documents_rels_fidnet_fk",
+    "chat-roomsIdFk": foreignKey({
+      columns: [columns["chat-roomsID"]],
+      foreignColumns: [chat_rooms.id],
+      name: "payload_locked_documents_rels_chat_rooms_fk",
     }).onDelete("cascade"),
-    fundesysIdFk: foreignKey({
-      columns: [columns["fundesysID"]],
-      foreignColumns: [fundesys.id],
-      name: "payload_locked_documents_rels_fundesys_fk",
+    messagesIdFk: foreignKey({
+      columns: [columns["messagesID"]],
+      foreignColumns: [messages.id],
+      name: "payload_locked_documents_rels_messages_fk",
+    }).onDelete("cascade"),
+    signaturesIdFk: foreignKey({
+      columns: [columns["signaturesID"]],
+      foreignColumns: [signatures.id],
+      name: "payload_locked_documents_rels_signatures_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -1007,96 +1004,6 @@ export const payload_migrations = pgTable(
 );
 
 export const relations_admins = relations(admins, () => ({}));
-export const relations_media = relations(media, () => ({}));
-export const relations_app_users = relations(app_users, ({ one }) => ({
-  photo: one(media, {
-    fields: [app_users.photo],
-    references: [media.id],
-    relationName: "photo",
-  }),
-}));
-export const relations_sponsors = relations(sponsors, ({ one }) => ({
-  logo: one(media, {
-    fields: [sponsors.logo],
-    references: [media.id],
-    relationName: "logo",
-  }),
-  category: one(sponsor_categories, {
-    fields: [sponsors.category],
-    references: [sponsor_categories.id],
-    relationName: "category",
-  }),
-}));
-export const relations_sponsor_categories = relations(
-  sponsor_categories,
-  () => ({}),
-);
-export const relations_chat_rooms = relations(chat_rooms, ({ one }) => ({
-  app_user: one(app_users, {
-    fields: [chat_rooms.app_user],
-    references: [app_users.id],
-    relationName: "app_user",
-  }),
-}));
-export const relations_signatures = relations(signatures, ({ one }) => ({
-  app_user: one(app_users, {
-    fields: [signatures.app_user],
-    references: [app_users.id],
-    relationName: "app_user",
-  }),
-  file: one(media, {
-    fields: [signatures.file],
-    references: [media.id],
-    relationName: "file",
-  }),
-}));
-export const relations_messages = relations(messages, ({ one }) => ({
-  app_user: one(app_users, {
-    fields: [messages.app_user],
-    references: [app_users.id],
-    relationName: "app_user",
-  }),
-  chat_room: one(chat_rooms, {
-    fields: [messages.chat_room],
-    references: [chat_rooms.id],
-    relationName: "chat_room",
-  }),
-}));
-export const relations_suppliers = relations(suppliers, ({ one }) => ({
-  logo: one(media, {
-    fields: [suppliers.logo],
-    references: [media.id],
-    relationName: "logo",
-  }),
-}));
-export const relations_product_suppliers_rels = relations(
-  product_suppliers_rels,
-  ({ one }) => ({
-    parent: one(product_suppliers, {
-      fields: [product_suppliers_rels.parent],
-      references: [product_suppliers.id],
-      relationName: "_rels",
-    }),
-    suppliersID: one(suppliers, {
-      fields: [product_suppliers_rels.suppliersID],
-      references: [suppliers.id],
-      relationName: "suppliers",
-    }),
-  }),
-);
-export const relations_product_suppliers = relations(
-  product_suppliers,
-  ({ one, many }) => ({
-    logo: one(media, {
-      fields: [product_suppliers.logo],
-      references: [media.id],
-      relationName: "logo",
-    }),
-    _rels: many(product_suppliers_rels, {
-      relationName: "_rels",
-    }),
-  }),
-);
 export const relations_category_suppliers_offers = relations(
   category_suppliers_offers,
   ({ one }) => ({
@@ -1143,7 +1050,18 @@ export const relations_category_suppliers = relations(
     }),
   }),
 );
-export const relations_agency_life = relations(agency_life, () => ({}));
+export const relations_sponsors = relations(sponsors, ({ one }) => ({
+  logo: one(media, {
+    fields: [sponsors.logo],
+    references: [media.id],
+    relationName: "logo",
+  }),
+  category: one(sponsor_categories, {
+    fields: [sponsors.category],
+    references: [sponsor_categories.id],
+    relationName: "category",
+  }),
+}));
 export const relations_fidnet = relations(fidnet, ({ one }) => ({
   file: one(media, {
     fields: [fidnet.file],
@@ -1156,6 +1074,13 @@ export const relations_fidnet = relations(fidnet, ({ one }) => ({
     relationName: "video",
   }),
 }));
+export const relations_suppliers = relations(suppliers, ({ one }) => ({
+  logo: one(media, {
+    fields: [suppliers.logo],
+    references: [media.id],
+    relationName: "logo",
+  }),
+}));
 export const relations_fundesys = relations(fundesys, ({ one }) => ({
   file: one(media, {
     fields: [fundesys.file],
@@ -1166,6 +1091,78 @@ export const relations_fundesys = relations(fundesys, ({ one }) => ({
     fields: [fundesys.video],
     references: [media.id],
     relationName: "video",
+  }),
+}));
+export const relations_media = relations(media, () => ({}));
+export const relations_product_suppliers_rels = relations(
+  product_suppliers_rels,
+  ({ one }) => ({
+    parent: one(product_suppliers, {
+      fields: [product_suppliers_rels.parent],
+      references: [product_suppliers.id],
+      relationName: "_rels",
+    }),
+    suppliersID: one(suppliers, {
+      fields: [product_suppliers_rels.suppliersID],
+      references: [suppliers.id],
+      relationName: "suppliers",
+    }),
+  }),
+);
+export const relations_product_suppliers = relations(
+  product_suppliers,
+  ({ one, many }) => ({
+    logo: one(media, {
+      fields: [product_suppliers.logo],
+      references: [media.id],
+      relationName: "logo",
+    }),
+    _rels: many(product_suppliers_rels, {
+      relationName: "_rels",
+    }),
+  }),
+);
+export const relations_sponsor_categories = relations(
+  sponsor_categories,
+  () => ({}),
+);
+export const relations_app_users = relations(app_users, ({ one }) => ({
+  photo: one(media, {
+    fields: [app_users.photo],
+    references: [media.id],
+    relationName: "photo",
+  }),
+}));
+export const relations_agency_life = relations(agency_life, () => ({}));
+export const relations_chat_rooms = relations(chat_rooms, ({ one }) => ({
+  app_user: one(app_users, {
+    fields: [chat_rooms.app_user],
+    references: [app_users.id],
+    relationName: "app_user",
+  }),
+}));
+export const relations_messages = relations(messages, ({ one }) => ({
+  app_user: one(app_users, {
+    fields: [messages.app_user],
+    references: [app_users.id],
+    relationName: "app_user",
+  }),
+  chat_room: one(chat_rooms, {
+    fields: [messages.chat_room],
+    references: [chat_rooms.id],
+    relationName: "chat_room",
+  }),
+}));
+export const relations_signatures = relations(signatures, ({ one }) => ({
+  app_user: one(app_users, {
+    fields: [signatures.app_user],
+    references: [app_users.id],
+    relationName: "app_user",
+  }),
+  file: one(media, {
+    fields: [signatures.file],
+    references: [media.id],
+    relationName: "file",
   }),
 }));
 export const relations_payload_locked_documents_rels = relations(
@@ -1181,70 +1178,70 @@ export const relations_payload_locked_documents_rels = relations(
       references: [admins.id],
       relationName: "admins",
     }),
-    mediaID: one(media, {
-      fields: [payload_locked_documents_rels.mediaID],
-      references: [media.id],
-      relationName: "media",
-    }),
-    "app-usersID": one(app_users, {
-      fields: [payload_locked_documents_rels["app-usersID"]],
-      references: [app_users.id],
-      relationName: "app-users",
+    "category-suppliersID": one(category_suppliers, {
+      fields: [payload_locked_documents_rels["category-suppliersID"]],
+      references: [category_suppliers.id],
+      relationName: "category-suppliers",
     }),
     sponsorsID: one(sponsors, {
       fields: [payload_locked_documents_rels.sponsorsID],
       references: [sponsors.id],
       relationName: "sponsors",
     }),
-    "sponsor-categoriesID": one(sponsor_categories, {
-      fields: [payload_locked_documents_rels["sponsor-categoriesID"]],
-      references: [sponsor_categories.id],
-      relationName: "sponsor-categories",
-    }),
-    "chat-roomsID": one(chat_rooms, {
-      fields: [payload_locked_documents_rels["chat-roomsID"]],
-      references: [chat_rooms.id],
-      relationName: "chat-rooms",
-    }),
-    signaturesID: one(signatures, {
-      fields: [payload_locked_documents_rels.signaturesID],
-      references: [signatures.id],
-      relationName: "signatures",
-    }),
-    messagesID: one(messages, {
-      fields: [payload_locked_documents_rels.messagesID],
-      references: [messages.id],
-      relationName: "messages",
+    fidnetID: one(fidnet, {
+      fields: [payload_locked_documents_rels.fidnetID],
+      references: [fidnet.id],
+      relationName: "fidnet",
     }),
     suppliersID: one(suppliers, {
       fields: [payload_locked_documents_rels.suppliersID],
       references: [suppliers.id],
       relationName: "suppliers",
     }),
+    fundesysID: one(fundesys, {
+      fields: [payload_locked_documents_rels.fundesysID],
+      references: [fundesys.id],
+      relationName: "fundesys",
+    }),
+    mediaID: one(media, {
+      fields: [payload_locked_documents_rels.mediaID],
+      references: [media.id],
+      relationName: "media",
+    }),
     "product-suppliersID": one(product_suppliers, {
       fields: [payload_locked_documents_rels["product-suppliersID"]],
       references: [product_suppliers.id],
       relationName: "product-suppliers",
     }),
-    "category-suppliersID": one(category_suppliers, {
-      fields: [payload_locked_documents_rels["category-suppliersID"]],
-      references: [category_suppliers.id],
-      relationName: "category-suppliers",
+    "sponsor-categoriesID": one(sponsor_categories, {
+      fields: [payload_locked_documents_rels["sponsor-categoriesID"]],
+      references: [sponsor_categories.id],
+      relationName: "sponsor-categories",
+    }),
+    "app-usersID": one(app_users, {
+      fields: [payload_locked_documents_rels["app-usersID"]],
+      references: [app_users.id],
+      relationName: "app-users",
     }),
     "agency-lifeID": one(agency_life, {
       fields: [payload_locked_documents_rels["agency-lifeID"]],
       references: [agency_life.id],
       relationName: "agency-life",
     }),
-    fidnetID: one(fidnet, {
-      fields: [payload_locked_documents_rels.fidnetID],
-      references: [fidnet.id],
-      relationName: "fidnet",
+    "chat-roomsID": one(chat_rooms, {
+      fields: [payload_locked_documents_rels["chat-roomsID"]],
+      references: [chat_rooms.id],
+      relationName: "chat-rooms",
     }),
-    fundesysID: one(fundesys, {
-      fields: [payload_locked_documents_rels.fundesysID],
-      references: [fundesys.id],
-      relationName: "fundesys",
+    messagesID: one(messages, {
+      fields: [payload_locked_documents_rels.messagesID],
+      references: [messages.id],
+      relationName: "messages",
+    }),
+    signaturesID: one(signatures, {
+      fields: [payload_locked_documents_rels.signaturesID],
+      references: [signatures.id],
+      relationName: "signatures",
     }),
   }),
 );
@@ -1290,47 +1287,48 @@ export const relations_payload_migrations = relations(
 );
 
 type DatabaseSchema = {
+  enum__locales: typeof enum__locales;
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
   admins: typeof admins;
-  media: typeof media;
-  app_users: typeof app_users;
-  sponsors: typeof sponsors;
-  sponsor_categories: typeof sponsor_categories;
-  chat_rooms: typeof chat_rooms;
-  signatures: typeof signatures;
-  messages: typeof messages;
-  suppliers: typeof suppliers;
-  product_suppliers: typeof product_suppliers;
-  product_suppliers_rels: typeof product_suppliers_rels;
   category_suppliers_offers: typeof category_suppliers_offers;
   category_suppliers: typeof category_suppliers;
   category_suppliers_rels: typeof category_suppliers_rels;
-  agency_life: typeof agency_life;
+  sponsors: typeof sponsors;
   fidnet: typeof fidnet;
+  suppliers: typeof suppliers;
   fundesys: typeof fundesys;
+  media: typeof media;
+  product_suppliers: typeof product_suppliers;
+  product_suppliers_rels: typeof product_suppliers_rels;
+  sponsor_categories: typeof sponsor_categories;
+  app_users: typeof app_users;
+  agency_life: typeof agency_life;
+  chat_rooms: typeof chat_rooms;
+  messages: typeof messages;
+  signatures: typeof signatures;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
   relations_admins: typeof relations_admins;
-  relations_media: typeof relations_media;
-  relations_app_users: typeof relations_app_users;
-  relations_sponsors: typeof relations_sponsors;
-  relations_sponsor_categories: typeof relations_sponsor_categories;
-  relations_chat_rooms: typeof relations_chat_rooms;
-  relations_signatures: typeof relations_signatures;
-  relations_messages: typeof relations_messages;
-  relations_suppliers: typeof relations_suppliers;
-  relations_product_suppliers_rels: typeof relations_product_suppliers_rels;
-  relations_product_suppliers: typeof relations_product_suppliers;
   relations_category_suppliers_offers: typeof relations_category_suppliers_offers;
   relations_category_suppliers_rels: typeof relations_category_suppliers_rels;
   relations_category_suppliers: typeof relations_category_suppliers;
-  relations_agency_life: typeof relations_agency_life;
+  relations_sponsors: typeof relations_sponsors;
   relations_fidnet: typeof relations_fidnet;
+  relations_suppliers: typeof relations_suppliers;
   relations_fundesys: typeof relations_fundesys;
+  relations_media: typeof relations_media;
+  relations_product_suppliers_rels: typeof relations_product_suppliers_rels;
+  relations_product_suppliers: typeof relations_product_suppliers;
+  relations_sponsor_categories: typeof relations_sponsor_categories;
+  relations_app_users: typeof relations_app_users;
+  relations_agency_life: typeof relations_agency_life;
+  relations_chat_rooms: typeof relations_chat_rooms;
+  relations_messages: typeof relations_messages;
+  relations_signatures: typeof relations_signatures;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

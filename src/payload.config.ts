@@ -63,7 +63,7 @@ export default buildConfig({
 				: false,
 		avatar: {
 			Component: "/components/settings.tsx",
-		},
+		}, 
 		user: Admins.slug,
 		importMap: {
 			baseDir: path.resolve(dirname),

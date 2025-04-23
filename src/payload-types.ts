@@ -301,7 +301,13 @@ export interface SponsorCategory {
 export interface Fidnet {
   id: string;
   date: string;
+  /**
+   * Le fichier doit être au format PDF.
+   */
   file: string | Media;
+  /**
+   * Le fichier doit être au format MP4.
+   */
   video: string | Media;
   updatedAt: string;
   createdAt: string;
