@@ -1,25 +1,30 @@
-import { type CollectionConfig } from "payload";
+import { getPayload, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
+import payloadConfig from "@/payload.config";
+import config from "@payload-config";
 
 
 export const CategorySuppliers: CollectionConfig = {
-	labels: {
-		singular: {
-			en: "Category supplier",
-			fr: "Catégorie de fournisseur",
-		},
-		plural: {
-			en: "Category suppliers",
-			fr: "Catégories de fournisseurs",
-		},
-	},
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
 	},
+	admin: {
+		useAsTitle: "name",
+	},
 	slug: "category-suppliers",
+	labels: {
+		singular: {
+			en: "Category supplier",
+			fr: "Catégorie de fournisseurs",
+		},
+		plural: {
+			en: "Category suppliers",
+			fr: "Catégories de fournisseurs",
+		},
+	},
 	fields: [
 		{
 			name: "name",
@@ -38,7 +43,7 @@ export const CategorySuppliers: CollectionConfig = {
 				en: "Logo",
 				fr: "Logo",
 			},
-			required: true,
+			required: false,
 		},
 		{
 			name: "product_suppliers",
@@ -54,13 +59,53 @@ export const CategorySuppliers: CollectionConfig = {
 		{
 			name: "offers",
 			type: "array",
+			label: {
+				en: "Offers / Promotions / Brochures",
+				fr: "Offres / Promotions / Brochures",
+			},
+			labels: {
+				singular: {
+					en: "Offer / Promotion / Brochure",
+					fr: "Offre / Promotion / Brochure",
+				},
+				plural: {
+					en: "Offers / Promotions / Brochures",
+					fr: "Offres / Promotions / Brochures",
+				},
+			},
 			fields: [
 				{
 					name: "name",
 					type: "text",
 					label: {
-						en: "Offer Name",
-						fr: "Nom de l'offre",
+						en: "Brochure name",
+						fr: "Nom de la brochure",
+					},
+					required: true,
+				},
+				{
+					name: "file",
+					type: "upload",
+					relationTo: "media",
+					// @ts-expect-error
+					validate: async (data: string) => {
+						console.log(data);
+						const payload = await getPayload({
+							config,
+						});
+						const file = await payload.findByID({
+							collection: "media",
+							id: data,
+						});
+
+						if (file.mimeType !== "application/pdf") return "Le fichier doit être au format PDF.";
+					},
+					label: {
+						en: "Brochure File",
+						fr: "Fichier de la brochure",
+					},
+					admin: {
+						description: "Le fichier doit être au format PDF.",
 					},
 					required: true,
 				},
@@ -72,16 +117,6 @@ export const CategorySuppliers: CollectionConfig = {
 						fr: "Description de l'offre",
 					},
 					required: false,
-				},
-				{
-					name: "file",
-					type: "upload",
-					relationTo: "media",
-					label: {
-						en: "Offer File",
-						fr: "Fichier de l'offre",
-					},
-					required: true
 				},
 			],
 		},

@@ -3,6 +3,12 @@ import { canAccessApi } from "@/utils/helper";
 
 
 export const ProductSuppliers: CollectionConfig = {
+	access: {
+		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		create: ({ req }) => canAccessApi(req, []),
+		update: ({ req }) => canAccessApi(req, []),
+		delete: ({ req }) => canAccessApi(req, []),
+	},
 	labels: {
 		singular: {
 			en: "Product supplier",
@@ -13,11 +19,8 @@ export const ProductSuppliers: CollectionConfig = {
 			fr: "Produits de fournisseurs",
 		},
 	},
-	access: {
-		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
-		create: ({ req }) => canAccessApi(req, []),
-		update: ({ req }) => canAccessApi(req, []),
-		delete: ({ req }) => canAccessApi(req, []),
+	admin: {
+		useAsTitle: "name",
 	},
 	slug: "product-suppliers",
 	fields: [
@@ -38,7 +41,7 @@ export const ProductSuppliers: CollectionConfig = {
 				en: "Logo",
 				fr: "Logo",
 			},
-			required: true,
+			required: false,
 		},
 		{
 			name: "suppliers",

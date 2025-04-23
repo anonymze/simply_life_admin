@@ -117,7 +117,7 @@ export const websocketServerPlugin =
 		 * Sets up message handling for collection data requests
 		 */
 		config.onInit = async (payload) => {
-			console.log("🔄 Initializing WebSocket server plugin...");
+			console.log("🔄 NOT Initializing WebSocket server plugin...");
 
 			// Await the existing onInit first
 			if (incomingConfig.onInit) await incomingConfig.onInit(payload);
@@ -125,42 +125,40 @@ export const websocketServerPlugin =
 			// Check if WebSocket server is already initialized
 			if (wss) return;
 
-			return;
+			// try {
+			// 	const port = pluginOptions.port || DEFAULT_PORT;
+			// 	// noServer : true means it attachs himself to current http server
+			// 	// becarefull if you deploy to serverless functions because it's ephemeral and does not support long-lived tcp connections
+			// 	// false means it creates a http server for himself
+			// 	wss = new WebSocketServer({ port, noServer: true });
+			// 	console.log(`✅ WebSocket server started successfully on port ${port}`);
 
-			try {
-				const port = pluginOptions.port || DEFAULT_PORT;
-				// noServer : true means it attachs himself to current http server
-				// becarefull if you deploy to serverless functions because it's ephemeral and does not support long-lived tcp connections
-				// false means it creates a http server for himself
-				wss = new WebSocketServer({ port, noServer: true });
-				console.log(`✅ WebSocket server started successfully on port ${port}`);
+			// 	wss.on("connection", (client) => {
+			// 		client.on("message", async (message) => {
+			// 			const { data, success } = joinChatSchema.safeParse(JSON.parse(message.toString()));
 
-				wss.on("connection", (client) => {
-					client.on("message", async (message) => {
-						const { data, success } = joinChatSchema.safeParse(JSON.parse(message.toString()));
+			// 			if (!success) {
+			// 				console.log("❌ Invalid message format");
+			// 				return;
+			// 			}
 
-						if (!success) {
-							console.log("❌ Invalid message format");
-							return;
-						}
+			// 			const roomConnections = (chatRooms.get(data.chatId) as Set<ws>) || new Set();
+			// 			roomConnections.add(client);
+			// 			chatRooms.set(data.chatId, roomConnections);
 
-						const roomConnections = (chatRooms.get(data.chatId) as Set<ws>) || new Set();
-						roomConnections.add(client);
-						chatRooms.set(data.chatId, roomConnections);
+			// 			client.on("close", () => {
+			// 				roomConnections.delete(client);
+			// 				chatRooms.set(data.chatId, roomConnections);
+			// 			});
+			// 		});
+			// 	});
 
-						client.on("close", () => {
-							roomConnections.delete(client);
-							chatRooms.set(data.chatId, roomConnections);
-						});
-					});
-				});
-
-				wss.on("error", (error) => {
-					console.error("⚠️ WebSocket server error:", error);
-				});
-			} catch (error) {
-				console.error("❌ Failed to start WebSocket server:", error);
-			}
+			// 	wss.on("error", (error) => {
+			// 		console.error("⚠️ WebSocket server error:", error);
+			// 	});
+			// } catch (error) {
+			// 	console.error("❌ Failed to start WebSocket server:", error);
+			// }
 		};
 
 		return config;

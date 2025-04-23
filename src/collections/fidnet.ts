@@ -3,6 +3,12 @@ import { canAccessApi } from "@/utils/helper";
 
 
 export const Fidnet: CollectionConfig = {
+	access: {
+		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		create: ({ req }) => canAccessApi(req, []),
+		update: ({ req }) => canAccessApi(req, []),
+		delete: ({ req }) => canAccessApi(req, []),
+	},
 	labels: {
 		singular: {
 			en: "Fidnet",
@@ -12,12 +18,6 @@ export const Fidnet: CollectionConfig = {
 			en: "Fidnet",
 			fr: "Fidnet",
 		},
-	},
-	access: {
-		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
-		create: ({ req }) => canAccessApi(req, []),
-		update: ({ req }) => canAccessApi(req, []),
-		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "fidnet",
 	fields: [

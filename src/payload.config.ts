@@ -49,6 +49,14 @@ export default buildConfig({
 		// you can change the binded routes in admin
 		// routes: {
 		// },
+		autoLogin:
+			process.env.NODE_ENV === "development"
+				? {
+						email: "anodevfr@gmail.com",
+						password: "..............",
+						prefillOnly: true,
+					}
+				: false,
 		avatar: {
 			Component: "/components/settings.tsx",
 		},
@@ -101,7 +109,7 @@ export default buildConfig({
 			fr: {
 				custom: {
 					textBeforeLogin:
-						"Bienvenue sur l'administration de Simply Life. Simplifier le quotidien de vos employées de manière simple et efficace.",
+						"Bienvenue sur l'administration de Simply Life. Simplifiez le quotidien de vos employées de manière simple et efficace.",
 				},
 				general: {
 					createNew: "Créer un nouvel élément",

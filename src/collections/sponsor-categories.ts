@@ -4,13 +4,13 @@ import { canAccessApi } from "../utils/helper";
 
 
 export const SponsorCategories: CollectionConfig = {
-	slug: "sponsor-categories",
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
 	},
+	slug: "sponsor-categories",
 	labels: {
 		singular: {
 			en: "Contacts type",	

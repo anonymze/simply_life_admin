@@ -4,14 +4,14 @@ import { canAccessApi } from "../utils/helper";
 
 
 export const ChatRooms: CollectionConfig = {
-	admin: {
-		hidden: true,
-	},
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, ["associate"]),
 		update: ({ req }) => canAccessApi(req, ["associate"]),
 		delete: ({ req }) => canAccessApi(req, ["associate"]),
+	},
+	admin: {
+		hidden: true,
 	},
 	slug: "chat-rooms",
 	fields: [

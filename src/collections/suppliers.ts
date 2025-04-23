@@ -1,8 +1,15 @@
-import { type CollectionConfig } from "payload";
+import { getPayload, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
+import config from "@payload-config";
 
 
 export const Suppliers: CollectionConfig = {
+	access: {
+		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		create: ({ req }) => canAccessApi(req, []),
+		update: ({ req }) => canAccessApi(req, []),
+		delete: ({ req }) => canAccessApi(req, []),
+	},
 	labels: {
 		singular: {
 			en: "Supplier",
@@ -13,11 +20,9 @@ export const Suppliers: CollectionConfig = {
 			fr: "Fournisseurs",
 		},
 	},
-	access: {
-		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
-		create: ({ req }) => canAccessApi(req, []),
-		update: ({ req }) => canAccessApi(req, []),
-		delete: ({ req }) => canAccessApi(req, []),
+
+	admin: {
+		useAsTitle: "name",
 	},
 	slug: "suppliers",
 	fields: [
@@ -34,6 +39,22 @@ export const Suppliers: CollectionConfig = {
 			name: "logo",
 			type: "upload",
 			relationTo: "media",
+			admin: {
+				description: "Le fichier doit être une image.",
+			},
+			// @ts-expect-error
+			validate: async (data: string) => {
+				console.log(data);
+				const payload = await getPayload({
+					config,
+				});
+				const file = await payload.findByID({
+					collection: "media",
+					id: data,
+				});
+
+				if (file.mimeType?.startsWith("image/") === false) return "Le fichier doit être une image.";
+			},
 			label: {
 				en: "Logo",
 				fr: "Logo",
@@ -46,7 +67,7 @@ export const Suppliers: CollectionConfig = {
 			type: "group",
 			label: {
 				en: "Contact Information",
-				fr: "Informations de Contact",
+				fr: "Informations de contact",
 			},
 			fields: [
 				{
@@ -120,7 +141,7 @@ export const Suppliers: CollectionConfig = {
 			type: "group",
 			label: {
 				en: "Other Information",
-				fr: "Autres Informations",
+				fr: "Autres informations",
 			},
 			fields: [
 				{
@@ -181,8 +202,8 @@ export const Suppliers: CollectionConfig = {
 					name: "commission_public_offer",
 					type: "text",
 					label: {
-						en: "SCPI Percentage",
-						fr: "Pourcentage de SCPI",
+						en: "Commision public offer",
+						fr: "Commission pour l'offre publique",
 					},
 					required: false,
 				},
@@ -190,8 +211,8 @@ export const Suppliers: CollectionConfig = {
 					name: "commission_offer_group_valorem",
 					type: "text",
 					label: {
-						en: "Commission Public Offer",
-						fr: "Commission pour l'offre publique",
+						en: "Commission offer Groupe Valorem",
+						fr: "Commission pour l'offre Groupe Valorem",
 					},
 					required: false,
 				},

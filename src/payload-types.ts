@@ -291,6 +291,9 @@ export interface Message {
 export interface Supplier {
   id: string;
   name: string;
+  /**
+   * Le fichier doit être une image.
+   */
   logo: string | Media;
   contact_info?: {
     lastname?: string | null;
@@ -323,7 +326,7 @@ export interface Supplier {
 export interface ProductSupplier {
   id: string;
   name: string;
-  logo: string | Media;
+  logo?: (string | null) | Media;
   suppliers: (string | Supplier)[];
   updatedAt: string;
   createdAt: string;
@@ -335,13 +338,16 @@ export interface ProductSupplier {
 export interface CategorySupplier {
   id: string;
   name: string;
-  logo: string | Media;
+  logo?: (string | null) | Media;
   product_suppliers: (string | ProductSupplier)[];
   offers?:
     | {
         name: string;
-        description?: string | null;
+        /**
+         * Le fichier doit être au format PDF.
+         */
         file: string | Media;
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -676,8 +682,8 @@ export interface CategorySuppliersSelect<T extends boolean = true> {
     | T
     | {
         name?: T;
-        description?: T;
         file?: T;
+        description?: T;
         id?: T;
       };
   updatedAt?: T;
