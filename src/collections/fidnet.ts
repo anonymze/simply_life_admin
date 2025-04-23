@@ -2,7 +2,6 @@ import { getPayload, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
 import config from "@payload-config";
 
-
 export const Fidnet: CollectionConfig = {
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
@@ -64,15 +63,15 @@ export const Fidnet: CollectionConfig = {
 				en: "Video",
 				fr: "Vidéo",
 			},
-				// @ts-expect-error
-				validate: async (data: string) => {
-					const payload = await getPayload({
-						config,
-					});
-					const file = await payload.findByID({
-						collection: "media",
-						id: data,
-					});
+			// @ts-expect-error
+			validate: async (data: string) => {
+				const payload = await getPayload({
+					config,
+				});
+				const file = await payload.findByID({
+					collection: "media",
+					id: data,
+				});
 
 				if (file.mimeType?.startsWith("video/") === false) return "Le fichier doit être une vidéo.";
 			},

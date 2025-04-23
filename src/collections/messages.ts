@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { canAccessApi } from "../utils/helper";
+import { canAccessApi, SSEMessages } from "../utils/helper";
 
 
 export const Messages: CollectionConfig = {
@@ -14,6 +14,7 @@ export const Messages: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "messages",
+	endpoints: [SSEMessages],
 	fields: [
 		{
 			name: "app_user",
@@ -40,3 +41,4 @@ export const Messages: CollectionConfig = {
 		},
 	],
 };
+

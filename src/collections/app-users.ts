@@ -1,5 +1,5 @@
+import { canAccessApi, validatePassword } from "@/utils/helper";
 import { type CollectionConfig } from "payload";
-import { canAccessApi } from "@/utils/helper";
 
 
 export const AppUsers: CollectionConfig = {
@@ -27,6 +27,9 @@ export const AppUsers: CollectionConfig = {
 			en: "Mobile app users",
 			fr: "Utilisateurs application mobile",
 		},
+	},	
+	hooks: {
+		beforeValidate: [validatePassword],
 	},
 	fields: [
 		{

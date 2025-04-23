@@ -25,7 +25,7 @@ export const Admins: CollectionConfig = {
 	},
 	// email and password added by default
 	auth: {
-		maxLoginAttempts: 3,
+		maxLoginAttempts: 4,
 		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
 	},
 	hooks: {
