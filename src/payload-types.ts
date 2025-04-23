@@ -68,19 +68,19 @@ export interface Config {
   blocks: {};
   collections: {
     admins: Admin;
-    media: Media;
-    'app-users': AppUser;
-    sponsors: Sponsor;
-    'sponsor-categories': SponsorCategory;
-    'chat-rooms': ChatRoom;
-    signatures: Signature;
-    messages: Message;
-    suppliers: Supplier;
-    'product-suppliers': ProductSupplier;
     'category-suppliers': CategorySupplier;
-    'agency-life': AgencyLife;
+    sponsors: Sponsor;
     fidnet: Fidnet;
+    suppliers: Supplier;
     fundesys: Fundesy;
+    media: Media;
+    'product-suppliers': ProductSupplier;
+    'sponsor-categories': SponsorCategory;
+    'app-users': AppUser;
+    'agency-life': AgencyLife;
+    'chat-rooms': ChatRoom;
+    messages: Message;
+    signatures: Signature;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -88,19 +88,19 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
-    sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
-    'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
-    'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
-    signatures: SignaturesSelect<false> | SignaturesSelect<true>;
-    messages: MessagesSelect<false> | MessagesSelect<true>;
-    suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
-    'product-suppliers': ProductSuppliersSelect<false> | ProductSuppliersSelect<true>;
     'category-suppliers': CategorySuppliersSelect<false> | CategorySuppliersSelect<true>;
-    'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
+    sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
     fidnet: FidnetSelect<false> | FidnetSelect<true>;
+    suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    'product-suppliers': ProductSuppliersSelect<false> | ProductSuppliersSelect<true>;
+    'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
+    'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
+    'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
+    'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
+    signatures: SignaturesSelect<false> | SignaturesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -110,7 +110,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'fr' | 'en';
   user:
     | (Admin & {
         collection: 'admins';
@@ -179,6 +179,29 @@ export interface Admin {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category-suppliers".
+ */
+export interface CategorySupplier {
+  id: string;
+  name: string;
+  logo?: (string | null) | Media;
+  product_suppliers: (string | ProductSupplier)[];
+  offers?:
+    | {
+        name: string;
+        /**
+         * Le fichier doit être au format PDF.
+         */
+        file: string | Media;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -199,88 +222,13 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "app-users".
+ * via the `definition` "product-suppliers".
  */
-export interface AppUser {
-  id: string;
-  lastname: string;
-  firstname: string;
-  phone?: string | null;
-  photo?: (string | null) | Media;
-  role: 'associate' | 'employee' | 'independent' | 'visitor';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsors".
- */
-export interface Sponsor {
+export interface ProductSupplier {
   id: string;
   name: string;
-  logo: string | Media;
-  category: string | SponsorCategory;
-  phone?: string | null;
-  website?: string | null;
-  address?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsor-categories".
- */
-export interface SponsorCategory {
-  id: string;
-  name: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "chat-rooms".
- */
-export interface ChatRoom {
-  id: string;
-  app_user: string | AppUser;
-  name: string;
-  description?: string | null;
-  color?: string | null;
-  category?: string | null;
-  private?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "signatures".
- */
-export interface Signature {
-  id: string;
-  app_user: string | AppUser;
-  file: string | Media;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages".
- */
-export interface Message {
-  id: string;
-  app_user: string | AppUser;
-  chat_room: string | ChatRoom;
-  message: string;
+  logo?: (string | null) | Media;
+  suppliers: (string | Supplier)[];
   updatedAt: string;
   createdAt: string;
 }
@@ -321,50 +269,28 @@ export interface Supplier {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-suppliers".
+ * via the `definition` "sponsors".
  */
-export interface ProductSupplier {
+export interface Sponsor {
   id: string;
   name: string;
-  logo?: (string | null) | Media;
-  suppliers: (string | Supplier)[];
+  logo: string | Media;
+  category: string | SponsorCategory;
+  phone?: string | null;
+  website?: string | null;
+  address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category-suppliers".
+ * via the `definition` "sponsor-categories".
  */
-export interface CategorySupplier {
+export interface SponsorCategory {
   id: string;
   name: string;
-  logo?: (string | null) | Media;
-  product_suppliers: (string | ProductSupplier)[];
-  offers?:
-    | {
-        name: string;
-        /**
-         * Le fichier doit être au format PDF.
-         */
-        file: string | Media;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agency-life".
- */
-export interface AgencyLife {
-  id: string;
-  title: string;
-  annotation?: string | null;
-  type: 'general';
-  'events-start': string;
-  'events-end': string;
   updatedAt: string;
   createdAt: string;
 }
@@ -394,6 +320,80 @@ export interface Fundesy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "app-users".
+ */
+export interface AppUser {
+  id: string;
+  lastname: string;
+  firstname: string;
+  phone?: string | null;
+  photo?: (string | null) | Media;
+  role: 'associate' | 'employee' | 'independent' | 'visitor';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agency-life".
+ */
+export interface AgencyLife {
+  id: string;
+  title: string;
+  annotation?: string | null;
+  type: 'general';
+  'events-start': string;
+  'events-end': string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-rooms".
+ */
+export interface ChatRoom {
+  id: string;
+  app_user: string | AppUser;
+  name: string;
+  description?: string | null;
+  color?: string | null;
+  category?: string | null;
+  private?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: string;
+  app_user: string | AppUser;
+  chat_room: string | ChatRoom;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "signatures".
+ */
+export interface Signature {
+  id: string;
+  app_user: string | AppUser;
+  file: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -404,56 +404,56 @@ export interface PayloadLockedDocument {
         value: string | Admin;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
-      } | null)
-    | ({
-        relationTo: 'app-users';
-        value: string | AppUser;
+        relationTo: 'category-suppliers';
+        value: string | CategorySupplier;
       } | null)
     | ({
         relationTo: 'sponsors';
         value: string | Sponsor;
       } | null)
     | ({
-        relationTo: 'sponsor-categories';
-        value: string | SponsorCategory;
-      } | null)
-    | ({
-        relationTo: 'chat-rooms';
-        value: string | ChatRoom;
-      } | null)
-    | ({
-        relationTo: 'signatures';
-        value: string | Signature;
-      } | null)
-    | ({
-        relationTo: 'messages';
-        value: string | Message;
+        relationTo: 'fidnet';
+        value: string | Fidnet;
       } | null)
     | ({
         relationTo: 'suppliers';
         value: string | Supplier;
       } | null)
     | ({
+        relationTo: 'fundesys';
+        value: string | Fundesy;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
         relationTo: 'product-suppliers';
         value: string | ProductSupplier;
       } | null)
     | ({
-        relationTo: 'category-suppliers';
-        value: string | CategorySupplier;
+        relationTo: 'sponsor-categories';
+        value: string | SponsorCategory;
+      } | null)
+    | ({
+        relationTo: 'app-users';
+        value: string | AppUser;
       } | null)
     | ({
         relationTo: 'agency-life';
         value: string | AgencyLife;
       } | null)
     | ({
-        relationTo: 'fidnet';
-        value: string | Fidnet;
+        relationTo: 'chat-rooms';
+        value: string | ChatRoom;
       } | null)
     | ({
-        relationTo: 'fundesys';
-        value: string | Fundesy;
+        relationTo: 'messages';
+        value: string | Message;
+      } | null)
+    | ({
+        relationTo: 'signatures';
+        value: string | Signature;
       } | null);
   globalSlug?: string | null;
   user:
@@ -525,42 +525,22 @@ export interface AdminsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "category-suppliers_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  prefix?: T;
+export interface CategorySuppliersSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  product_suppliers?: T;
+  offers?:
+    | T
+    | {
+        name?: T;
+        file?: T;
+        description?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "app-users_select".
- */
-export interface AppUsersSelect<T extends boolean = true> {
-  lastname?: T;
-  firstname?: T;
-  phone?: T;
-  photo?: T;
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -580,45 +560,12 @@ export interface SponsorsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsor-categories_select".
+ * via the `definition` "fidnet_select".
  */
-export interface SponsorCategoriesSelect<T extends boolean = true> {
-  name?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "chat-rooms_select".
- */
-export interface ChatRoomsSelect<T extends boolean = true> {
-  app_user?: T;
-  name?: T;
-  description?: T;
-  color?: T;
-  category?: T;
-  private?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "signatures_select".
- */
-export interface SignaturesSelect<T extends boolean = true> {
-  app_user?: T;
+export interface FidnetSelect<T extends boolean = true> {
+  date?: T;
   file?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages_select".
- */
-export interface MessagesSelect<T extends boolean = true> {
-  app_user?: T;
-  chat_room?: T;
-  message?: T;
+  video?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -661,6 +608,36 @@ export interface SuppliersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fundesys_select".
+ */
+export interface FundesysSelect<T extends boolean = true> {
+  date?: T;
+  file?: T;
+  video?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-suppliers_select".
  */
 export interface ProductSuppliersSelect<T extends boolean = true> {
@@ -672,22 +649,32 @@ export interface ProductSuppliersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category-suppliers_select".
+ * via the `definition` "sponsor-categories_select".
  */
-export interface CategorySuppliersSelect<T extends boolean = true> {
+export interface SponsorCategoriesSelect<T extends boolean = true> {
   name?: T;
-  logo?: T;
-  product_suppliers?: T;
-  offers?:
-    | T
-    | {
-        name?: T;
-        file?: T;
-        description?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "app-users_select".
+ */
+export interface AppUsersSelect<T extends boolean = true> {
+  lastname?: T;
+  firstname?: T;
+  phone?: T;
+  photo?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -704,23 +691,36 @@ export interface AgencyLifeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "fidnet_select".
+ * via the `definition` "chat-rooms_select".
  */
-export interface FidnetSelect<T extends boolean = true> {
-  date?: T;
-  file?: T;
-  video?: T;
+export interface ChatRoomsSelect<T extends boolean = true> {
+  app_user?: T;
+  name?: T;
+  description?: T;
+  color?: T;
+  category?: T;
+  private?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "fundesys_select".
+ * via the `definition` "messages_select".
  */
-export interface FundesysSelect<T extends boolean = true> {
-  date?: T;
+export interface MessagesSelect<T extends boolean = true> {
+  app_user?: T;
+  chat_room?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "signatures_select".
+ */
+export interface SignaturesSelect<T extends boolean = true> {
+  app_user?: T;
   file?: T;
-  video?: T;
   updatedAt?: T;
   createdAt?: T;
 }
