@@ -35,16 +35,6 @@ export const Admins: CollectionConfig = {
 		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
 	},
 	hooks: {
-		afterOperation: [(ok) => {
-			console.log('afterOperation');
-			console.log(ok);
-		}],
-		afterLogin: [
-			(ok) => {
-				console.log('afterLogin');
-				console.log(ok);
-			}
-		],
 		beforeValidate: [validatePassword],
 	}, 	
 	fields: [
