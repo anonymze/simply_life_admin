@@ -14,7 +14,7 @@ export const canAccessApi = (
 ): boolean => {
 	if (!req.user) return false;
 	if (req.user.collection === "admins") return true;
-	// console.log(req.headers.get("cookie"));
+	console.log(req.headers.get("cookie"));
 	if (originType && !verifyOrigin(req.headers?.get("origin"), originType)) return false;
 
 	return roles.includes(req.user.role);
