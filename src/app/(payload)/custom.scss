@@ -23,3 +23,17 @@ $success-color-dark: #019a49;
 		}
 	}
 }
+
+#before-login {
+	margin-bottom: 2rem;
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: 500;
+}
+
+#logout-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}

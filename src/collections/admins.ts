@@ -20,7 +20,7 @@ export const Admins: CollectionConfig = {
 			fr: "Administrateurs",
 		},
 	},
-	admin: {
+	admin: {		
 		group: {
 			en: "Users",
 			fr: "Utilisateurs",	
@@ -29,13 +29,24 @@ export const Admins: CollectionConfig = {
 		useAsTitle: "email",
 	},
 	// email and password added by default
+	
 	auth: {
 		maxLoginAttempts: 4,
 		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
 	},
 	hooks: {
+		afterOperation: [(ok) => {
+			console.log('afterOperation');
+			console.log(ok);
+		}],
+		afterLogin: [
+			(ok) => {
+				console.log('afterLogin');
+				console.log(ok);
+			}
+		],
 		beforeValidate: [validatePassword],
-	},
+	}, 	
 	fields: [
 		{
 			name: "fullname",
@@ -46,5 +57,36 @@ export const Admins: CollectionConfig = {
 				fr: "Nom complet",
 			},
 		},
+		{
+			name: "description-below-password",
+			type: "ui",
+			admin: {
+				components: {
+					Field: "/components/description-below-password.tsx",
+				},
+			},
+		},
+		// {
+		// 	name: "actions",
+		// 	type: "ui",
+		// 	admin: {
+		// 		position: "sidebar",
+		// 		components: {
+		// 			Field: "/components/custom-client-field.tsx",
+		// 		},
+		// 	},
+		// },
+		// {
+		// 	name: "serverActions",
+		// 	type: "ui",
+		// 	admin: {
+		// 		position: "sidebar",
+		// 		components: {
+		// 			Field: "/components/custom-server-field.tsx",
+		// 		},
+		// 	},
+		// },
 	],
 };
+
+

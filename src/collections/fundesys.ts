@@ -22,8 +22,8 @@ export const Fundesys: CollectionConfig = {
 			name: "date",
 			type: "date",
 			label: {
-				en: "Date",
-				fr: "Date",
+				en: "Date of release",
+				fr: "Date de sortie",
 			},
 			required: true,
 		},

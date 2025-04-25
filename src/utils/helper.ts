@@ -25,20 +25,7 @@ const verifyOrigin = (origin: string | null, originType: originType): boolean =>
 	return originType === "mobile" ? origin === ORIGIN_MOBILE : origin === ORIGIN_APP;
 };
 
-const messageErrorAuth = {
-	length: {
-		en: "The password must contain at least 10 characters.",
-		fr: "Le mot de passe doit contenir au moins 10 caractères.",
-	},
-	letters: {
-		en: "The password must contain at least one letter.",
-		fr: "Le mot de passe doit contenir au moins une lettre.",
-	},
-	numbers: {
-		en: "The password must contain at least one number.",
-		fr: "Le mot de passe doit contenir au moins un chiffre.",
-	},
-};
+
 
 /**
  * Throws error if password strength is not met. Password must have:
@@ -47,17 +34,20 @@ const messageErrorAuth = {
  *  - numbers
  **/
 export const validatePassword: CollectionBeforeValidateHook = (payloadRequest) => {
+	console.log('!!!!!¡¡¡¡¡¡¡¡¡¡');
+	console.log(payloadRequest.data);
+	throw new Error('test');
 	const { data } = payloadRequest;
 	if (!data?.password) return;
-
-	const locale = payloadRequest.req.locale === "fr" ? "fr" : "en";
 
 	if (data.password.length < 10)
 		throw new ValidationError({
 			errors: [
 				{
-					message: messageErrorAuth.length[locale],
-					label: messageErrorAuth.length[locale],
+					// @ts-ignore
+					message: payloadRequest.req.i18n.translations?.custom.errorlengthPassword,
+					// @ts-ignore
+					label: payloadRequest.req.i18n.translations?.custom.errorlengthPassword,
 					path: "password",
 				},
 			],
@@ -70,8 +60,10 @@ export const validatePassword: CollectionBeforeValidateHook = (payloadRequest) =
 		throw new ValidationError({
 			errors: [
 				{
-					message: messageErrorAuth.letters[locale],
-					label: messageErrorAuth.letters[locale],
+					// @ts-ignore
+					message: payloadRequest.req.i18n.translations?.custom.errorLettersPassword,
+					// @ts-ignore
+					label: payloadRequest.req.i18n.translations?.custom.errorLettersPassword,
 					path: "password",
 				},
 			],
@@ -82,8 +74,10 @@ export const validatePassword: CollectionBeforeValidateHook = (payloadRequest) =
 		throw new ValidationError({
 			errors: [
 				{
-					message: messageErrorAuth.numbers[locale],
-					label: messageErrorAuth.numbers[locale],
+					// @ts-ignore
+					message: payloadRequest.req.i18n.translations?.custom.errorNumbersPassword,
+					// @ts-ignore
+					label: payloadRequest.req.i18n.translations?.custom.errorNumbersPassword,
 					path: "password",
 				},
 			],

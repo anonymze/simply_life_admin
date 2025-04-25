@@ -1,5 +1,3 @@
-import './before-login.css';
-
 import type { I18nClient } from '@payloadcms/translations';
 
 

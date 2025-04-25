@@ -140,5 +140,14 @@ export const AppUsers: CollectionConfig = {
 			],
 			defaultValue: "independent",
 		},
+		{
+			name: "description-below-password",
+			type: "ui",
+			admin: {
+				components: {
+					Field: "/components/description-below-password.tsx",
+				},
+			},
+		},
 	],
 };

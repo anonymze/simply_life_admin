@@ -1,11 +1,13 @@
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
+import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { fr } from "@payloadcms/translations/languages/fr";
 import { en } from "@payloadcms/translations/languages/en";
 import { openapi, swaggerUI } from "payload-oapi";
 import { buildConfig } from "payload";
+import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 import path from "path";
@@ -14,6 +16,7 @@ import { SupplierCategories } from "./collections/supplier-categories";
 import { ContactCategories } from "./collections/contact-categories";
 import { websocketServerPlugin } from "./plugins/websocket-server";
 import { SupplierProducts } from "./collections/supplier-products";
+import { customTranslations } from "./utils/custom-translations";
 import { AgencyLife } from "./collections/agency-life";
 import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
@@ -33,13 +36,13 @@ const dirname = path.dirname(filename);
 export default buildConfig({
 	serverURL:
 		process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.NEXT_PUBLIC_SERVER_URL,
-	// cors: ["*"],
-	cors: {
+	cors: ["*"],
+	// cors: {
 		// Add your allowed origin here
-		origins: ["http://192.168.1.230:8081"],
+		// origins: ["http://192.168.1.230:8081"],
 		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		headers: ["Content-Type", "Authorization", "Accept"],
-	},
+		// headers: ["Content-Type", "Authorization", "Accept"],
+	// },
 	csrf: [
 		// Add your allowed origins here for CSRF protection
 		// "simply-life-app://mobile",
@@ -49,7 +52,7 @@ export default buildConfig({
 		locales: ["fr", "en"],
 		defaultLocale: "fr",
 	},
-	admin: {
+	admin: {				
 		// you can change the binded routes in admin
 		// routes: {
 		// },
@@ -63,7 +66,7 @@ export default buildConfig({
 				: false,
 		avatar: {
 			Component: "/components/settings.tsx",
-		}, 
+		},
 		user: Admins.slug,
 		importMap: {
 			baseDir: path.resolve(dirname),
@@ -78,6 +81,7 @@ export default buildConfig({
 				Icon: "/components/logo.tsx",
 			},
 		},
+		
 		meta: {
 			title: "Simply Life Administration",
 			description: "Administration pour l'application mobile Simply Life",
@@ -100,28 +104,7 @@ export default buildConfig({
 		admin: "/admin",
 		api: "/api",
 	},
-	i18n: {
-		fallbackLanguage: "fr",
-		supportedLanguages: { fr, en },
-		translations: {
-			en: {
-				custom: {
-					textBeforeLogin:
-						"Welcome to the Simply Life administration. Simplify your employees daily lives simply and effectively.",
-				},
-			},
-			fr: {
-				custom: {
-					textBeforeLogin:
-						"Bienvenue sur l'administration de Simply Life. Simplifiez le quotidien de vos employées de manière simple et efficace.",
-				},
-				general: {
-					createNew: "Créer un nouvel élément",
-					createNewLabel: "Créer un nouvel élément",
-				},
-			},
-		},
-	},
+	i18n: customTranslations,
 	collections: [
 		Admins,
 		SupplierCategories,
@@ -171,6 +154,15 @@ export default buildConfig({
 		},
 	}),
 	sharp,
+	email: nodemailerAdapter({
+		defaultFromAddress: "info@simply-life.fr",
+		defaultFromName: "Simply Life",
+		transport: nodemailer.createTransport({
+			host: "127.0.0.1",
+			port: 1025,
+			ignoreTLS: true, // Add this for MailHog
+		}),
+	}),
 	plugins: [
 		websocketServerPlugin({
 			collections: ["messages"],
