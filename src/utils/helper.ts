@@ -14,7 +14,7 @@ export const canAccessApi = (
 ): boolean => {
 	if (!req.user) return false;
 	if (req.user.collection === "admins") return true;
-	console.log(req.headers.get("cookie"));
+	// console.log(req.headers.get("cookie"));
 	if (originType && !verifyOrigin(req.headers?.get("origin"), originType)) return false;
 
 	return roles.includes(req.user.role);
@@ -24,8 +24,6 @@ const verifyOrigin = (origin: string | null, originType: originType): boolean =>
 	if (!origin) return false;
 	return originType === "mobile" ? origin === ORIGIN_MOBILE : origin === ORIGIN_APP;
 };
-
-
 
 /**
  * Throws error if password strength is not met. Password must have:
