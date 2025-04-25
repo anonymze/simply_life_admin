@@ -2,6 +2,7 @@ import { getPayload, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
 import config from "@payload-config";
 
+
 export const Fidnet: CollectionConfig = {
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
@@ -20,6 +21,12 @@ export const Fidnet: CollectionConfig = {
 		},
 	},
 	slug: "fidnet",
+	admin: {
+		group: {
+			en: "Newsletters",
+			fr: "Newsletters",
+		},
+	},
 	fields: [
 		{
 			name: "date",
@@ -76,7 +83,7 @@ export const Fidnet: CollectionConfig = {
 				if (file.mimeType?.startsWith("video/") === false) return "Le fichier doit être une vidéo.";
 			},
 			admin: {
-				description: "Le fichier doit être au format MP4.",
+				description: "Le fichier doit être une vidéo.",
 			},
 			required: true,
 		},

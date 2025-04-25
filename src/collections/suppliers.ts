@@ -20,11 +20,16 @@ export const Suppliers: CollectionConfig = {
 			fr: "Fournisseurs",
 		},
 	},
-
 	admin: {
+		group: {
+			en: "Suppliers",
+			fr: "Fournisseurs",
+		},
+		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
 		useAsTitle: "name",
 	},
 	slug: "suppliers",
+
 	fields: [
 		{
 			name: "name",

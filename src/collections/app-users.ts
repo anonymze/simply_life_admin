@@ -1,5 +1,6 @@
 import { canAccessApi, validatePassword } from "@/utils/helper";
-import { type CollectionConfig } from "payload";
+import { getPayload, type CollectionConfig } from "payload";
+import config from "@payload-config";
 
 
 export const AppUsers: CollectionConfig = {
@@ -16,6 +17,11 @@ export const AppUsers: CollectionConfig = {
 		// tokenExpiration: 3 * 60, // 3 min
 	},
 	admin: {
+		group: {
+			en: "Users",
+			fr: "Utilisateurs",	
+		},
+		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
 		useAsTitle: "email",
 	},
 	labels: {
@@ -27,7 +33,7 @@ export const AppUsers: CollectionConfig = {
 			en: "Mobile app users",
 			fr: "Utilisateurs application mobile",
 		},
-	},	
+	},
 	hooks: {
 		beforeValidate: [validatePassword],
 	},
@@ -72,6 +78,21 @@ export const AppUsers: CollectionConfig = {
 			name: "photo",
 			type: "upload",
 			relationTo: "media",
+			admin: {
+				description: "Le fichier doit être une image.",
+			},
+			// @ts-expect-error
+			validate: async (data: string) => {
+				const payload = await getPayload({
+					config,
+				});
+				const file = await payload.findByID({
+					collection: "media",
+					id: data,
+				});
+
+				if (file.mimeType?.startsWith("image/") === false) return "Le fichier doit être une image.";
+			},
 			required: false,
 			label: {
 				en: "Photo",

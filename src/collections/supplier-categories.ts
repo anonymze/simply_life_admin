@@ -3,7 +3,7 @@ import { canAccessApi } from "@/utils/helper";
 import config from "@payload-config";
 
 
-export const CategorySuppliers: CollectionConfig = {
+export const SupplierCategories: CollectionConfig = {
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),
@@ -11,16 +11,21 @@ export const CategorySuppliers: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	admin: {
+		group: {
+			en: "Suppliers",
+			fr: "Fournisseurs",
+		},
+		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
 		useAsTitle: "name",
 	},
-	slug: "category-suppliers",
+	slug: "supplier-categories",
 	labels: {
 		singular: {
-			en: "Category supplier",
+			en: "Supplier category",
 			fr: "Catégorie de fournisseurs",
 		},
 		plural: {
-			en: "Category suppliers",
+			en: "Supplier categories",
 			fr: "Catégories de fournisseurs",
 		},
 	},
@@ -47,10 +52,10 @@ export const CategorySuppliers: CollectionConfig = {
 		{
 			name: "product_suppliers",
 			type: "relationship",
-			relationTo: "product-suppliers",
+			relationTo: "supplier-products",
 			hasMany: true,
 			label: {
-				en: "Product Suppliers",
+				en: "Supplier products",
 				fr: "Produits fournisseurs",
 			},
 			required: true,

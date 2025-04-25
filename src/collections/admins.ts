@@ -21,6 +21,11 @@ export const Admins: CollectionConfig = {
 		},
 	},
 	admin: {
+		group: {
+			en: "Users",
+			fr: "Utilisateurs",	
+		},
+		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
 		useAsTitle: "email",
 	},
 	// email and password added by default

@@ -1,5 +1,5 @@
 {
-  "id": "7b6ef280-9a51-45f0-a460-e04030d98adf",
+  "id": "35a1c157-9ec8-41b5-8d71-2875e5d23a7c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -133,8 +133,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.category_suppliers_offers": {
-      "name": "category_suppliers_offers",
+    "public.supplier_categories_offers": {
+      "name": "supplier_categories_offers",
       "schema": "",
       "columns": {
         "_order": {
@@ -175,8 +175,8 @@
         }
       },
       "indexes": {
-        "category_suppliers_offers_order_idx": {
-          "name": "category_suppliers_offers_order_idx",
+        "supplier_categories_offers_order_idx": {
+          "name": "supplier_categories_offers_order_idx",
           "columns": [
             {
               "expression": "_order",
@@ -190,8 +190,8 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_offers_parent_id_idx": {
-          "name": "category_suppliers_offers_parent_id_idx",
+        "supplier_categories_offers_parent_id_idx": {
+          "name": "supplier_categories_offers_parent_id_idx",
           "columns": [
             {
               "expression": "_parent_id",
@@ -205,8 +205,8 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_offers_file_idx": {
-          "name": "category_suppliers_offers_file_idx",
+        "supplier_categories_offers_file_idx": {
+          "name": "supplier_categories_offers_file_idx",
           "columns": [
             {
               "expression": "file_id",
@@ -222,9 +222,9 @@
         }
       },
       "foreignKeys": {
-        "category_suppliers_offers_file_id_media_id_fk": {
-          "name": "category_suppliers_offers_file_id_media_id_fk",
-          "tableFrom": "category_suppliers_offers",
+        "supplier_categories_offers_file_id_media_id_fk": {
+          "name": "supplier_categories_offers_file_id_media_id_fk",
+          "tableFrom": "supplier_categories_offers",
           "tableTo": "media",
           "columnsFrom": [
             "file_id"
@@ -235,10 +235,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "category_suppliers_offers_parent_id_fk": {
-          "name": "category_suppliers_offers_parent_id_fk",
-          "tableFrom": "category_suppliers_offers",
-          "tableTo": "category_suppliers",
+        "supplier_categories_offers_parent_id_fk": {
+          "name": "supplier_categories_offers_parent_id_fk",
+          "tableFrom": "supplier_categories_offers",
+          "tableTo": "supplier_categories",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -255,8 +255,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.category_suppliers": {
-      "name": "category_suppliers",
+    "public.supplier_categories": {
+      "name": "supplier_categories",
       "schema": "",
       "columns": {
         "id": {
@@ -294,8 +294,8 @@
         }
       },
       "indexes": {
-        "category_suppliers_logo_idx": {
-          "name": "category_suppliers_logo_idx",
+        "supplier_categories_logo_idx": {
+          "name": "supplier_categories_logo_idx",
           "columns": [
             {
               "expression": "logo_id",
@@ -309,8 +309,8 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_updated_at_idx": {
-          "name": "category_suppliers_updated_at_idx",
+        "supplier_categories_updated_at_idx": {
+          "name": "supplier_categories_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -324,8 +324,8 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_created_at_idx": {
-          "name": "category_suppliers_created_at_idx",
+        "supplier_categories_created_at_idx": {
+          "name": "supplier_categories_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -341,9 +341,9 @@
         }
       },
       "foreignKeys": {
-        "category_suppliers_logo_id_media_id_fk": {
-          "name": "category_suppliers_logo_id_media_id_fk",
-          "tableFrom": "category_suppliers",
+        "supplier_categories_logo_id_media_id_fk": {
+          "name": "supplier_categories_logo_id_media_id_fk",
+          "tableFrom": "supplier_categories",
           "tableTo": "media",
           "columnsFrom": [
             "logo_id"
@@ -361,8 +361,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.category_suppliers_rels": {
-      "name": "category_suppliers_rels",
+    "public.supplier_categories_rels": {
+      "name": "supplier_categories_rels",
       "schema": "",
       "columns": {
         "id": {
@@ -389,16 +389,16 @@
           "primaryKey": false,
           "notNull": true
         },
-        "product_suppliers_id": {
-          "name": "product_suppliers_id",
+        "supplier_products_id": {
+          "name": "supplier_products_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {
-        "category_suppliers_rels_order_idx": {
-          "name": "category_suppliers_rels_order_idx",
+        "supplier_categories_rels_order_idx": {
+          "name": "supplier_categories_rels_order_idx",
           "columns": [
             {
               "expression": "order",
@@ -412,8 +412,8 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_rels_parent_idx": {
-          "name": "category_suppliers_rels_parent_idx",
+        "supplier_categories_rels_parent_idx": {
+          "name": "supplier_categories_rels_parent_idx",
           "columns": [
             {
               "expression": "parent_id",
@@ -427,8 +427,8 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_rels_path_idx": {
-          "name": "category_suppliers_rels_path_idx",
+        "supplier_categories_rels_path_idx": {
+          "name": "supplier_categories_rels_path_idx",
           "columns": [
             {
               "expression": "path",
@@ -442,11 +442,11 @@
           "method": "btree",
           "with": {}
         },
-        "category_suppliers_rels_product_suppliers_id_idx": {
-          "name": "category_suppliers_rels_product_suppliers_id_idx",
+        "supplier_categories_rels_supplier_products_id_idx": {
+          "name": "supplier_categories_rels_supplier_products_id_idx",
           "columns": [
             {
-              "expression": "product_suppliers_id",
+              "expression": "supplier_products_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -459,10 +459,10 @@
         }
       },
       "foreignKeys": {
-        "category_suppliers_rels_parent_fk": {
-          "name": "category_suppliers_rels_parent_fk",
-          "tableFrom": "category_suppliers_rels",
-          "tableTo": "category_suppliers",
+        "supplier_categories_rels_parent_fk": {
+          "name": "supplier_categories_rels_parent_fk",
+          "tableFrom": "supplier_categories_rels",
+          "tableTo": "supplier_categories",
           "columnsFrom": [
             "parent_id"
           ],
@@ -472,12 +472,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "category_suppliers_rels_product_suppliers_fk": {
-          "name": "category_suppliers_rels_product_suppliers_fk",
-          "tableFrom": "category_suppliers_rels",
-          "tableTo": "product_suppliers",
+        "supplier_categories_rels_supplier_products_fk": {
+          "name": "supplier_categories_rels_supplier_products_fk",
+          "tableFrom": "supplier_categories_rels",
+          "tableTo": "supplier_products",
           "columnsFrom": [
-            "product_suppliers_id"
+            "supplier_products_id"
           ],
           "columnsTo": [
             "id"
@@ -492,8 +492,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.sponsors": {
-      "name": "sponsors",
+    "public.contacts": {
+      "name": "contacts",
       "schema": "",
       "columns": {
         "id": {
@@ -567,8 +567,8 @@
         }
       },
       "indexes": {
-        "sponsors_logo_idx": {
-          "name": "sponsors_logo_idx",
+        "contacts_logo_idx": {
+          "name": "contacts_logo_idx",
           "columns": [
             {
               "expression": "logo_id",
@@ -582,8 +582,8 @@
           "method": "btree",
           "with": {}
         },
-        "sponsors_category_idx": {
-          "name": "sponsors_category_idx",
+        "contacts_category_idx": {
+          "name": "contacts_category_idx",
           "columns": [
             {
               "expression": "category_id",
@@ -597,8 +597,8 @@
           "method": "btree",
           "with": {}
         },
-        "sponsors_updated_at_idx": {
-          "name": "sponsors_updated_at_idx",
+        "contacts_updated_at_idx": {
+          "name": "contacts_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -612,8 +612,8 @@
           "method": "btree",
           "with": {}
         },
-        "sponsors_created_at_idx": {
-          "name": "sponsors_created_at_idx",
+        "contacts_created_at_idx": {
+          "name": "contacts_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -629,9 +629,9 @@
         }
       },
       "foreignKeys": {
-        "sponsors_logo_id_media_id_fk": {
-          "name": "sponsors_logo_id_media_id_fk",
-          "tableFrom": "sponsors",
+        "contacts_logo_id_media_id_fk": {
+          "name": "contacts_logo_id_media_id_fk",
+          "tableFrom": "contacts",
           "tableTo": "media",
           "columnsFrom": [
             "logo_id"
@@ -642,10 +642,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "sponsors_category_id_sponsor_categories_id_fk": {
-          "name": "sponsors_category_id_sponsor_categories_id_fk",
-          "tableFrom": "sponsors",
-          "tableTo": "sponsor_categories",
+        "contacts_category_id_contact_categories_id_fk": {
+          "name": "contacts_category_id_contact_categories_id_fk",
+          "tableFrom": "contacts",
+          "tableTo": "contact_categories",
           "columnsFrom": [
             "category_id"
           ],
@@ -1279,8 +1279,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.product_suppliers": {
-      "name": "product_suppliers",
+    "public.supplier_products": {
+      "name": "supplier_products",
       "schema": "",
       "columns": {
         "id": {
@@ -1318,8 +1318,8 @@
         }
       },
       "indexes": {
-        "product_suppliers_logo_idx": {
-          "name": "product_suppliers_logo_idx",
+        "supplier_products_logo_idx": {
+          "name": "supplier_products_logo_idx",
           "columns": [
             {
               "expression": "logo_id",
@@ -1333,8 +1333,8 @@
           "method": "btree",
           "with": {}
         },
-        "product_suppliers_updated_at_idx": {
-          "name": "product_suppliers_updated_at_idx",
+        "supplier_products_updated_at_idx": {
+          "name": "supplier_products_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -1348,8 +1348,8 @@
           "method": "btree",
           "with": {}
         },
-        "product_suppliers_created_at_idx": {
-          "name": "product_suppliers_created_at_idx",
+        "supplier_products_created_at_idx": {
+          "name": "supplier_products_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -1365,9 +1365,9 @@
         }
       },
       "foreignKeys": {
-        "product_suppliers_logo_id_media_id_fk": {
-          "name": "product_suppliers_logo_id_media_id_fk",
-          "tableFrom": "product_suppliers",
+        "supplier_products_logo_id_media_id_fk": {
+          "name": "supplier_products_logo_id_media_id_fk",
+          "tableFrom": "supplier_products",
           "tableTo": "media",
           "columnsFrom": [
             "logo_id"
@@ -1385,8 +1385,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.product_suppliers_rels": {
-      "name": "product_suppliers_rels",
+    "public.supplier_products_rels": {
+      "name": "supplier_products_rels",
       "schema": "",
       "columns": {
         "id": {
@@ -1421,8 +1421,8 @@
         }
       },
       "indexes": {
-        "product_suppliers_rels_order_idx": {
-          "name": "product_suppliers_rels_order_idx",
+        "supplier_products_rels_order_idx": {
+          "name": "supplier_products_rels_order_idx",
           "columns": [
             {
               "expression": "order",
@@ -1436,8 +1436,8 @@
           "method": "btree",
           "with": {}
         },
-        "product_suppliers_rels_parent_idx": {
-          "name": "product_suppliers_rels_parent_idx",
+        "supplier_products_rels_parent_idx": {
+          "name": "supplier_products_rels_parent_idx",
           "columns": [
             {
               "expression": "parent_id",
@@ -1451,8 +1451,8 @@
           "method": "btree",
           "with": {}
         },
-        "product_suppliers_rels_path_idx": {
-          "name": "product_suppliers_rels_path_idx",
+        "supplier_products_rels_path_idx": {
+          "name": "supplier_products_rels_path_idx",
           "columns": [
             {
               "expression": "path",
@@ -1466,8 +1466,8 @@
           "method": "btree",
           "with": {}
         },
-        "product_suppliers_rels_suppliers_id_idx": {
-          "name": "product_suppliers_rels_suppliers_id_idx",
+        "supplier_products_rels_suppliers_id_idx": {
+          "name": "supplier_products_rels_suppliers_id_idx",
           "columns": [
             {
               "expression": "suppliers_id",
@@ -1483,10 +1483,10 @@
         }
       },
       "foreignKeys": {
-        "product_suppliers_rels_parent_fk": {
-          "name": "product_suppliers_rels_parent_fk",
-          "tableFrom": "product_suppliers_rels",
-          "tableTo": "product_suppliers",
+        "supplier_products_rels_parent_fk": {
+          "name": "supplier_products_rels_parent_fk",
+          "tableFrom": "supplier_products_rels",
+          "tableTo": "supplier_products",
           "columnsFrom": [
             "parent_id"
           ],
@@ -1496,9 +1496,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "product_suppliers_rels_suppliers_fk": {
-          "name": "product_suppliers_rels_suppliers_fk",
-          "tableFrom": "product_suppliers_rels",
+        "supplier_products_rels_suppliers_fk": {
+          "name": "supplier_products_rels_suppliers_fk",
+          "tableFrom": "supplier_products_rels",
           "tableTo": "suppliers",
           "columnsFrom": [
             "suppliers_id"
@@ -1516,8 +1516,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.sponsor_categories": {
-      "name": "sponsor_categories",
+    "public.contact_categories": {
+      "name": "contact_categories",
       "schema": "",
       "columns": {
         "id": {
@@ -1549,8 +1549,8 @@
         }
       },
       "indexes": {
-        "sponsor_categories_updated_at_idx": {
-          "name": "sponsor_categories_updated_at_idx",
+        "contact_categories_updated_at_idx": {
+          "name": "contact_categories_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -1564,8 +1564,8 @@
           "method": "btree",
           "with": {}
         },
-        "sponsor_categories_created_at_idx": {
-          "name": "sponsor_categories_created_at_idx",
+        "contact_categories_created_at_idx": {
+          "name": "contact_categories_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -2392,14 +2392,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "category_suppliers_id": {
-          "name": "category_suppliers_id",
+        "supplier_categories_id": {
+          "name": "supplier_categories_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "sponsors_id": {
-          "name": "sponsors_id",
+        "contacts_id": {
+          "name": "contacts_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -2428,14 +2428,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "product_suppliers_id": {
-          "name": "product_suppliers_id",
+        "supplier_products_id": {
+          "name": "supplier_products_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "sponsor_categories_id": {
-          "name": "sponsor_categories_id",
+        "contact_categories_id": {
+          "name": "contact_categories_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -2532,11 +2532,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_category_suppliers_id_idx": {
-          "name": "payload_locked_documents_rels_category_suppliers_id_idx",
+        "payload_locked_documents_rels_supplier_categories_id_idx": {
+          "name": "payload_locked_documents_rels_supplier_categories_id_idx",
           "columns": [
             {
-              "expression": "category_suppliers_id",
+              "expression": "supplier_categories_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2547,11 +2547,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_sponsors_id_idx": {
-          "name": "payload_locked_documents_rels_sponsors_id_idx",
+        "payload_locked_documents_rels_contacts_id_idx": {
+          "name": "payload_locked_documents_rels_contacts_id_idx",
           "columns": [
             {
-              "expression": "sponsors_id",
+              "expression": "contacts_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2622,11 +2622,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_product_suppliers_id_idx": {
-          "name": "payload_locked_documents_rels_product_suppliers_id_idx",
+        "payload_locked_documents_rels_supplier_products_id_idx": {
+          "name": "payload_locked_documents_rels_supplier_products_id_idx",
           "columns": [
             {
-              "expression": "product_suppliers_id",
+              "expression": "supplier_products_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2637,11 +2637,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_sponsor_categories_id_idx": {
-          "name": "payload_locked_documents_rels_sponsor_categories_id_idx",
+        "payload_locked_documents_rels_contact_categories_id_idx": {
+          "name": "payload_locked_documents_rels_contact_categories_id_idx",
           "columns": [
             {
-              "expression": "sponsor_categories_id",
+              "expression": "contact_categories_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2755,12 +2755,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_category_suppliers_fk": {
-          "name": "payload_locked_documents_rels_category_suppliers_fk",
+        "payload_locked_documents_rels_supplier_categories_fk": {
+          "name": "payload_locked_documents_rels_supplier_categories_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "category_suppliers",
+          "tableTo": "supplier_categories",
           "columnsFrom": [
-            "category_suppliers_id"
+            "supplier_categories_id"
           ],
           "columnsTo": [
             "id"
@@ -2768,12 +2768,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_sponsors_fk": {
-          "name": "payload_locked_documents_rels_sponsors_fk",
+        "payload_locked_documents_rels_contacts_fk": {
+          "name": "payload_locked_documents_rels_contacts_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "sponsors",
+          "tableTo": "contacts",
           "columnsFrom": [
-            "sponsors_id"
+            "contacts_id"
           ],
           "columnsTo": [
             "id"
@@ -2833,12 +2833,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_product_suppliers_fk": {
-          "name": "payload_locked_documents_rels_product_suppliers_fk",
+        "payload_locked_documents_rels_supplier_products_fk": {
+          "name": "payload_locked_documents_rels_supplier_products_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "product_suppliers",
+          "tableTo": "supplier_products",
           "columnsFrom": [
-            "product_suppliers_id"
+            "supplier_products_id"
           ],
           "columnsTo": [
             "id"
@@ -2846,12 +2846,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_sponsor_categories_fk": {
-          "name": "payload_locked_documents_rels_sponsor_categories_fk",
+        "payload_locked_documents_rels_contact_categories_fk": {
+          "name": "payload_locked_documents_rels_contact_categories_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "sponsor_categories",
+          "tableTo": "contact_categories",
           "columnsFrom": [
-            "sponsor_categories_id"
+            "contact_categories_id"
           ],
           "columnsTo": [
             "id"

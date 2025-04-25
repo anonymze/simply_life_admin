@@ -11,6 +11,12 @@ export const Fundesys: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "fundesys",
+	admin: {
+		group: {
+			en: "Newsletters",
+			fr: "Newsletters",
+		},
+	},
 	fields: [
 		{
 			name: "date",
@@ -41,6 +47,9 @@ export const Fundesys: CollectionConfig = {
 				en: "File",
 				fr: "Fichier",
 			},
+			admin: {
+				description: "Le fichier doit être au format PDF.",
+			},
 			required: true,
 		},
 		{
@@ -62,6 +71,9 @@ export const Fundesys: CollectionConfig = {
 				});
 
 				if (file.mimeType?.startsWith("video/") === false) return "Le fichier doit être une vidéo.";
+			},
+			admin: {
+				description: "Le fichier doit être une vidéo.",
 			},
 			required: true,
 		},

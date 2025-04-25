@@ -3,26 +3,30 @@ import type { CollectionConfig } from "payload";
 import { canAccessApi } from "../utils/helper";
 
 
-export const SponsorCategories: CollectionConfig = {
+export const ContactCategories: CollectionConfig = {
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
 	},
-	slug: "sponsor-categories",
+	slug: "contact-categories",
 	labels: {
 		singular: {
-			en: "Contacts type",	
-			fr: "Type de contacts",
+			en: "Contact category",	
+			fr: "Catégorie de contact",
 		},
 		plural: {
-			en: "Contact types",
-			fr: "Types de contacts",
+			en: "Contact categories",
+			fr: "Catégories de contacts",
 		},
 	},
 	admin: {
 		useAsTitle: "name",
+		group: {
+			en: "Contacts map",
+			fr: "Carte des contacts",
+		},
 	},
 	fields: [
 		{

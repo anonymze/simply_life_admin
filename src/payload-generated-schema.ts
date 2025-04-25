@@ -75,8 +75,8 @@ export const admins = pgTable(
   }),
 );
 
-export const category_suppliers_offers = pgTable(
-  "category_suppliers_offers",
+export const supplier_categories_offers = pgTable(
+  "supplier_categories_offers",
   {
     _order: integer("_order").notNull(),
     _parentID: uuid("_parent_id").notNull(),
@@ -90,23 +90,23 @@ export const category_suppliers_offers = pgTable(
     description: varchar("description"),
   },
   (columns) => ({
-    _orderIdx: index("category_suppliers_offers_order_idx").on(columns._order),
-    _parentIDIdx: index("category_suppliers_offers_parent_id_idx").on(
+    _orderIdx: index("supplier_categories_offers_order_idx").on(columns._order),
+    _parentIDIdx: index("supplier_categories_offers_parent_id_idx").on(
       columns._parentID,
     ),
-    category_suppliers_offers_file_idx: index(
-      "category_suppliers_offers_file_idx",
+    supplier_categories_offers_file_idx: index(
+      "supplier_categories_offers_file_idx",
     ).on(columns.file),
     _parentIDFk: foreignKey({
       columns: [columns["_parentID"]],
-      foreignColumns: [category_suppliers.id],
-      name: "category_suppliers_offers_parent_id_fk",
+      foreignColumns: [supplier_categories.id],
+      name: "supplier_categories_offers_parent_id_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const category_suppliers = pgTable(
-  "category_suppliers",
+export const supplier_categories = pgTable(
+  "supplier_categories",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
@@ -129,49 +129,49 @@ export const category_suppliers = pgTable(
       .notNull(),
   },
   (columns) => ({
-    category_suppliers_logo_idx: index("category_suppliers_logo_idx").on(
+    supplier_categories_logo_idx: index("supplier_categories_logo_idx").on(
       columns.logo,
     ),
-    category_suppliers_updated_at_idx: index(
-      "category_suppliers_updated_at_idx",
+    supplier_categories_updated_at_idx: index(
+      "supplier_categories_updated_at_idx",
     ).on(columns.updatedAt),
-    category_suppliers_created_at_idx: index(
-      "category_suppliers_created_at_idx",
+    supplier_categories_created_at_idx: index(
+      "supplier_categories_created_at_idx",
     ).on(columns.createdAt),
   }),
 );
 
-export const category_suppliers_rels = pgTable(
-  "category_suppliers_rels",
+export const supplier_categories_rels = pgTable(
+  "supplier_categories_rels",
   {
     id: serial("id").primaryKey(),
     order: integer("order"),
     parent: uuid("parent_id").notNull(),
     path: varchar("path").notNull(),
-    "product-suppliersID": uuid("product_suppliers_id"),
+    "supplier-productsID": uuid("supplier_products_id"),
   },
   (columns) => ({
-    order: index("category_suppliers_rels_order_idx").on(columns.order),
-    parentIdx: index("category_suppliers_rels_parent_idx").on(columns.parent),
-    pathIdx: index("category_suppliers_rels_path_idx").on(columns.path),
-    category_suppliers_rels_product_suppliers_id_idx: index(
-      "category_suppliers_rels_product_suppliers_id_idx",
-    ).on(columns["product-suppliersID"]),
+    order: index("supplier_categories_rels_order_idx").on(columns.order),
+    parentIdx: index("supplier_categories_rels_parent_idx").on(columns.parent),
+    pathIdx: index("supplier_categories_rels_path_idx").on(columns.path),
+    supplier_categories_rels_supplier_products_id_idx: index(
+      "supplier_categories_rels_supplier_products_id_idx",
+    ).on(columns["supplier-productsID"]),
     parentFk: foreignKey({
       columns: [columns["parent"]],
-      foreignColumns: [category_suppliers.id],
-      name: "category_suppliers_rels_parent_fk",
+      foreignColumns: [supplier_categories.id],
+      name: "supplier_categories_rels_parent_fk",
     }).onDelete("cascade"),
-    "product-suppliersIdFk": foreignKey({
-      columns: [columns["product-suppliersID"]],
-      foreignColumns: [product_suppliers.id],
-      name: "category_suppliers_rels_product_suppliers_fk",
+    "supplier-productsIdFk": foreignKey({
+      columns: [columns["supplier-productsID"]],
+      foreignColumns: [supplier_products.id],
+      name: "supplier_categories_rels_supplier_products_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const sponsors = pgTable(
-  "sponsors",
+export const contacts = pgTable(
+  "contacts",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
@@ -182,7 +182,7 @@ export const sponsors = pgTable(
       }),
     category: uuid("category_id")
       .notNull()
-      .references(() => sponsor_categories.id, {
+      .references(() => contact_categories.id, {
         onDelete: "set null",
       }),
     phone: varchar("phone"),
@@ -206,12 +206,12 @@ export const sponsors = pgTable(
       .notNull(),
   },
   (columns) => ({
-    sponsors_logo_idx: index("sponsors_logo_idx").on(columns.logo),
-    sponsors_category_idx: index("sponsors_category_idx").on(columns.category),
-    sponsors_updated_at_idx: index("sponsors_updated_at_idx").on(
+    contacts_logo_idx: index("contacts_logo_idx").on(columns.logo),
+    contacts_category_idx: index("contacts_category_idx").on(columns.category),
+    contacts_updated_at_idx: index("contacts_updated_at_idx").on(
       columns.updatedAt,
     ),
-    sponsors_created_at_idx: index("sponsors_created_at_idx").on(
+    contacts_created_at_idx: index("contacts_created_at_idx").on(
       columns.createdAt,
     ),
   }),
@@ -400,8 +400,8 @@ export const media = pgTable(
   }),
 );
 
-export const product_suppliers = pgTable(
-  "product_suppliers",
+export const supplier_products = pgTable(
+  "supplier_products",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
@@ -424,20 +424,20 @@ export const product_suppliers = pgTable(
       .notNull(),
   },
   (columns) => ({
-    product_suppliers_logo_idx: index("product_suppliers_logo_idx").on(
+    supplier_products_logo_idx: index("supplier_products_logo_idx").on(
       columns.logo,
     ),
-    product_suppliers_updated_at_idx: index(
-      "product_suppliers_updated_at_idx",
+    supplier_products_updated_at_idx: index(
+      "supplier_products_updated_at_idx",
     ).on(columns.updatedAt),
-    product_suppliers_created_at_idx: index(
-      "product_suppliers_created_at_idx",
+    supplier_products_created_at_idx: index(
+      "supplier_products_created_at_idx",
     ).on(columns.createdAt),
   }),
 );
 
-export const product_suppliers_rels = pgTable(
-  "product_suppliers_rels",
+export const supplier_products_rels = pgTable(
+  "supplier_products_rels",
   {
     id: serial("id").primaryKey(),
     order: integer("order"),
@@ -446,27 +446,27 @@ export const product_suppliers_rels = pgTable(
     suppliersID: uuid("suppliers_id"),
   },
   (columns) => ({
-    order: index("product_suppliers_rels_order_idx").on(columns.order),
-    parentIdx: index("product_suppliers_rels_parent_idx").on(columns.parent),
-    pathIdx: index("product_suppliers_rels_path_idx").on(columns.path),
-    product_suppliers_rels_suppliers_id_idx: index(
-      "product_suppliers_rels_suppliers_id_idx",
+    order: index("supplier_products_rels_order_idx").on(columns.order),
+    parentIdx: index("supplier_products_rels_parent_idx").on(columns.parent),
+    pathIdx: index("supplier_products_rels_path_idx").on(columns.path),
+    supplier_products_rels_suppliers_id_idx: index(
+      "supplier_products_rels_suppliers_id_idx",
     ).on(columns.suppliersID),
     parentFk: foreignKey({
       columns: [columns["parent"]],
-      foreignColumns: [product_suppliers.id],
-      name: "product_suppliers_rels_parent_fk",
+      foreignColumns: [supplier_products.id],
+      name: "supplier_products_rels_parent_fk",
     }).onDelete("cascade"),
     suppliersIdFk: foreignKey({
       columns: [columns["suppliersID"]],
       foreignColumns: [suppliers.id],
-      name: "product_suppliers_rels_suppliers_fk",
+      name: "supplier_products_rels_suppliers_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const sponsor_categories = pgTable(
-  "sponsor_categories",
+export const contact_categories = pgTable(
+  "contact_categories",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
@@ -486,11 +486,11 @@ export const sponsor_categories = pgTable(
       .notNull(),
   },
   (columns) => ({
-    sponsor_categories_updated_at_idx: index(
-      "sponsor_categories_updated_at_idx",
+    contact_categories_updated_at_idx: index(
+      "contact_categories_updated_at_idx",
     ).on(columns.updatedAt),
-    sponsor_categories_created_at_idx: index(
-      "sponsor_categories_created_at_idx",
+    contact_categories_created_at_idx: index(
+      "contact_categories_created_at_idx",
     ).on(columns.createdAt),
   }),
 );
@@ -760,14 +760,14 @@ export const payload_locked_documents_rels = pgTable(
     parent: uuid("parent_id").notNull(),
     path: varchar("path").notNull(),
     adminsID: uuid("admins_id"),
-    "category-suppliersID": uuid("category_suppliers_id"),
-    sponsorsID: uuid("sponsors_id"),
+    "supplier-categoriesID": uuid("supplier_categories_id"),
+    contactsID: uuid("contacts_id"),
     fidnetID: uuid("fidnet_id"),
     suppliersID: uuid("suppliers_id"),
     fundesysID: uuid("fundesys_id"),
     mediaID: uuid("media_id"),
-    "product-suppliersID": uuid("product_suppliers_id"),
-    "sponsor-categoriesID": uuid("sponsor_categories_id"),
+    "supplier-productsID": uuid("supplier_products_id"),
+    "contact-categoriesID": uuid("contact_categories_id"),
     "app-usersID": uuid("app_users_id"),
     "agency-lifeID": uuid("agency_life_id"),
     "chat-roomsID": uuid("chat_rooms_id"),
@@ -783,12 +783,12 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_admins_id_idx: index(
       "payload_locked_documents_rels_admins_id_idx",
     ).on(columns.adminsID),
-    payload_locked_documents_rels_category_suppliers_id_idx: index(
-      "payload_locked_documents_rels_category_suppliers_id_idx",
-    ).on(columns["category-suppliersID"]),
-    payload_locked_documents_rels_sponsors_id_idx: index(
-      "payload_locked_documents_rels_sponsors_id_idx",
-    ).on(columns.sponsorsID),
+    payload_locked_documents_rels_supplier_categories_id_idx: index(
+      "payload_locked_documents_rels_supplier_categories_id_idx",
+    ).on(columns["supplier-categoriesID"]),
+    payload_locked_documents_rels_contacts_id_idx: index(
+      "payload_locked_documents_rels_contacts_id_idx",
+    ).on(columns.contactsID),
     payload_locked_documents_rels_fidnet_id_idx: index(
       "payload_locked_documents_rels_fidnet_id_idx",
     ).on(columns.fidnetID),
@@ -801,12 +801,12 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_media_id_idx: index(
       "payload_locked_documents_rels_media_id_idx",
     ).on(columns.mediaID),
-    payload_locked_documents_rels_product_suppliers_id_idx: index(
-      "payload_locked_documents_rels_product_suppliers_id_idx",
-    ).on(columns["product-suppliersID"]),
-    payload_locked_documents_rels_sponsor_categories_id_idx: index(
-      "payload_locked_documents_rels_sponsor_categories_id_idx",
-    ).on(columns["sponsor-categoriesID"]),
+    payload_locked_documents_rels_supplier_products_id_idx: index(
+      "payload_locked_documents_rels_supplier_products_id_idx",
+    ).on(columns["supplier-productsID"]),
+    payload_locked_documents_rels_contact_categories_id_idx: index(
+      "payload_locked_documents_rels_contact_categories_id_idx",
+    ).on(columns["contact-categoriesID"]),
     payload_locked_documents_rels_app_users_id_idx: index(
       "payload_locked_documents_rels_app_users_id_idx",
     ).on(columns["app-usersID"]),
@@ -832,15 +832,15 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [admins.id],
       name: "payload_locked_documents_rels_admins_fk",
     }).onDelete("cascade"),
-    "category-suppliersIdFk": foreignKey({
-      columns: [columns["category-suppliersID"]],
-      foreignColumns: [category_suppliers.id],
-      name: "payload_locked_documents_rels_category_suppliers_fk",
+    "supplier-categoriesIdFk": foreignKey({
+      columns: [columns["supplier-categoriesID"]],
+      foreignColumns: [supplier_categories.id],
+      name: "payload_locked_documents_rels_supplier_categories_fk",
     }).onDelete("cascade"),
-    sponsorsIdFk: foreignKey({
-      columns: [columns["sponsorsID"]],
-      foreignColumns: [sponsors.id],
-      name: "payload_locked_documents_rels_sponsors_fk",
+    contactsIdFk: foreignKey({
+      columns: [columns["contactsID"]],
+      foreignColumns: [contacts.id],
+      name: "payload_locked_documents_rels_contacts_fk",
     }).onDelete("cascade"),
     fidnetIdFk: foreignKey({
       columns: [columns["fidnetID"]],
@@ -862,15 +862,15 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [media.id],
       name: "payload_locked_documents_rels_media_fk",
     }).onDelete("cascade"),
-    "product-suppliersIdFk": foreignKey({
-      columns: [columns["product-suppliersID"]],
-      foreignColumns: [product_suppliers.id],
-      name: "payload_locked_documents_rels_product_suppliers_fk",
+    "supplier-productsIdFk": foreignKey({
+      columns: [columns["supplier-productsID"]],
+      foreignColumns: [supplier_products.id],
+      name: "payload_locked_documents_rels_supplier_products_fk",
     }).onDelete("cascade"),
-    "sponsor-categoriesIdFk": foreignKey({
-      columns: [columns["sponsor-categoriesID"]],
-      foreignColumns: [sponsor_categories.id],
-      name: "payload_locked_documents_rels_sponsor_categories_fk",
+    "contact-categoriesIdFk": foreignKey({
+      columns: [columns["contact-categoriesID"]],
+      foreignColumns: [contact_categories.id],
+      name: "payload_locked_documents_rels_contact_categories_fk",
     }).onDelete("cascade"),
     "app-usersIdFk": foreignKey({
       columns: [columns["app-usersID"]],
@@ -1004,61 +1004,61 @@ export const payload_migrations = pgTable(
 );
 
 export const relations_admins = relations(admins, () => ({}));
-export const relations_category_suppliers_offers = relations(
-  category_suppliers_offers,
+export const relations_supplier_categories_offers = relations(
+  supplier_categories_offers,
   ({ one }) => ({
-    _parentID: one(category_suppliers, {
-      fields: [category_suppliers_offers._parentID],
-      references: [category_suppliers.id],
+    _parentID: one(supplier_categories, {
+      fields: [supplier_categories_offers._parentID],
+      references: [supplier_categories.id],
       relationName: "offers",
     }),
     file: one(media, {
-      fields: [category_suppliers_offers.file],
+      fields: [supplier_categories_offers.file],
       references: [media.id],
       relationName: "file",
     }),
   }),
 );
-export const relations_category_suppliers_rels = relations(
-  category_suppliers_rels,
+export const relations_supplier_categories_rels = relations(
+  supplier_categories_rels,
   ({ one }) => ({
-    parent: one(category_suppliers, {
-      fields: [category_suppliers_rels.parent],
-      references: [category_suppliers.id],
+    parent: one(supplier_categories, {
+      fields: [supplier_categories_rels.parent],
+      references: [supplier_categories.id],
       relationName: "_rels",
     }),
-    "product-suppliersID": one(product_suppliers, {
-      fields: [category_suppliers_rels["product-suppliersID"]],
-      references: [product_suppliers.id],
-      relationName: "product-suppliers",
+    "supplier-productsID": one(supplier_products, {
+      fields: [supplier_categories_rels["supplier-productsID"]],
+      references: [supplier_products.id],
+      relationName: "supplier-products",
     }),
   }),
 );
-export const relations_category_suppliers = relations(
-  category_suppliers,
+export const relations_supplier_categories = relations(
+  supplier_categories,
   ({ one, many }) => ({
     logo: one(media, {
-      fields: [category_suppliers.logo],
+      fields: [supplier_categories.logo],
       references: [media.id],
       relationName: "logo",
     }),
-    offers: many(category_suppliers_offers, {
+    offers: many(supplier_categories_offers, {
       relationName: "offers",
     }),
-    _rels: many(category_suppliers_rels, {
+    _rels: many(supplier_categories_rels, {
       relationName: "_rels",
     }),
   }),
 );
-export const relations_sponsors = relations(sponsors, ({ one }) => ({
+export const relations_contacts = relations(contacts, ({ one }) => ({
   logo: one(media, {
-    fields: [sponsors.logo],
+    fields: [contacts.logo],
     references: [media.id],
     relationName: "logo",
   }),
-  category: one(sponsor_categories, {
-    fields: [sponsors.category],
-    references: [sponsor_categories.id],
+  category: one(contact_categories, {
+    fields: [contacts.category],
+    references: [contact_categories.id],
     relationName: "category",
   }),
 }));
@@ -1094,36 +1094,36 @@ export const relations_fundesys = relations(fundesys, ({ one }) => ({
   }),
 }));
 export const relations_media = relations(media, () => ({}));
-export const relations_product_suppliers_rels = relations(
-  product_suppliers_rels,
+export const relations_supplier_products_rels = relations(
+  supplier_products_rels,
   ({ one }) => ({
-    parent: one(product_suppliers, {
-      fields: [product_suppliers_rels.parent],
-      references: [product_suppliers.id],
+    parent: one(supplier_products, {
+      fields: [supplier_products_rels.parent],
+      references: [supplier_products.id],
       relationName: "_rels",
     }),
     suppliersID: one(suppliers, {
-      fields: [product_suppliers_rels.suppliersID],
+      fields: [supplier_products_rels.suppliersID],
       references: [suppliers.id],
       relationName: "suppliers",
     }),
   }),
 );
-export const relations_product_suppliers = relations(
-  product_suppliers,
+export const relations_supplier_products = relations(
+  supplier_products,
   ({ one, many }) => ({
     logo: one(media, {
-      fields: [product_suppliers.logo],
+      fields: [supplier_products.logo],
       references: [media.id],
       relationName: "logo",
     }),
-    _rels: many(product_suppliers_rels, {
+    _rels: many(supplier_products_rels, {
       relationName: "_rels",
     }),
   }),
 );
-export const relations_sponsor_categories = relations(
-  sponsor_categories,
+export const relations_contact_categories = relations(
+  contact_categories,
   () => ({}),
 );
 export const relations_app_users = relations(app_users, ({ one }) => ({
@@ -1178,15 +1178,15 @@ export const relations_payload_locked_documents_rels = relations(
       references: [admins.id],
       relationName: "admins",
     }),
-    "category-suppliersID": one(category_suppliers, {
-      fields: [payload_locked_documents_rels["category-suppliersID"]],
-      references: [category_suppliers.id],
-      relationName: "category-suppliers",
+    "supplier-categoriesID": one(supplier_categories, {
+      fields: [payload_locked_documents_rels["supplier-categoriesID"]],
+      references: [supplier_categories.id],
+      relationName: "supplier-categories",
     }),
-    sponsorsID: one(sponsors, {
-      fields: [payload_locked_documents_rels.sponsorsID],
-      references: [sponsors.id],
-      relationName: "sponsors",
+    contactsID: one(contacts, {
+      fields: [payload_locked_documents_rels.contactsID],
+      references: [contacts.id],
+      relationName: "contacts",
     }),
     fidnetID: one(fidnet, {
       fields: [payload_locked_documents_rels.fidnetID],
@@ -1208,15 +1208,15 @@ export const relations_payload_locked_documents_rels = relations(
       references: [media.id],
       relationName: "media",
     }),
-    "product-suppliersID": one(product_suppliers, {
-      fields: [payload_locked_documents_rels["product-suppliersID"]],
-      references: [product_suppliers.id],
-      relationName: "product-suppliers",
+    "supplier-productsID": one(supplier_products, {
+      fields: [payload_locked_documents_rels["supplier-productsID"]],
+      references: [supplier_products.id],
+      relationName: "supplier-products",
     }),
-    "sponsor-categoriesID": one(sponsor_categories, {
-      fields: [payload_locked_documents_rels["sponsor-categoriesID"]],
-      references: [sponsor_categories.id],
-      relationName: "sponsor-categories",
+    "contact-categoriesID": one(contact_categories, {
+      fields: [payload_locked_documents_rels["contact-categoriesID"]],
+      references: [contact_categories.id],
+      relationName: "contact-categories",
     }),
     "app-usersID": one(app_users, {
       fields: [payload_locked_documents_rels["app-usersID"]],
@@ -1291,17 +1291,17 @@ type DatabaseSchema = {
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
   admins: typeof admins;
-  category_suppliers_offers: typeof category_suppliers_offers;
-  category_suppliers: typeof category_suppliers;
-  category_suppliers_rels: typeof category_suppliers_rels;
-  sponsors: typeof sponsors;
+  supplier_categories_offers: typeof supplier_categories_offers;
+  supplier_categories: typeof supplier_categories;
+  supplier_categories_rels: typeof supplier_categories_rels;
+  contacts: typeof contacts;
   fidnet: typeof fidnet;
   suppliers: typeof suppliers;
   fundesys: typeof fundesys;
   media: typeof media;
-  product_suppliers: typeof product_suppliers;
-  product_suppliers_rels: typeof product_suppliers_rels;
-  sponsor_categories: typeof sponsor_categories;
+  supplier_products: typeof supplier_products;
+  supplier_products_rels: typeof supplier_products_rels;
+  contact_categories: typeof contact_categories;
   app_users: typeof app_users;
   agency_life: typeof agency_life;
   chat_rooms: typeof chat_rooms;
@@ -1313,17 +1313,17 @@ type DatabaseSchema = {
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
   relations_admins: typeof relations_admins;
-  relations_category_suppliers_offers: typeof relations_category_suppliers_offers;
-  relations_category_suppliers_rels: typeof relations_category_suppliers_rels;
-  relations_category_suppliers: typeof relations_category_suppliers;
-  relations_sponsors: typeof relations_sponsors;
+  relations_supplier_categories_offers: typeof relations_supplier_categories_offers;
+  relations_supplier_categories_rels: typeof relations_supplier_categories_rels;
+  relations_supplier_categories: typeof relations_supplier_categories;
+  relations_contacts: typeof relations_contacts;
   relations_fidnet: typeof relations_fidnet;
   relations_suppliers: typeof relations_suppliers;
   relations_fundesys: typeof relations_fundesys;
   relations_media: typeof relations_media;
-  relations_product_suppliers_rels: typeof relations_product_suppliers_rels;
-  relations_product_suppliers: typeof relations_product_suppliers;
-  relations_sponsor_categories: typeof relations_sponsor_categories;
+  relations_supplier_products_rels: typeof relations_supplier_products_rels;
+  relations_supplier_products: typeof relations_supplier_products;
+  relations_contact_categories: typeof relations_contact_categories;
   relations_app_users: typeof relations_app_users;
   relations_agency_life: typeof relations_agency_life;
   relations_chat_rooms: typeof relations_chat_rooms;

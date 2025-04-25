@@ -68,14 +68,14 @@ export interface Config {
   blocks: {};
   collections: {
     admins: Admin;
-    'category-suppliers': CategorySupplier;
-    sponsors: Sponsor;
+    'supplier-categories': SupplierCategory;
+    contacts: Contact;
     fidnet: Fidnet;
     suppliers: Supplier;
     fundesys: Fundesy;
     media: Media;
-    'product-suppliers': ProductSupplier;
-    'sponsor-categories': SponsorCategory;
+    'supplier-products': SupplierProduct;
+    'contact-categories': ContactCategory;
     'app-users': AppUser;
     'agency-life': AgencyLife;
     'chat-rooms': ChatRoom;
@@ -88,14 +88,14 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
-    'category-suppliers': CategorySuppliersSelect<false> | CategorySuppliersSelect<true>;
-    sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
+    'supplier-categories': SupplierCategoriesSelect<false> | SupplierCategoriesSelect<true>;
+    contacts: ContactsSelect<false> | ContactsSelect<true>;
     fidnet: FidnetSelect<false> | FidnetSelect<true>;
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    'product-suppliers': ProductSuppliersSelect<false> | ProductSuppliersSelect<true>;
-    'sponsor-categories': SponsorCategoriesSelect<false> | SponsorCategoriesSelect<true>;
+    'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
+    'contact-categories': ContactCategoriesSelect<false> | ContactCategoriesSelect<true>;
     'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
     'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
@@ -179,13 +179,13 @@ export interface Admin {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category-suppliers".
+ * via the `definition` "supplier-categories".
  */
-export interface CategorySupplier {
+export interface SupplierCategory {
   id: string;
   name: string;
   logo?: (string | null) | Media;
-  product_suppliers: (string | ProductSupplier)[];
+  product_suppliers: (string | SupplierProduct)[];
   offers?:
     | {
         name: string;
@@ -222,9 +222,9 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-suppliers".
+ * via the `definition` "supplier-products".
  */
-export interface ProductSupplier {
+export interface SupplierProduct {
   id: string;
   name: string;
   logo?: (string | null) | Media;
@@ -269,13 +269,13 @@ export interface Supplier {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsors".
+ * via the `definition` "contacts".
  */
-export interface Sponsor {
+export interface Contact {
   id: string;
   name: string;
   logo: string | Media;
-  category: string | SponsorCategory;
+  category: string | ContactCategory;
   phone?: string | null;
   website?: string | null;
   address?: string | null;
@@ -286,9 +286,9 @@ export interface Sponsor {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsor-categories".
+ * via the `definition` "contact-categories".
  */
-export interface SponsorCategory {
+export interface ContactCategory {
   id: string;
   name: string;
   updatedAt: string;
@@ -306,7 +306,7 @@ export interface Fidnet {
    */
   file: string | Media;
   /**
-   * Le fichier doit être au format MP4.
+   * Le fichier doit être une vidéo.
    */
   video: string | Media;
   updatedAt: string;
@@ -319,7 +319,13 @@ export interface Fidnet {
 export interface Fundesy {
   id: string;
   date: string;
+  /**
+   * Le fichier doit être au format PDF.
+   */
   file: string | Media;
+  /**
+   * Le fichier doit être une vidéo.
+   */
   video: string | Media;
   updatedAt: string;
   createdAt: string;
@@ -333,6 +339,9 @@ export interface AppUser {
   lastname: string;
   firstname: string;
   phone?: string | null;
+  /**
+   * Le fichier doit être une image.
+   */
   photo?: (string | null) | Media;
   role: 'associate' | 'employee' | 'independent' | 'visitor';
   updatedAt: string;
@@ -410,12 +419,12 @@ export interface PayloadLockedDocument {
         value: string | Admin;
       } | null)
     | ({
-        relationTo: 'category-suppliers';
-        value: string | CategorySupplier;
+        relationTo: 'supplier-categories';
+        value: string | SupplierCategory;
       } | null)
     | ({
-        relationTo: 'sponsors';
-        value: string | Sponsor;
+        relationTo: 'contacts';
+        value: string | Contact;
       } | null)
     | ({
         relationTo: 'fidnet';
@@ -434,12 +443,12 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'product-suppliers';
-        value: string | ProductSupplier;
+        relationTo: 'supplier-products';
+        value: string | SupplierProduct;
       } | null)
     | ({
-        relationTo: 'sponsor-categories';
-        value: string | SponsorCategory;
+        relationTo: 'contact-categories';
+        value: string | ContactCategory;
       } | null)
     | ({
         relationTo: 'app-users';
@@ -531,9 +540,9 @@ export interface AdminsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category-suppliers_select".
+ * via the `definition` "supplier-categories_select".
  */
-export interface CategorySuppliersSelect<T extends boolean = true> {
+export interface SupplierCategoriesSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
   product_suppliers?: T;
@@ -550,9 +559,9 @@ export interface CategorySuppliersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsors_select".
+ * via the `definition` "contacts_select".
  */
-export interface SponsorsSelect<T extends boolean = true> {
+export interface ContactsSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
   category?: T;
@@ -644,9 +653,9 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-suppliers_select".
+ * via the `definition` "supplier-products_select".
  */
-export interface ProductSuppliersSelect<T extends boolean = true> {
+export interface SupplierProductsSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
   suppliers?: T;
@@ -655,9 +664,9 @@ export interface ProductSuppliersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sponsor-categories_select".
+ * via the `definition` "contact-categories_select".
  */
-export interface SponsorCategoriesSelect<T extends boolean = true> {
+export interface ContactCategoriesSelect<T extends boolean = true> {
   name?: T;
   updatedAt?: T;
   createdAt?: T;

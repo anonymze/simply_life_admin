@@ -3,18 +3,18 @@ import type { CollectionConfig } from "payload";
 import { canAccessApi } from "../utils/helper";
 
 
-export const Sponsors: CollectionConfig = {
+export const Contacts: CollectionConfig = {
 	access: {
 		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
 	},
-	slug: "sponsors",
+	slug: "contacts",
 	labels: {
 		singular: {
-			en: "Contacts",
-			fr: "Contacts",
+			en: "Contact",
+			fr: "Contact",
 		},
 		plural: {
 			en: "Contacts",
@@ -23,6 +23,10 @@ export const Sponsors: CollectionConfig = {
 	},
 	admin: {
 		useAsTitle: "name",
+		group: {
+			en: "Contacts map",
+			fr: "Carte des contacts",
+		},
 	},
 	fields: [
 		{
@@ -48,7 +52,7 @@ export const Sponsors: CollectionConfig = {
 			name: "category",
 			type: "relationship",
 			required: true,
-			relationTo: "sponsor-categories",
+			relationTo: "contact-categories",
 			label: {
 				en: "Category",
 				fr: "Catégorie",

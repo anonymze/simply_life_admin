@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { canAccessApi, SSEMessages } from "../utils/helper";
+import { canAccessApi } from "../utils/helper";
 
 
 export const Messages: CollectionConfig = {
@@ -14,21 +14,41 @@ export const Messages: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "messages",
-	endpoints: [SSEMessages],
+	defaultPopulate: {
+		app_user: {
+			email: true,
+			id: true,
+			lastname: true,
+			firstname: true,
+			photo: true,
+		},
+		chat_room: {
+			populate: true,
+		},
+	},
 	fields: [
 		{
 			name: "app_user",
 			type: "relationship",
 			relationTo: "app-users",
 			required: true,
+			maxDepth: 2,
 			hasMany: false,
+			filterOptions: () => {
+				return true;
+			},
+			admin: {
+				readOnly: true,
+			},
 		},
 		{
 			name: "chat_room",
 			type: "relationship",
+			// only id for now
+			maxDepth: 0,
 			relationTo: "chat-rooms",
-			required: true,
 			hasMany: false,
+			required: true,
 		},
 		{
 			name: "message",
@@ -41,4 +61,3 @@ export const Messages: CollectionConfig = {
 		},
 	],
 };
-

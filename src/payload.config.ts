@@ -10,18 +10,18 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 import path from "path";
 
-import { SponsorCategories } from "./collections/sponsor-categories";
-import { CategorySuppliers } from "./collections/category-suppliers";
+import { SupplierCategories } from "./collections/supplier-categories";
+import { ContactCategories } from "./collections/contact-categories";
 import { websocketServerPlugin } from "./plugins/websocket-server";
-import { ProductSuppliers } from "./collections/product-suppliers";
+import { SupplierProducts } from "./collections/supplier-products";
 import { AgencyLife } from "./collections/agency-life";
 import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
 import { Suppliers } from "./collections/suppliers";
 import { AppUsers } from "./collections/app-users";
-import { Sponsors } from "./collections/sponsors";
 import { Messages } from "./collections/messages";
 import { Fundesys } from "./collections/fundesys";
+import { Contacts } from "./collections/contacts";
 import { Fidnet } from "./collections/fidnet";
 import { Admins } from "./collections/admins";
 import { Media } from "./collections/media";
@@ -124,14 +124,14 @@ export default buildConfig({
 	},
 	collections: [
 		Admins,
-		CategorySuppliers,
-		Sponsors,
+		SupplierCategories,
+		Contacts,
 		Fidnet,
 		Suppliers,
 		Fundesys,
 		Media,
-		ProductSuppliers,
-		SponsorCategories,
+		SupplierProducts,
+		ContactCategories,
 		AppUsers,
 		AgencyLife,
 		ChatRooms,
