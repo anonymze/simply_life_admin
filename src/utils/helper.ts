@@ -34,9 +34,6 @@ const verifyOrigin = (origin: string | null, originType: originType): boolean =>
  *  - numbers
  **/
 export const validatePassword: CollectionBeforeValidateHook = (payloadRequest) => {
-	console.log('!!!!!¡¡¡¡¡¡¡¡¡¡');
-	console.log(payloadRequest.data);
-	throw new Error('test');
 	const { data } = payloadRequest;
 	if (!data?.password) return;
 
