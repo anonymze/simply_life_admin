@@ -1336,7 +1336,7 @@ type DatabaseSchema = {
   relations_payload_migrations: typeof relations_payload_migrations;
 };
 
-declare module "@payloadcms/db-vercel-postgres/types" {
+declare module "@payloadcms/db-vercel-postgres" {
   export interface GeneratedDatabaseSchema {
     schema: DatabaseSchema;
   }
