@@ -1,4 +1,6 @@
+import { jsonResponse } from "@/utils/response/json";
 import type { CollectionConfig } from "payload";
+import { z } from "zod";
 
 import { canAccessApi } from "../utils/helper";
 
@@ -14,32 +16,27 @@ export const Messages: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "messages",
-	defaultPopulate: {
-		app_user: {
-			email: true,
-			id: true,
-			lastname: true,
-			firstname: true,
-			photo: true,
-		},
-		chat_room: {
-			populate: true,
-		},
-	},
+	// defaultPopulate: {
+	// 	app_user: true,
+	// },
+	// forceSelect: {
+	// 	app_user: true,
+	// },
 	fields: [
 		{
 			name: "app_user",
 			type: "relationship",
 			relationTo: "app-users",
 			required: true,
-			maxDepth: 2,
+			// maxDepth: 2,
 			hasMany: false,
 			filterOptions: () => {
 				return true;
 			},
-			admin: {
-				readOnly: true,
-			},
+			// prevent admin interface from modifying this value
+			// admin: {
+			// 	readOnly: true,
+			// },
 		},
 		{
 			name: "chat_room",
@@ -60,4 +57,52 @@ export const Messages: CollectionConfig = {
 			required: true,
 		},
 	],
+	endpoints: [
+		{
+			method: "get",
+			path: "/messages-by-room",
+			handler: async (req) => {
+				if (!canAccessApi(req, ["associate", "employee", "independent", "visitor"])) {
+					return Response.json(
+						{
+							errors: [
+								{
+									message: "Vous n’êtes pas autorisé à effectuer cette action.",
+								},
+							],
+						},
+						{
+							status: 403,
+						}
+					);
+				}
+
+				const query = optionalQuerySchema.parse(req.query);
+				const chatId = JSON.parse(query?.where?.chat_room ?? "{}")?.equals;
+
+				const results = await req.payload.find({
+					collection: "messages",
+					where: {
+						chat_room: {
+							equals: chatId,
+						},
+					},
+					sort: query.sort,
+					limit: parseInt(query.limit ?? "10"),
+				});
+
+				return Response.json(results);
+			},
+		},
+	],
 };
+
+const optionalQuerySchema = z.object({
+	where: z
+		.object({
+			chat_room: z.string().optional(),
+		})
+		.optional(),
+	sort: z.string().optional(),
+	limit: z.string().optional(),
+});
