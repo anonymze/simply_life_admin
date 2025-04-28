@@ -78,17 +78,16 @@ export const Messages: CollectionConfig = {
 				}
 
 				const query = optionalQuerySchema.parse(req.query);
-				const chatId = JSON.parse(query?.where?.chat_room ?? "{}")?.equals;
 
 				const results = await req.payload.find({
 					collection: "messages",
 					where: {
 						chat_room: {
-							equals: chatId,
+							equals: query.where?.chat_room?.equals,
 						},
 					},
 					sort: query.sort,
-					limit: parseInt(query.limit ?? "10"),
+					limit: query.limit,
 				});
 
 				return Response.json(results);
@@ -100,9 +99,11 @@ export const Messages: CollectionConfig = {
 const optionalQuerySchema = z.object({
 	where: z
 		.object({
-			chat_room: z.string().optional(),
+			chat_room: z.object({
+				equals: z.string(),
+			}).optional(),
 		})
 		.optional(),
 	sort: z.string().optional(),
-	limit: z.string().optional(),
+	limit: z.string().optional().transform((val) => parseInt(val ?? "10")),
 });
