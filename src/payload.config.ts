@@ -161,6 +161,7 @@ export default buildConfig({
 			host: "127.0.0.1",
 			port: 1025,
 			ignoreTLS: true, // Add this for MailHog
+			
 		}),
 	}),
 	plugins: [
