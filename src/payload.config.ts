@@ -154,7 +154,7 @@ export default buildConfig({
 		},
 	}),
 	sharp,
-	email: nodemailerAdapter({
+	email: process.env.NODE_ENV === "production" ? undefined : nodemailerAdapter({
 		defaultFromAddress: "info@simply-life.fr",
 		defaultFromName: "Simply Life",
 		transport: nodemailer.createTransport({
