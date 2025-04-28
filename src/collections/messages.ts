@@ -28,7 +28,6 @@ export const Messages: CollectionConfig = {
 			type: "relationship",
 			relationTo: "app-users",
 			required: true,
-			// maxDepth: 2,
 			hasMany: false,
 			filterOptions: () => {
 				return true;
@@ -54,9 +53,34 @@ export const Messages: CollectionConfig = {
 				en: "Message",
 				fr: "Message",
 			},
-			required: true,
+			required: false,
+		},
+		{
+			name: "file",
+			type: "upload",
+			relationTo: "media",
+			hasMany: false,
+			required: false,
 		},
 	],
+	hooks: {
+		beforeValidate: [
+			({ data, operation, originalDoc }) => {
+				// only run on create or update
+				if (operation !== "create" && operation !== "update") return;
+
+				console.log("data", data);
+
+				const hasMessage = !!data?.message && data.message.trim() !== "";
+				const hasMedia = !!data?.media;
+
+				if (!hasMessage && !hasMedia) throw new Error("A message must have either text or media.");
+				if (hasMessage && hasMedia) throw new Error("A message cannot have both text and media.");
+
+				return data;
+			},
+		],
+	},
 	endpoints: [
 		{
 			method: "get",
@@ -67,7 +91,7 @@ export const Messages: CollectionConfig = {
 						{
 							errors: [
 								{
-									message: "Vous n’êtes pas autorisé à effectuer cette action.",
+									message: "Vous n'êtes pas autorisé à effectuer cette action.",
 								},
 							],
 						},
@@ -99,11 +123,16 @@ export const Messages: CollectionConfig = {
 const optionalQuerySchema = z.object({
 	where: z
 		.object({
-			chat_room: z.object({
-				equals: z.string(),
-			}).optional(),
+			chat_room: z
+				.object({
+					equals: z.string(),
+				})
+				.optional(),
 		})
 		.optional(),
 	sort: z.string().optional(),
-	limit: z.string().optional().transform((val) => parseInt(val ?? "10")),
+	limit: z
+		.string()
+		.optional()
+		.transform((val) => parseInt(val ?? "10")),
 });

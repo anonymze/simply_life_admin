@@ -646,7 +646,10 @@ export const messages = pgTable(
       .references(() => chat_rooms.id, {
         onDelete: "set null",
       }),
-    message: varchar("message").notNull(),
+    message: varchar("message"),
+    file: uuid("file_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -667,6 +670,7 @@ export const messages = pgTable(
     messages_chat_room_idx: index("messages_chat_room_idx").on(
       columns.chat_room,
     ),
+    messages_file_idx: index("messages_file_idx").on(columns.file),
     messages_updated_at_idx: index("messages_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -1151,6 +1155,11 @@ export const relations_messages = relations(messages, ({ one }) => ({
     fields: [messages.chat_room],
     references: [chat_rooms.id],
     relationName: "chat_room",
+  }),
+  file: one(media, {
+    fields: [messages.file],
+    references: [media.id],
+    relationName: "file",
   }),
 }));
 export const relations_signatures = relations(signatures, ({ one }) => ({

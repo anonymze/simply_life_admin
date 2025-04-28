@@ -393,7 +393,8 @@ export interface Message {
   id: string;
   app_user: string | AppUser;
   chat_room: string | ChatRoom;
-  message: string;
+  message?: string | null;
+  file?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -727,6 +728,7 @@ export interface MessagesSelect<T extends boolean = true> {
   app_user?: T;
   chat_room?: T;
   message?: T;
+  file?: T;
   updatedAt?: T;
   createdAt?: T;
 }
