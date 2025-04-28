@@ -60,7 +60,7 @@ export const Messages: CollectionConfig = {
 	endpoints: [
 		{
 			method: "get",
-			path: "/messages-by-room",
+			path: "/by-room",
 			handler: async (req) => {
 				if (!canAccessApi(req, ["associate", "employee", "independent", "visitor"])) {
 					return Response.json(
