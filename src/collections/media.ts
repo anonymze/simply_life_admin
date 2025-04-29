@@ -1,5 +1,5 @@
+import { canAccessApi, generateBlurHash } from "@/utils/helper";
 import type { CollectionConfig } from "payload";
-import { canAccessApi } from "@/utils/helper";
 
 
 export const Media: CollectionConfig = {
@@ -16,6 +16,23 @@ export const Media: CollectionConfig = {
 			type: "text",
 			required: true,
 		},
+		{
+			name: "blurhash",
+			type: "text",
+			required: false,
+			admin: {
+				hidden: true,
+				disableListColumn: true,
+				disableListFilter: true,
+			},
+		},
 	],
+	hooks: {
+		beforeValidate: [generateBlurHash],
+	},
+
 	upload: true,
 };
+
+
+

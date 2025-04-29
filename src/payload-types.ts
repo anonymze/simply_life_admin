@@ -208,6 +208,7 @@ export interface SupplierCategory {
 export interface Media {
   id: string;
   alt: string;
+  blurhash?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -640,6 +641,7 @@ export interface FundesysSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  blurhash?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;

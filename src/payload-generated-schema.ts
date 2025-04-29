@@ -368,6 +368,7 @@ export const media = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     alt: varchar("alt").notNull(),
+    blurhash: varchar("blurhash"),
     prefix: varchar("prefix").default("media-simply-life"),
     updatedAt: timestamp("updated_at", {
       mode: "string",

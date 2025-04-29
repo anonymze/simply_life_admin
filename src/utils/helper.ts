@@ -1,4 +1,5 @@
-import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint } from "payload";
+import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint, APIError } from "payload";
+import { getPlaiceholder } from "plaiceholder";
 
 import type { AppUser } from "../payload-types";
 
@@ -167,4 +168,25 @@ export const SSEMessages: Endpoint = {
 			return new Response("Error occurred", { status: 500 });
 		}
 	},
+};
+
+export const generateBlurHash: CollectionBeforeValidateHook = async ({ data, operation, req }) => {
+	console.log(operation);
+	if (operation !== "create" && operation !== "update") return data;
+	if (!req.file?.mimetype.startsWith("image/")) return data;
+
+	try {
+		const buffer = req.file.data;
+		const { base64 } = await getPlaiceholder(buffer, { size: 32 });
+
+		console.log(base64);
+
+		return {
+			...data,
+			blurhash: base64,
+		};
+	} catch (error) {
+		console.log(error);
+		throw new APIError("Failed to generate blur data url");
+	}
 };
