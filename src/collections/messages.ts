@@ -65,17 +65,15 @@ export const Messages: CollectionConfig = {
 	],
 	hooks: {
 		beforeValidate: [
-			({ data, operation, originalDoc }) => {
+			({ data, operation }) => {
 				// only run on create or update
 				if (operation !== "create" && operation !== "update") return;
 
-				console.log("data", data);
-
 				const hasMessage = !!data?.message && data.message.trim() !== "";
-				const hasMedia = !!data?.media;
+				const hasFile = !!data?.file;
 
-				if (!hasMessage && !hasMedia) throw new Error("A message must have either text or media.");
-				if (hasMessage && hasMedia) throw new Error("A message cannot have both text and media.");
+				if (!hasMessage && !hasFile) throw new Error("A message must have either text or a file.");
+				if (hasMessage && hasFile) throw new Error("A message cannot have both text and a file.");
 
 				return data;
 			},
