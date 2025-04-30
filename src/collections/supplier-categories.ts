@@ -1,6 +1,5 @@
-import { getPayload, type CollectionConfig } from "payload";
-import { canAccessApi } from "@/utils/helper";
-import config from "@payload-config";
+import { canAccessApi, validateMedia } from "@/utils/helper";
+import { type CollectionConfig } from "payload";
 
 
 export const SupplierCategories: CollectionConfig = {
@@ -91,18 +90,9 @@ export const SupplierCategories: CollectionConfig = {
 					name: "file",
 					type: "upload",
 					relationTo: "media",
-					// @ts-expect-error
-					validate: async (data: string) => {
-						console.log(data);
-						const payload = await getPayload({
-							config,
-						});
-						const file = await payload.findByID({
-							collection: "media",
-							id: data,
-						});
-
-						if (file.mimeType !== "application/pdf") return "Le fichier doit être au format PDF.";
+			// @ts-expect-error
+					validate: (data) => {
+						return validateMedia(data, "application/pdf");
 					},
 					label: {
 						en: "Brochure File",

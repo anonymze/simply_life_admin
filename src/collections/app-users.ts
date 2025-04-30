@@ -1,4 +1,4 @@
-import { canAccessApi, validatePassword } from "@/utils/helper";
+import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
 import { getPayload, type CollectionConfig } from "payload";
 import config from "@payload-config";
 
@@ -82,16 +82,8 @@ export const AppUsers: CollectionConfig = {
 				description: "Le fichier doit être une image.",
 			},
 			// @ts-expect-error
-			validate: async (data: string) => {
-				const payload = await getPayload({
-					config,
-				});
-				const file = await payload.findByID({
-					collection: "media",
-					id: data,
-				});
-
-				if (file.mimeType?.startsWith("image/") === false) return "Le fichier doit être une image.";
+			validate: (data) => {
+				return validateMedia(data);
 			},
 			required: false,
 			label: {

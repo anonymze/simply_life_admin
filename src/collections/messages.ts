@@ -153,8 +153,6 @@ export const Messages: CollectionConfig = {
 					);
 				}
 
-				console.log(file);
-
 				const fileBuffer = Buffer.from(await file.arrayBuffer());
 
 				const uploadedFile = await req.payload.create({
@@ -173,7 +171,6 @@ export const Messages: CollectionConfig = {
 					},
 				});
 
-				// Then create the message with the file ID
 				const message = await req.payload.create({
 					collection: "messages",
 					data: {

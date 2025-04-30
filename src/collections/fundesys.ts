@@ -1,5 +1,5 @@
+import { canAccessApi, validateMedia } from "@/utils/helper";
 import { getPayload, type CollectionConfig } from "payload";
-import { canAccessApi } from "@/utils/helper";
 import config from "@payload-config";
 
 
@@ -32,16 +32,8 @@ export const Fundesys: CollectionConfig = {
 			type: "upload",
 			relationTo: "media",
 			// @ts-expect-error
-			validate: async (data: string) => {
-				const payload = await getPayload({
-					config,
-				});
-				const file = await payload.findByID({
-					collection: "media",
-					id: data,
-				});
-
-				if (file.mimeType !== "application/pdf") return "Le fichier doit être au format PDF.";
+			validate: (data) => {
+				return validateMedia(data, "application/pdf");
 			},
 			label: {
 				en: "File",
@@ -61,16 +53,8 @@ export const Fundesys: CollectionConfig = {
 				fr: "Vidéo",
 			},
 			// @ts-expect-error
-			validate: async (data: string) => {
-				const payload = await getPayload({
-					config,
-				});
-				const file = await payload.findByID({
-					collection: "media",
-					id: data,
-				});
-
-				if (file.mimeType?.startsWith("video/") === false) return "Le fichier doit être une vidéo.";
+			validate: (data) => {
+				return validateMedia(data, "video/");
 			},
 			admin: {
 				description: "Le fichier doit être une vidéo.",

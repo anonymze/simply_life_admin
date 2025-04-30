@@ -1,6 +1,5 @@
-import { getPayload, type CollectionConfig } from "payload";
-import { canAccessApi } from "@/utils/helper";
-import config from "@payload-config";
+import { canAccessApi, validateMedia } from "@/utils/helper";
+import { type CollectionConfig } from "payload";
 
 
 export const Suppliers: CollectionConfig = {
@@ -48,17 +47,8 @@ export const Suppliers: CollectionConfig = {
 				description: "Le fichier doit être une image.",
 			},
 			// @ts-expect-error
-			validate: async (data: string) => {
-				console.log(data);
-				const payload = await getPayload({
-					config,
-				});
-				const file = await payload.findByID({
-					collection: "media",
-					id: data,
-				});
-
-				if (file.mimeType?.startsWith("image/") === false) return "Le fichier doit être une image.";
+			validate: (data) => {
+				return validateMedia(data);
 			},
 			label: {
 				en: "Logo",

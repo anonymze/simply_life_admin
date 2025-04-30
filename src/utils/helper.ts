@@ -1,5 +1,6 @@
-import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint, APIError } from "payload";
+import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint, APIError, getPayload } from "payload";
 import { getPlaiceholder } from "plaiceholder";
+import config from "@payload-config";
 
 import type { AppUser } from "../payload-types";
 
@@ -201,7 +202,6 @@ export const operationGenerationBlurHash: CollectionBeforeValidateHook = async (
 	}
 };
 
-
 export const generateImageBlurHash = async (buffer: Buffer) => {
 	const { base64 } = await getPlaiceholder(buffer, { size: 32 });
 	return base64;
@@ -211,4 +211,21 @@ export const generateVideoBlurHash = async (buffer: Buffer) => {
 	// const { base64 } = await getPlaiceholder(buffer, { size: 32 });
 	// return base64;
 	return undefined;
+};
+
+export const validateMedia = async (data: string | undefined, mimeType: "image/" | "video/" | "application/pdf" = "image/") => {
+	if (!data) return;
+	const payload = await getPayload({
+		config,
+	});
+	const file = await payload.findByID({
+		collection: "media",
+		id: data,
+	});
+
+	if (file.mimeType?.startsWith(mimeType) === false) {
+		if (mimeType === "image/") return "Le fichier doit être une image.";
+		if (mimeType === "video/") return "Le fichier doit être une vidéo.";
+		if (mimeType === "application/pdf") return "Le fichier doit être un PDF.";
+	}
 };
