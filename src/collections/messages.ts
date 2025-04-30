@@ -134,11 +134,11 @@ export const Messages: CollectionConfig = {
 				}
 
 				const formData = await req.formData?.()!;
-				const file = formData.get("file") as File | null;
+				const file = formData.getAll("file") as File[];
 				const app_user = formData.get("app_user") as string | null;
 				const chat_room = formData.get("chat_room") as string | null;
 
-				if (!file || !app_user || !chat_room) {
+				if (!file.length || !app_user || !chat_room) {
 					return Response.json(
 						{
 							errors: [
@@ -153,34 +153,44 @@ export const Messages: CollectionConfig = {
 					);
 				}
 
-				const fileBuffer = Buffer.from(await file.arrayBuffer());
+				const uploadedFiles = await Promise.all(
+					file.map(async (file) => {
+						const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-				const uploadedFile = await req.payload.create({
-					collection: "media",
-					file: {
-						data: fileBuffer,
-						size: file.size,
-						name: file.name,
-						mimetype: file.type,
-					},
-					data: {
-						alt: file.name,
-						blurhash: file.type.startsWith("image/")
-							? await generateImageBlurHash(fileBuffer)
-							: await generateVideoBlurHash(fileBuffer),
-					},
+						return req.payload.create({
+							collection: "media",
+							file: {
+								data: fileBuffer,
+								size: file.size,
+								name: file.name,
+								mimetype: file.type,
+							},
+							data: {
+								alt: file.name,
+								blurhash: file.type.startsWith("image/")
+									? await generateImageBlurHash(fileBuffer)
+									: await generateVideoBlurHash(fileBuffer),
+							},
+						});
+					})
+				);
+
+				await Promise.all(
+					uploadedFiles.map(async (file) => {
+						return req.payload.create({
+							collection: "messages",
+							data: {
+								app_user,
+								chat_room,
+								file: file.id,
+							},
+						});
+					})
+				);
+
+				return Response.json({
+					message: "OK",
 				});
-
-				const message = await req.payload.create({
-					collection: "messages",
-					data: {
-						app_user,
-						chat_room,
-						file: uploadedFile.id,
-					},
-				});
-
-				return Response.json(message);
 			},
 		},
 	],
