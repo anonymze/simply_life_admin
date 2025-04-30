@@ -1,8 +1,7 @@
-import { jsonResponse } from "@/utils/response/json";
 import type { CollectionConfig } from "payload";
 import { z } from "zod";
 
-import { canAccessApi } from "../utils/helper";
+import { canAccessApi, generateImageBlurHash, generateVideoBlurHash } from "../utils/helper";
 
 
 export const Messages: CollectionConfig = {
@@ -113,6 +112,78 @@ export const Messages: CollectionConfig = {
 				});
 
 				return Response.json(results);
+			},
+		},
+		{
+			method: "post",
+			path: "/with-file",
+			handler: async (req) => {
+				if (!canAccessApi(req, ["associate", "employee", "independent", "visitor"])) {
+					return Response.json(
+						{
+							errors: [
+								{
+									message: "Vous n'êtes pas autorisé à effectuer cette action.",
+								},
+							],
+						},
+						{
+							status: 403,
+						}
+					);
+				}
+
+				const formData = await req.formData?.()!;
+				const file = formData.get("file") as File | null;
+				const app_user = formData.get("app_user") as string | null;
+				const chat_room = formData.get("chat_room") as string | null;
+
+				if (!file || !app_user || !chat_room) {
+					return Response.json(
+						{
+							errors: [
+								{
+									message: "Missing required fields",
+								},
+							],
+						},
+						{
+							status: 400,
+						}
+					);
+				}
+
+				console.log(file);
+
+				const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+				const uploadedFile = await req.payload.create({
+					collection: "media",
+					file: {
+						data: fileBuffer,
+						size: file.size,
+						name: file.name,
+						mimetype: file.type,
+					},
+					data: {
+						alt: file.name,
+						blurhash: file.type.startsWith("image/")
+							? await generateImageBlurHash(fileBuffer)
+							: await generateVideoBlurHash(fileBuffer),
+					},
+				});
+
+				// Then create the message with the file ID
+				const message = await req.payload.create({
+					collection: "messages",
+					data: {
+						app_user,
+						chat_room,
+						file: uploadedFile.id,
+					},
+				});
+
+				return Response.json(message);
 			},
 		},
 	],

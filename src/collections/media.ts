@@ -1,4 +1,4 @@
-import { canAccessApi, generateBlurHash } from "@/utils/helper";
+import { canAccessApi, operationGenerationBlurHash } from "@/utils/helper";
 import type { CollectionConfig } from "payload";
 
 
@@ -28,7 +28,7 @@ export const Media: CollectionConfig = {
 		},
 	],
 	hooks: {
-		beforeValidate: [generateBlurHash],
+		beforeValidate: [operationGenerationBlurHash],
 	},
 
 	upload: true,

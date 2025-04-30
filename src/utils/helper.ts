@@ -170,23 +170,45 @@ export const SSEMessages: Endpoint = {
 	},
 };
 
-export const generateBlurHash: CollectionBeforeValidateHook = async ({ data, operation, req }) => {
-	console.log(operation);
+export const operationGenerationBlurHash: CollectionBeforeValidateHook = async ({ data, operation, req }) => {
 	if (operation !== "create" && operation !== "update") return data;
-	if (!req.file?.mimetype.startsWith("image/")) return data;
+	if (req.file?.mimetype.startsWith("image/")) {
+		try {
+			const buffer = req.file.data;
+			const base64 = await generateImageBlurHash(buffer);
 
-	try {
-		const buffer = req.file.data;
-		const { base64 } = await getPlaiceholder(buffer, { size: 32 });
-
-		console.log(base64);
-
-		return {
-			...data,
-			blurhash: base64,
-		};
-	} catch (error) {
-		console.log(error);
-		throw new APIError("Failed to generate blur data url");
+			return {
+				...data,
+				blurhash: base64,
+			};
+		} catch (error) {
+			throw new APIError("Failed to generate blur data url");
+		}
 	}
+
+	if (req.file?.mimetype.startsWith("video/")) {
+		try {
+			const buffer = req.file.data;
+			const base64 = await generateVideoBlurHash(buffer);
+
+			return {
+				...data,
+				blurhash: base64,
+			};
+		} catch (error) {
+			throw new APIError("Failed to generate blur data url");
+		}
+	}
+};
+
+
+export const generateImageBlurHash = async (buffer: Buffer) => {
+	const { base64 } = await getPlaiceholder(buffer, { size: 32 });
+	return base64;
+};
+
+export const generateVideoBlurHash = async (buffer: Buffer) => {
+	// const { base64 } = await getPlaiceholder(buffer, { size: 32 });
+	// return base64;
+	return undefined;
 };
