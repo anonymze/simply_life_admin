@@ -21,6 +21,11 @@ export const Fundesys: CollectionConfig = {
 		{
 			name: "date",
 			type: "date",
+			admin: {
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				}
+			},
 			label: {
 				en: "Date of release",
 				fr: "Date de sortie",

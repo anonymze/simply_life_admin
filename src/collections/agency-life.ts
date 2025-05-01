@@ -66,7 +66,9 @@ export const AgencyLife: CollectionConfig = {
 			type: "date",
 			admin: {
 				date: {
+					displayFormat: "dd/MM/yyyy H:mm",
 					pickerAppearance: "dayAndTime",
+					timeFormat: "HH:mm",
 				},
 			},
 			label: {
@@ -80,7 +82,9 @@ export const AgencyLife: CollectionConfig = {
 			type: "date",
 			admin: {
 				date: {
+					displayFormat: "dd/MM/yyyy HH:mm",
 					pickerAppearance: "dayAndTime",
+					timeFormat: "HH:mm",
 				},
 			},
 			label: {

@@ -24,6 +24,16 @@ $success-color-dark: #019a49;
 	}
 }
 
+.react-datepicker__day--disabled, .react-datepicker__time-list-item--disabled {
+	text-decoration: line-through;
+	text-decoration-color: rgba(255, 255, 255, 0.2);
+	color: rgba(255, 255, 255, 0.6);
+
+	&:hover {
+		background-color: transparent;
+	}
+}
+
 #before-login {
 	margin-bottom: 2rem;
 	text-align: center;

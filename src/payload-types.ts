@@ -75,6 +75,7 @@ export interface Config {
     suppliers: Supplier;
     fundesys: Fundesy;
     media: Media;
+    reservations: Reservation;
     'supplier-products': SupplierProduct;
     'contact-categories': ContactCategory;
     'app-users': AppUser;
@@ -95,6 +96,7 @@ export interface Config {
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
     'contact-categories': ContactCategoriesSelect<false> | ContactCategoriesSelect<true>;
     'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
@@ -334,6 +336,25 @@ export interface Fundesy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations".
+ */
+export interface Reservation {
+  id: string;
+  title: string;
+  invitations?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  day_reservation: string;
+  start_time_reservation?: string | null;
+  end_time_reservation?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "app-users".
  */
 export interface AppUser {
@@ -444,6 +465,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'reservations';
+        value: string | Reservation;
       } | null)
     | ({
         relationTo: 'supplier-products';
@@ -654,6 +679,24 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations_select".
+ */
+export interface ReservationsSelect<T extends boolean = true> {
+  title?: T;
+  invitations?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  day_reservation?: T;
+  start_time_reservation?: T;
+  end_time_reservation?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

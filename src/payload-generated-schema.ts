@@ -401,6 +401,72 @@ export const media = pgTable(
   }),
 );
 
+export const reservations_invitations = pgTable(
+  "reservations_invitations",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    email: varchar("email").notNull(),
+  },
+  (columns) => ({
+    _orderIdx: index("reservations_invitations_order_idx").on(columns._order),
+    _parentIDIdx: index("reservations_invitations_parent_id_idx").on(
+      columns._parentID,
+    ),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [reservations.id],
+      name: "reservations_invitations_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
+export const reservations = pgTable(
+  "reservations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title").notNull(),
+    day_reservation: timestamp("day_reservation", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    start_time_reservation: timestamp("start_time_reservation", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    end_time_reservation: timestamp("end_time_reservation", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    reservations_updated_at_idx: index("reservations_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    reservations_created_at_idx: index("reservations_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
 export const supplier_products = pgTable(
   "supplier_products",
   {
@@ -771,6 +837,7 @@ export const payload_locked_documents_rels = pgTable(
     suppliersID: uuid("suppliers_id"),
     fundesysID: uuid("fundesys_id"),
     mediaID: uuid("media_id"),
+    reservationsID: uuid("reservations_id"),
     "supplier-productsID": uuid("supplier_products_id"),
     "contact-categoriesID": uuid("contact_categories_id"),
     "app-usersID": uuid("app_users_id"),
@@ -806,6 +873,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_media_id_idx: index(
       "payload_locked_documents_rels_media_id_idx",
     ).on(columns.mediaID),
+    payload_locked_documents_rels_reservations_id_idx: index(
+      "payload_locked_documents_rels_reservations_id_idx",
+    ).on(columns.reservationsID),
     payload_locked_documents_rels_supplier_products_id_idx: index(
       "payload_locked_documents_rels_supplier_products_id_idx",
     ).on(columns["supplier-productsID"]),
@@ -866,6 +936,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["mediaID"]],
       foreignColumns: [media.id],
       name: "payload_locked_documents_rels_media_fk",
+    }).onDelete("cascade"),
+    reservationsIdFk: foreignKey({
+      columns: [columns["reservationsID"]],
+      foreignColumns: [reservations.id],
+      name: "payload_locked_documents_rels_reservations_fk",
     }).onDelete("cascade"),
     "supplier-productsIdFk": foreignKey({
       columns: [columns["supplier-productsID"]],
@@ -1099,6 +1174,21 @@ export const relations_fundesys = relations(fundesys, ({ one }) => ({
   }),
 }));
 export const relations_media = relations(media, () => ({}));
+export const relations_reservations_invitations = relations(
+  reservations_invitations,
+  ({ one }) => ({
+    _parentID: one(reservations, {
+      fields: [reservations_invitations._parentID],
+      references: [reservations.id],
+      relationName: "invitations",
+    }),
+  }),
+);
+export const relations_reservations = relations(reservations, ({ many }) => ({
+  invitations: many(reservations_invitations, {
+    relationName: "invitations",
+  }),
+}));
 export const relations_supplier_products_rels = relations(
   supplier_products_rels,
   ({ one }) => ({
@@ -1218,6 +1308,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [media.id],
       relationName: "media",
     }),
+    reservationsID: one(reservations, {
+      fields: [payload_locked_documents_rels.reservationsID],
+      references: [reservations.id],
+      relationName: "reservations",
+    }),
     "supplier-productsID": one(supplier_products, {
       fields: [payload_locked_documents_rels["supplier-productsID"]],
       references: [supplier_products.id],
@@ -1309,6 +1404,8 @@ type DatabaseSchema = {
   suppliers: typeof suppliers;
   fundesys: typeof fundesys;
   media: typeof media;
+  reservations_invitations: typeof reservations_invitations;
+  reservations: typeof reservations;
   supplier_products: typeof supplier_products;
   supplier_products_rels: typeof supplier_products_rels;
   contact_categories: typeof contact_categories;
@@ -1331,6 +1428,8 @@ type DatabaseSchema = {
   relations_suppliers: typeof relations_suppliers;
   relations_fundesys: typeof relations_fundesys;
   relations_media: typeof relations_media;
+  relations_reservations_invitations: typeof relations_reservations_invitations;
+  relations_reservations: typeof relations_reservations;
   relations_supplier_products_rels: typeof relations_supplier_products_rels;
   relations_supplier_products: typeof relations_supplier_products;
   relations_contact_categories: typeof relations_contact_categories;

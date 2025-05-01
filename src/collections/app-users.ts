@@ -135,6 +135,7 @@ export const AppUsers: CollectionConfig = {
 		{
 			name: "description-below-password",
 			type: "ui",
+			
 			admin: {
 				components: {
 					Field: "/components/description-below-password.tsx",
