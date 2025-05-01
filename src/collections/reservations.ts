@@ -2,8 +2,10 @@ import { ValidationError, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
 
 
-const businessStartHours = new Date(new Date().setHours(8, 0, 0, 0));
-const businessEndHours = new Date(new Date().setHours(20, 0, 0, 0));
+// Create business hours using current date but fixed UTC hours
+const now = new Date();
+const businessStartHours = new Date(now.setUTCHours(6, 0, 0, 0));
+const businessEndHours = new Date(now.setUTCHours(20, 0, 0, 0));
 
 export const Reservations: CollectionConfig = {
 	access: {
