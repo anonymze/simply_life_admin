@@ -278,13 +278,11 @@ export interface Supplier {
 export interface Contact {
   id: string;
   name: string;
-  logo: string | Media;
   category: string | ContactCategory;
   phone?: string | null;
   website?: string | null;
-  address?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
+  latitude: string;
+  longitude: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -387,8 +385,8 @@ export interface AgencyLife {
   title: string;
   annotation?: string | null;
   type: 'general';
-  'events-start': string;
-  'events-end': string;
+  event_start: string;
+  event_end: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -591,11 +589,9 @@ export interface SupplierCategoriesSelect<T extends boolean = true> {
  */
 export interface ContactsSelect<T extends boolean = true> {
   name?: T;
-  logo?: T;
   category?: T;
   phone?: T;
   website?: T;
-  address?: T;
   latitude?: T;
   longitude?: T;
   updatedAt?: T;
@@ -746,8 +742,8 @@ export interface AgencyLifeSelect<T extends boolean = true> {
   title?: T;
   annotation?: T;
   type?: T;
-  'events-start'?: T;
-  'events-end'?: T;
+  event_start?: T;
+  event_end?: T;
   updatedAt?: T;
   createdAt?: T;
 }

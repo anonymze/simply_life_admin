@@ -24,10 +24,20 @@ $success-color-dark: #019a49;
 	}
 }
 
-.react-datepicker__day--disabled, .react-datepicker__time-list-item--disabled {
+[data-theme="dark"] .react-datepicker__day--disabled, [data-theme="dark"] .react-datepicker__time-list-item--disabled {
 	text-decoration: line-through;
-	text-decoration-color: rgba(255, 255, 255, 0.2);
+	text-decoration-color:  rgba(255, 255, 255, 0.2);
 	color: rgba(255, 255, 255, 0.6);
+
+	&:hover {
+		background-color: transparent;
+	}
+}
+
+[data-theme="light"] .react-datepicker__day--disabled, [data-theme="light"] .react-datepicker__time-list-item--disabled {
+	text-decoration: line-through;
+	text-decoration-color:  rgba(0, 0, 0, 0.2);
+	color: rgba(0, 0, 0, 0.6);
 
 	&:hover {
 		background-color: transparent;

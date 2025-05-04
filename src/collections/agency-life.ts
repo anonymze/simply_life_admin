@@ -1,4 +1,4 @@
-import { type CollectionConfig } from "payload";
+import { ValidationError, type CollectionConfig } from "payload";
 import { canAccessApi } from "@/utils/helper";
 
 
@@ -23,6 +23,30 @@ export const AgencyLife: CollectionConfig = {
 		useAsTitle: "title",
 	},
 	slug: "agency-life",
+	hooks: {
+		beforeChange: [
+			async ({ data, req, operation }) => {
+				if (operation !== "create" && operation !== "update") return;
+
+				const start_event = new Date(data.event_start);
+				const end_event = new Date(data.event_end);
+
+				if (start_event >= end_event) {
+					throw new ValidationError({
+						errors: [
+							{
+								message: "Le début de l'évènement doit être avant la fin de l'évènement",
+								label: "Le début de l'évènement doit être avant la fin de l'évènement",
+								path: "event_start",
+							},
+						],
+					});
+				}
+
+				return;
+			},
+		],
+	},
 	fields: [
 		{
 			name: "title",
@@ -62,7 +86,7 @@ export const AgencyLife: CollectionConfig = {
 			defaultValue: "general",
 		},
 		{
-			name: "events-start",
+			name: "event_start",
 			type: "date",
 			admin: {
 				date: {
@@ -72,13 +96,13 @@ export const AgencyLife: CollectionConfig = {
 				},
 			},
 			label: {
-				en: "Events start",
+				en: "Event start",
 				fr: "Date de début de l'évènement",
 			},
 			required: true,
 		},
 		{
-			name: "events-end",
+			name: "event_end",
 			type: "date",
 			admin: {
 				date: {
@@ -88,7 +112,7 @@ export const AgencyLife: CollectionConfig = {
 				},
 			},
 			label: {
-				en: "Events end",
+				en: "Event end",
 				fr: "Date de fin de l'évènement",
 			},
 			required: true,

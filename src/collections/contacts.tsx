@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import { ValidationError, type CollectionConfig } from "payload";
 
 import { canAccessApi } from "../utils/helper";
 
@@ -24,9 +24,30 @@ export const Contacts: CollectionConfig = {
 	admin: {
 		useAsTitle: "name",
 		group: {
-			en: "Contacts map",
-			fr: "Carte des contacts",
+			en: "Name",
+			fr: "Nom",
 		},
+	},
+	hooks: {
+		beforeValidate: [
+			async ({ data, operation }) => {
+				if (operation !== "create") return;
+
+				if (!data?.latitude || !data?.longitude) {
+					throw new ValidationError({
+						errors: [
+							{
+								message: `Veuillez entrer et SÉLECTIONNER une adresse.`,
+								label: `Veuillez entrer et SÉLECTIONNER une adresse.`,
+								path: "address",
+							},
+						],
+					});
+				}
+
+				return;
+			},
+		],
 	},
 	fields: [
 		{
@@ -36,16 +57,6 @@ export const Contacts: CollectionConfig = {
 			label: {
 				en: "Contact name",
 				fr: "Nom du contact",
-			},
-		},
-		{
-			name: "logo",
-			type: "upload",
-			required: true,
-			relationTo: "media",
-			label: {
-				en: "Logo",
-				fr: "Logo",
 			},
 		},
 		{
@@ -59,44 +70,60 @@ export const Contacts: CollectionConfig = {
 			},
 		},
 		{
+			name: "address",
+			type: "ui",
+			label: {
+				en: "Address",
+				fr: "Adresse",
+			},
+			admin: {
+				components: {
+					Field: "/components/google-adress.tsx",
+				},
+			},
+		},
+		{
 			name: "phone",
 			type: "text",
 			label: {
 				en: "Phone",
 				fr: "Téléphone",
 			},
+			required: false,
 		},
 		{
 			name: "website",
 			type: "text",
 			label: {
 				en: "Website",
-				fr: "Site web",
+				fr: "Site internet",
 			},
+			required: false,
 		},
+
 		{
-			name: "address",
-			type: "text",
-			label: {
-				en: "Address",
-				fr: "Adresse",
+			admin: {
+				hidden: true,
 			},
-		},
-		{
 			name: "latitude",
-			type: "number",
+			type: "text",
 			label: {
 				en: "Latitude",
 				fr: "Latitude",
 			},
+			required: true,
 		},
 		{
+			admin: {
+				hidden: true,
+			},
 			name: "longitude",
-			type: "number",
+			type: "text",
 			label: {
 				en: "Longitude",
 				fr: "Longitude",
 			},
+			required: true,
 		},
 	],
 };

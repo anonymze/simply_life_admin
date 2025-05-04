@@ -175,11 +175,6 @@ export const contacts = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
     category: uuid("category_id")
       .notNull()
       .references(() => contact_categories.id, {
@@ -187,9 +182,8 @@ export const contacts = pgTable(
       }),
     phone: varchar("phone"),
     website: varchar("website"),
-    address: varchar("address"),
-    latitude: numeric("latitude"),
-    longitude: numeric("longitude"),
+    latitude: varchar("latitude").notNull(),
+    longitude: varchar("longitude").notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -206,7 +200,6 @@ export const contacts = pgTable(
       .notNull(),
   },
   (columns) => ({
-    contacts_logo_idx: index("contacts_logo_idx").on(columns.logo),
     contacts_category_idx: index("contacts_category_idx").on(columns.category),
     contacts_updated_at_idx: index("contacts_updated_at_idx").on(
       columns.updatedAt,
@@ -622,12 +615,12 @@ export const agency_life = pgTable(
     title: varchar("title").notNull(),
     annotation: varchar("annotation"),
     type: enum_agency_life_type("type").notNull().default("general"),
-    "events-start": timestamp("events_start", {
+    event_start: timestamp("event_start", {
       mode: "string",
       withTimezone: true,
       precision: 3,
     }).notNull(),
-    "events-end": timestamp("events_end", {
+    event_end: timestamp("event_end", {
       mode: "string",
       withTimezone: true,
       precision: 3,
@@ -1131,11 +1124,6 @@ export const relations_supplier_categories = relations(
   }),
 );
 export const relations_contacts = relations(contacts, ({ one }) => ({
-  logo: one(media, {
-    fields: [contacts.logo],
-    references: [media.id],
-    relationName: "logo",
-  }),
   category: one(contact_categories, {
     fields: [contacts.category],
     references: [contact_categories.id],
