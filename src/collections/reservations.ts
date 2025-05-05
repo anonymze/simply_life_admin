@@ -117,7 +117,7 @@ export const Reservations: CollectionConfig = {
 			fields: [
 				{
 					name: "email",
-					type: "text",
+					type: "email",
 					label: {
 						en: "Email",
 						fr: "Email",
