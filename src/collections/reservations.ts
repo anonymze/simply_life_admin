@@ -45,6 +45,7 @@ export const Reservations: CollectionConfig = {
 					});
 				}
 
+
 				const existingReservations = await req.payload.find({
 					collection: "reservations",
 					where: {
@@ -57,7 +58,7 @@ export const Reservations: CollectionConfig = {
 							{
 								id: {
 									// ignore the current reservation (patch update)
-									not_equals: req.routeParams?.id,
+									not_equals: req.routeParams?.id ?? null,
 								},
 							},
 						],
@@ -83,7 +84,7 @@ export const Reservations: CollectionConfig = {
 					throw new ValidationError({
 						errors: [
 							{
-								message: `Ce créneau horaire est déjà réservé. ${new Date(hasConflict.start_time_reservation ?? "").toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} - ${new Date(hasConflict.end_time_reservation ?? "").toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
+								message: `Ce créneau horaire est déjà réservé : ${new Date(hasConflict.start_time_reservation ?? "").toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} - ${new Date(hasConflict.end_time_reservation ?? "").toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
 								label: `Ce créneau horaire est déjà réservé.`,
 								path: "start_time_reservation",
 							},

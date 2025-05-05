@@ -24,8 +24,8 @@ export const Contacts: CollectionConfig = {
 	admin: {
 		useAsTitle: "name",
 		group: {
-			en: "Name",
-			fr: "Nom",
+			en: "Contacts map",
+			fr: "Carte des contacts",
 		},
 	},
 	hooks: {
@@ -77,6 +77,7 @@ export const Contacts: CollectionConfig = {
 				fr: "Adresse",
 			},
 			admin: {
+				disableListColumn: true,
 				components: {
 					Field: "/components/google-adress.tsx",
 				},
@@ -104,6 +105,8 @@ export const Contacts: CollectionConfig = {
 		{
 			admin: {
 				hidden: true,
+				disableBulkEdit: true,
+				disableListColumn: false,
 			},
 			name: "latitude",
 			type: "text",
@@ -116,6 +119,8 @@ export const Contacts: CollectionConfig = {
 		{
 			admin: {
 				hidden: true,
+				disableBulkEdit: true,
+				disableListColumn: false,
 			},
 			name: "longitude",
 			type: "text",
