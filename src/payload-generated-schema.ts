@@ -113,6 +113,9 @@ export const supplier_categories = pgTable(
     logo: uuid("logo_id").references(() => media.id, {
       onDelete: "set null",
     }),
+    brochure: uuid("brochure_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -132,6 +135,9 @@ export const supplier_categories = pgTable(
     supplier_categories_logo_idx: index("supplier_categories_logo_idx").on(
       columns.logo,
     ),
+    supplier_categories_brochure_idx: index(
+      "supplier_categories_brochure_idx",
+    ).on(columns.brochure),
     supplier_categories_updated_at_idx: index(
       "supplier_categories_updated_at_idx",
     ).on(columns.updatedAt),
@@ -465,9 +471,6 @@ export const supplier_products = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id").references(() => media.id, {
-      onDelete: "set null",
-    }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -484,9 +487,6 @@ export const supplier_products = pgTable(
       .notNull(),
   },
   (columns) => ({
-    supplier_products_logo_idx: index("supplier_products_logo_idx").on(
-      columns.logo,
-    ),
     supplier_products_updated_at_idx: index(
       "supplier_products_updated_at_idx",
     ).on(columns.updatedAt),
@@ -1115,6 +1115,11 @@ export const relations_supplier_categories = relations(
       references: [media.id],
       relationName: "logo",
     }),
+    brochure: one(media, {
+      fields: [supplier_categories.brochure],
+      references: [media.id],
+      relationName: "brochure",
+    }),
     offers: many(supplier_categories_offers, {
       relationName: "offers",
     }),
@@ -1194,12 +1199,7 @@ export const relations_supplier_products_rels = relations(
 );
 export const relations_supplier_products = relations(
   supplier_products,
-  ({ one, many }) => ({
-    logo: one(media, {
-      fields: [supplier_products.logo],
-      references: [media.id],
-      relationName: "logo",
-    }),
+  ({ many }) => ({
     _rels: many(supplier_products_rels, {
       relationName: "_rels",
     }),

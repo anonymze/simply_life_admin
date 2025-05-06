@@ -39,16 +39,6 @@ export const SupplierProducts: CollectionConfig = {
 			required: true,
 		},
 		{
-			name: "logo",
-			type: "upload",
-			relationTo: "media",
-			label: {
-				en: "Logo",
-				fr: "Logo",
-			},
-			required: false,
-		},
-		{
 			name: "suppliers",
 			type: "relationship",
 			relationTo: "suppliers",

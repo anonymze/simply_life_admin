@@ -187,7 +187,14 @@ export interface Admin {
 export interface SupplierCategory {
   id: string;
   name: string;
+  /**
+   * Le fichier doit être une image.
+   */
   logo?: (string | null) | Media;
+  /**
+   * Le fichier doit être au format PDF.
+   */
+  brochure?: (string | null) | Media;
   product_suppliers: (string | SupplierProduct)[];
   offers?:
     | {
@@ -231,7 +238,6 @@ export interface Media {
 export interface SupplierProduct {
   id: string;
   name: string;
-  logo?: (string | null) | Media;
   suppliers: (string | Supplier)[];
   updatedAt: string;
   createdAt: string;
@@ -571,6 +577,7 @@ export interface AdminsSelect<T extends boolean = true> {
 export interface SupplierCategoriesSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
+  brochure?: T;
   product_suppliers?: T;
   offers?:
     | T
@@ -700,7 +707,6 @@ export interface ReservationsSelect<T extends boolean = true> {
  */
 export interface SupplierProductsSelect<T extends boolean = true> {
   name?: T;
-  logo?: T;
   suppliers?: T;
   updatedAt?: T;
   createdAt?: T;

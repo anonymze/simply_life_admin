@@ -42,9 +42,33 @@ export const SupplierCategories: CollectionConfig = {
 			name: "logo",
 			type: "upload",
 			relationTo: "media",
+			admin: {
+				description: "Le fichier doit être une image.",
+			},
+			// @ts-expect-error
+			validate: (data) => {
+				return validateMedia(data);
+			},
 			label: {
 				en: "Logo",
 				fr: "Logo",
+			},
+			required: false,
+		},
+		{
+			name: "brochure",
+			type: "upload",
+			relationTo: "media",
+			admin: {
+				description: "Le fichier doit être au format PDF.",
+			},
+			// @ts-expect-error
+			validate: (data) => {
+				return validateMedia(data, "application/pdf");
+			},
+			label: {
+				en: "Brochure",
+				fr: "Brochure",
 			},
 			required: false,
 		},
@@ -90,7 +114,7 @@ export const SupplierCategories: CollectionConfig = {
 					name: "file",
 					type: "upload",
 					relationTo: "media",
-			// @ts-expect-error
+					// @ts-expect-error
 					validate: (data) => {
 						return validateMedia(data, "application/pdf");
 					},
