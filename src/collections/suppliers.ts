@@ -54,7 +54,24 @@ export const Suppliers: CollectionConfig = {
 				en: "Logo",
 				fr: "Logo",
 			},
-			required: true,
+			required: false,
+		},
+		{
+			name: "brochure",
+			type: "upload",
+			relationTo: "media",
+			admin: {
+				description: "Le fichier doit être au format PDF.",
+			},
+			// @ts-expect-error
+			validate: (data) => {
+				return validateMedia(data, "application/pdf");
+			},
+			label: {
+				en: "Brochure",
+				fr: "Brochure",
+			},
+			required: false,
 		},
 
 		{

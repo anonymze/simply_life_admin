@@ -191,10 +191,6 @@ export interface SupplierCategory {
    * Le fichier doit être une image.
    */
   logo?: (string | null) | Media;
-  /**
-   * Le fichier doit être au format PDF.
-   */
-  brochure?: (string | null) | Media;
   product_suppliers: (string | SupplierProduct)[];
   offers?:
     | {
@@ -252,7 +248,11 @@ export interface Supplier {
   /**
    * Le fichier doit être une image.
    */
-  logo: string | Media;
+  logo?: (string | null) | Media;
+  /**
+   * Le fichier doit être au format PDF.
+   */
+  brochure?: (string | null) | Media;
   contact_info?: {
     lastname?: string | null;
     firstname?: string | null;
@@ -577,7 +577,6 @@ export interface AdminsSelect<T extends boolean = true> {
 export interface SupplierCategoriesSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
-  brochure?: T;
   product_suppliers?: T;
   offers?:
     | T
@@ -622,6 +621,7 @@ export interface FidnetSelect<T extends boolean = true> {
 export interface SuppliersSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
+  brochure?: T;
   contact_info?:
     | T
     | {

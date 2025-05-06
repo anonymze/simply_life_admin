@@ -113,9 +113,6 @@ export const supplier_categories = pgTable(
     logo: uuid("logo_id").references(() => media.id, {
       onDelete: "set null",
     }),
-    brochure: uuid("brochure_id").references(() => media.id, {
-      onDelete: "set null",
-    }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -135,9 +132,6 @@ export const supplier_categories = pgTable(
     supplier_categories_logo_idx: index("supplier_categories_logo_idx").on(
       columns.logo,
     ),
-    supplier_categories_brochure_idx: index(
-      "supplier_categories_brochure_idx",
-    ).on(columns.brochure),
     supplier_categories_updated_at_idx: index(
       "supplier_categories_updated_at_idx",
     ).on(columns.updatedAt),
@@ -263,11 +257,12 @@ export const suppliers = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
+    logo: uuid("logo_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
+    brochure: uuid("brochure_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
     contact_info_lastname: varchar("contact_info_lastname"),
     contact_info_firstname: varchar("contact_info_firstname"),
     contact_info_email: varchar("contact_info_email"),
@@ -307,6 +302,9 @@ export const suppliers = pgTable(
   },
   (columns) => ({
     suppliers_logo_idx: index("suppliers_logo_idx").on(columns.logo),
+    suppliers_brochure_idx: index("suppliers_brochure_idx").on(
+      columns.brochure,
+    ),
     suppliers_updated_at_idx: index("suppliers_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -1115,11 +1113,6 @@ export const relations_supplier_categories = relations(
       references: [media.id],
       relationName: "logo",
     }),
-    brochure: one(media, {
-      fields: [supplier_categories.brochure],
-      references: [media.id],
-      relationName: "brochure",
-    }),
     offers: many(supplier_categories_offers, {
       relationName: "offers",
     }),
@@ -1152,6 +1145,11 @@ export const relations_suppliers = relations(suppliers, ({ one }) => ({
     fields: [suppliers.logo],
     references: [media.id],
     relationName: "logo",
+  }),
+  brochure: one(media, {
+    fields: [suppliers.brochure],
+    references: [media.id],
+    relationName: "brochure",
   }),
 }));
 export const relations_fundesys = relations(fundesys, ({ one }) => ({

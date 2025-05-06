@@ -56,23 +56,6 @@ export const SupplierCategories: CollectionConfig = {
 			required: false,
 		},
 		{
-			name: "brochure",
-			type: "upload",
-			relationTo: "media",
-			admin: {
-				description: "Le fichier doit être au format PDF.",
-			},
-			// @ts-expect-error
-			validate: (data) => {
-				return validateMedia(data, "application/pdf");
-			},
-			label: {
-				en: "Brochure",
-				fr: "Brochure",
-			},
-			required: false,
-		},
-		{
 			name: "product_suppliers",
 			type: "relationship",
 			relationTo: "supplier-products",
