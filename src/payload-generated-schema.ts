@@ -267,6 +267,7 @@ export const suppliers = pgTable(
     contact_info_firstname: varchar("contact_info_firstname"),
     contact_info_email: varchar("contact_info_email"),
     contact_info_phone: varchar("contact_info_phone"),
+    connexion_email: varchar("connexion_email"),
     connexion_password: varchar("connexion_password"),
     other_information_theme: varchar("other_information_theme"),
     other_information_subscription_fee: varchar(

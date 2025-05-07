@@ -1,5 +1,5 @@
 {
-  "id": "4458f88e-e6ae-4ee1-833f-ad5bd22e8fc7",
+  "id": "2cdb4db4-1d26-4c7c-8ec9-2a7f622fc268",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -509,12 +509,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "logo_id": {
-          "name": "logo_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
         "category_id": {
           "name": "category_id",
           "type": "uuid",
@@ -533,23 +527,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "address": {
-          "name": "address",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "latitude": {
           "name": "latitude",
-          "type": "numeric",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "longitude": {
           "name": "longitude",
-          "type": "numeric",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "updated_at": {
           "name": "updated_at",
@@ -567,21 +555,6 @@
         }
       },
       "indexes": {
-        "contacts_logo_idx": {
-          "name": "contacts_logo_idx",
-          "columns": [
-            {
-              "expression": "logo_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "contacts_category_idx": {
           "name": "contacts_category_idx",
           "columns": [
@@ -629,19 +602,6 @@
         }
       },
       "foreignKeys": {
-        "contacts_logo_id_media_id_fk": {
-          "name": "contacts_logo_id_media_id_fk",
-          "tableFrom": "contacts",
-          "tableTo": "media",
-          "columnsFrom": [
-            "logo_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
         "contacts_category_id_contact_categories_id_fk": {
           "name": "contacts_category_id_contact_categories_id_fk",
           "tableFrom": "contacts",
@@ -823,7 +783,13 @@
           "name": "logo_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "brochure_id": {
+          "name": "brochure_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         },
         "contact_info_lastname": {
           "name": "contact_info_lastname",
@@ -845,6 +811,12 @@
         },
         "contact_info_phone": {
           "name": "contact_info_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "connexion_email": {
+          "name": "connexion_email",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -940,6 +912,21 @@
           "method": "btree",
           "with": {}
         },
+        "suppliers_brochure_idx": {
+          "name": "suppliers_brochure_idx",
+          "columns": [
+            {
+              "expression": "brochure_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "suppliers_updated_at_idx": {
           "name": "suppliers_updated_at_idx",
           "columns": [
@@ -978,6 +965,19 @@
           "tableTo": "media",
           "columnsFrom": [
             "logo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "suppliers_brochure_id_media_id_fk": {
+          "name": "suppliers_brochure_id_media_id_fk",
+          "tableFrom": "suppliers",
+          "tableTo": "media",
+          "columnsFrom": [
+            "brochure_id"
           ],
           "columnsTo": [
             "id"
@@ -1473,12 +1473,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "logo_id": {
-          "name": "logo_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -1495,21 +1489,6 @@
         }
       },
       "indexes": {
-        "supplier_products_logo_idx": {
-          "name": "supplier_products_logo_idx",
-          "columns": [
-            {
-              "expression": "logo_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "supplier_products_updated_at_idx": {
           "name": "supplier_products_updated_at_idx",
           "columns": [
@@ -1541,21 +1520,7 @@
           "with": {}
         }
       },
-      "foreignKeys": {
-        "supplier_products_logo_id_media_id_fk": {
-          "name": "supplier_products_logo_id_media_id_fk",
-          "tableFrom": "supplier_products",
-          "tableTo": "media",
-          "columnsFrom": [
-            "logo_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -1979,14 +1944,14 @@
           "notNull": true,
           "default": "'general'"
         },
-        "events_start": {
-          "name": "events_start",
+        "event_start": {
+          "name": "event_start",
           "type": "timestamp(3) with time zone",
           "primaryKey": false,
           "notNull": true
         },
-        "events_end": {
-          "name": "events_end",
+        "event_end": {
+          "name": "event_end",
           "type": "timestamp(3) with time zone",
           "primaryKey": false,
           "notNull": true

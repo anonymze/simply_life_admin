@@ -73,7 +73,6 @@ export const Suppliers: CollectionConfig = {
 			},
 			required: false,
 		},
-
 		{
 			name: "contact_info",
 			type: "group",
@@ -129,11 +128,11 @@ export const Suppliers: CollectionConfig = {
 			},
 			fields: [
 				{
-					name: "id",
+					name: "email",
 					type: "text",
 					label: {
-						en: "Id",
-						fr: "Id",
+						en: "Identifiant",
+						fr: "Identifiant",
 					},
 					required: false,
 				},

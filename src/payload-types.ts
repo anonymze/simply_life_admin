@@ -260,7 +260,7 @@ export interface Supplier {
     phone?: string | null;
   };
   connexion?: {
-    id?: string | null;
+    email?: string | null;
     password?: string | null;
   };
   other_information?: {
@@ -633,7 +633,7 @@ export interface SuppliersSelect<T extends boolean = true> {
   connexion?:
     | T
     | {
-        id?: T;
+        email?: T;
         password?: T;
       };
   other_information?:

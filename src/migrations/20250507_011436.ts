@@ -47,13 +47,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "contacts" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"name" varchar NOT NULL,
-  	"logo_id" uuid NOT NULL,
   	"category_id" uuid NOT NULL,
   	"phone" varchar,
   	"website" varchar,
-  	"address" varchar,
-  	"latitude" numeric,
-  	"longitude" numeric,
+  	"latitude" varchar NOT NULL,
+  	"longitude" varchar NOT NULL,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -70,11 +68,13 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "suppliers" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"name" varchar NOT NULL,
-  	"logo_id" uuid NOT NULL,
+  	"logo_id" uuid,
+  	"brochure_id" uuid,
   	"contact_info_lastname" varchar,
   	"contact_info_firstname" varchar,
   	"contact_info_email" varchar,
   	"contact_info_phone" varchar,
+  	"connexion_email" varchar,
   	"connexion_password" varchar,
   	"other_information_theme" varchar,
   	"other_information_subscription_fee" varchar,
@@ -101,6 +101,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "media" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"alt" varchar NOT NULL,
+  	"blurhash" varchar,
   	"prefix" varchar DEFAULT 'media-simply-life',
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
@@ -115,10 +116,26 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"focal_y" numeric
   );
   
+  CREATE TABLE IF NOT EXISTS "reservations_invitations" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" uuid NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"email" varchar NOT NULL
+  );
+  
+  CREATE TABLE IF NOT EXISTS "reservations" (
+  	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  	"title" varchar NOT NULL,
+  	"day_reservation" timestamp(3) with time zone NOT NULL,
+  	"start_time_reservation" timestamp(3) with time zone,
+  	"end_time_reservation" timestamp(3) with time zone,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
   CREATE TABLE IF NOT EXISTS "supplier_products" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"name" varchar NOT NULL,
-  	"logo_id" uuid,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -161,8 +178,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar NOT NULL,
   	"annotation" varchar,
   	"type" "enum_agency_life_type" DEFAULT 'general' NOT NULL,
-  	"events_start" timestamp(3) with time zone NOT NULL,
-  	"events_end" timestamp(3) with time zone NOT NULL,
+  	"event_start" timestamp(3) with time zone NOT NULL,
+  	"event_end" timestamp(3) with time zone NOT NULL,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -183,7 +200,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"app_user_id" uuid NOT NULL,
   	"chat_room_id" uuid NOT NULL,
-  	"message" varchar NOT NULL,
+  	"message" varchar,
+  	"file_id" uuid,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -215,6 +233,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"suppliers_id" uuid,
   	"fundesys_id" uuid,
   	"media_id" uuid,
+  	"reservations_id" uuid,
   	"supplier_products_id" uuid,
   	"contact_categories_id" uuid,
   	"app_users_id" uuid,
@@ -280,12 +299,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
-   ALTER TABLE "contacts" ADD CONSTRAINT "contacts_logo_id_media_id_fk" FOREIGN KEY ("logo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
-  EXCEPTION
-   WHEN duplicate_object THEN null;
-  END $$;
-  
-  DO $$ BEGIN
    ALTER TABLE "contacts" ADD CONSTRAINT "contacts_category_id_contact_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."contact_categories"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -310,6 +323,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
+   ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_brochure_id_media_id_fk" FOREIGN KEY ("brochure_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
    ALTER TABLE "fundesys" ADD CONSTRAINT "fundesys_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -322,7 +341,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
-   ALTER TABLE "supplier_products" ADD CONSTRAINT "supplier_products_logo_id_media_id_fk" FOREIGN KEY ("logo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+   ALTER TABLE "reservations_invitations" ADD CONSTRAINT "reservations_invitations_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."reservations"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -359,6 +378,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   DO $$ BEGIN
    ALTER TABLE "messages" ADD CONSTRAINT "messages_chat_room_id_chat_rooms_id_fk" FOREIGN KEY ("chat_room_id") REFERENCES "public"."chat_rooms"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "messages" ADD CONSTRAINT "messages_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -419,6 +444,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   DO $$ BEGIN
    ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_reservations_fk" FOREIGN KEY ("reservations_id") REFERENCES "public"."reservations"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -496,7 +527,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "supplier_categories_rels_parent_idx" ON "supplier_categories_rels" USING btree ("parent_id");
   CREATE INDEX IF NOT EXISTS "supplier_categories_rels_path_idx" ON "supplier_categories_rels" USING btree ("path");
   CREATE INDEX IF NOT EXISTS "supplier_categories_rels_supplier_products_id_idx" ON "supplier_categories_rels" USING btree ("supplier_products_id");
-  CREATE INDEX IF NOT EXISTS "contacts_logo_idx" ON "contacts" USING btree ("logo_id");
   CREATE INDEX IF NOT EXISTS "contacts_category_idx" ON "contacts" USING btree ("category_id");
   CREATE INDEX IF NOT EXISTS "contacts_updated_at_idx" ON "contacts" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "contacts_created_at_idx" ON "contacts" USING btree ("created_at");
@@ -505,6 +535,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "fidnet_updated_at_idx" ON "fidnet" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "fidnet_created_at_idx" ON "fidnet" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "suppliers_logo_idx" ON "suppliers" USING btree ("logo_id");
+  CREATE INDEX IF NOT EXISTS "suppliers_brochure_idx" ON "suppliers" USING btree ("brochure_id");
   CREATE INDEX IF NOT EXISTS "suppliers_updated_at_idx" ON "suppliers" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "suppliers_created_at_idx" ON "suppliers" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "fundesys_file_idx" ON "fundesys" USING btree ("file_id");
@@ -514,7 +545,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "media_updated_at_idx" ON "media" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" USING btree ("created_at");
   CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" USING btree ("filename");
-  CREATE INDEX IF NOT EXISTS "supplier_products_logo_idx" ON "supplier_products" USING btree ("logo_id");
+  CREATE INDEX IF NOT EXISTS "reservations_invitations_order_idx" ON "reservations_invitations" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "reservations_invitations_parent_id_idx" ON "reservations_invitations" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "reservations_updated_at_idx" ON "reservations" USING btree ("updated_at");
+  CREATE INDEX IF NOT EXISTS "reservations_created_at_idx" ON "reservations" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "supplier_products_updated_at_idx" ON "supplier_products" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "supplier_products_created_at_idx" ON "supplier_products" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "supplier_products_rels_order_idx" ON "supplier_products_rels" USING btree ("order");
@@ -534,6 +568,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "chat_rooms_created_at_idx" ON "chat_rooms" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "messages_app_user_idx" ON "messages" USING btree ("app_user_id");
   CREATE INDEX IF NOT EXISTS "messages_chat_room_idx" ON "messages" USING btree ("chat_room_id");
+  CREATE INDEX IF NOT EXISTS "messages_file_idx" ON "messages" USING btree ("file_id");
   CREATE INDEX IF NOT EXISTS "messages_updated_at_idx" ON "messages" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "messages_created_at_idx" ON "messages" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "signatures_app_user_idx" ON "signatures" USING btree ("app_user_id");
@@ -553,6 +588,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_suppliers_id_idx" ON "payload_locked_documents_rels" USING btree ("suppliers_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_fundesys_id_idx" ON "payload_locked_documents_rels" USING btree ("fundesys_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_media_id_idx" ON "payload_locked_documents_rels" USING btree ("media_id");
+  CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_reservations_id_idx" ON "payload_locked_documents_rels" USING btree ("reservations_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_supplier_products_id_idx" ON "payload_locked_documents_rels" USING btree ("supplier_products_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_contact_categories_id_idx" ON "payload_locked_documents_rels" USING btree ("contact_categories_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_app_users_id_idx" ON "payload_locked_documents_rels" USING btree ("app_users_id");
@@ -583,6 +619,8 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "suppliers" CASCADE;
   DROP TABLE "fundesys" CASCADE;
   DROP TABLE "media" CASCADE;
+  DROP TABLE "reservations_invitations" CASCADE;
+  DROP TABLE "reservations" CASCADE;
   DROP TABLE "supplier_products" CASCADE;
   DROP TABLE "supplier_products_rels" CASCADE;
   DROP TABLE "contact_categories" CASCADE;

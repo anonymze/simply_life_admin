@@ -150,9 +150,10 @@ export default buildConfig({
 		// 		}
 		// 	},
 		// ],
+		
 		idType: "uuid",
 		pool: {
-			connectionString: process.env.DATABASE_URI || "",
+			connectionString: process.env.DATABASE_URI || ""
 		},
 	}),
 	sharp,
