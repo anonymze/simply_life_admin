@@ -257,7 +257,10 @@ export const suppliers = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id").references(() => media.id, {
+    logo_mini: uuid("logo_mini_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
+    logo_full: uuid("logo_full_id").references(() => media.id, {
       onDelete: "set null",
     }),
     brochure: uuid("brochure_id").references(() => media.id, {
@@ -302,7 +305,12 @@ export const suppliers = pgTable(
       .notNull(),
   },
   (columns) => ({
-    suppliers_logo_idx: index("suppliers_logo_idx").on(columns.logo),
+    suppliers_logo_mini_idx: index("suppliers_logo_mini_idx").on(
+      columns.logo_mini,
+    ),
+    suppliers_logo_full_idx: index("suppliers_logo_full_idx").on(
+      columns.logo_full,
+    ),
     suppliers_brochure_idx: index("suppliers_brochure_idx").on(
       columns.brochure,
     ),
@@ -1142,10 +1150,15 @@ export const relations_fidnet = relations(fidnet, ({ one }) => ({
   }),
 }));
 export const relations_suppliers = relations(suppliers, ({ one }) => ({
-  logo: one(media, {
-    fields: [suppliers.logo],
+  logo_mini: one(media, {
+    fields: [suppliers.logo_mini],
     references: [media.id],
-    relationName: "logo",
+    relationName: "logo_mini",
+  }),
+  logo_full: one(media, {
+    fields: [suppliers.logo_full],
+    references: [media.id],
+    relationName: "logo_full",
   }),
   brochure: one(media, {
     fields: [suppliers.brochure],

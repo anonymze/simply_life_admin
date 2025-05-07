@@ -22,6 +22,8 @@ for (const [key, value] of headerList.entries()) {
 	console.log(`${key}: ${value}`);
 }
 
+// for android local server 
+10.0.2.2
 
 TODO
 

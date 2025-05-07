@@ -40,7 +40,7 @@ export const Suppliers: CollectionConfig = {
 			required: true,
 		},
 		{
-			name: "logo",
+			name: "logo_mini",
 			type: "upload",
 			relationTo: "media",
 			admin: {
@@ -51,8 +51,25 @@ export const Suppliers: CollectionConfig = {
 				return validateMedia(data);
 			},
 			label: {
-				en: "Logo",
-				fr: "Logo",
+				en: "Mini logo",
+				fr: "Mini logo",
+			},
+			required: false,
+		},
+		{
+			name: "logo_full",
+			type: "upload",
+			relationTo: "media",
+			admin: {
+				description: "Le fichier doit être une image.",
+			},
+			// @ts-expect-error
+			validate: (data) => {
+				return validateMedia(data);
+			},
+			label: {
+				en: "Full logo",
+				fr: "Logo entier",
 			},
 			required: false,
 		},
@@ -131,7 +148,7 @@ export const Suppliers: CollectionConfig = {
 					name: "email",
 					type: "text",
 					label: {
-						en: "Identifiant",
+						en: "Identifier",
 						fr: "Identifiant",
 					},
 					required: false,

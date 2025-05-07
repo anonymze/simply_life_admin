@@ -248,7 +248,11 @@ export interface Supplier {
   /**
    * Le fichier doit être une image.
    */
-  logo?: (string | null) | Media;
+  logo_mini?: (string | null) | Media;
+  /**
+   * Le fichier doit être une image.
+   */
+  logo_full?: (string | null) | Media;
   /**
    * Le fichier doit être au format PDF.
    */
@@ -620,7 +624,8 @@ export interface FidnetSelect<T extends boolean = true> {
  */
 export interface SuppliersSelect<T extends boolean = true> {
   name?: T;
-  logo?: T;
+  logo_mini?: T;
+  logo_full?: T;
   brochure?: T;
   contact_info?:
     | T
