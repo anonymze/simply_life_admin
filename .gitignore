@@ -40,6 +40,10 @@ next-env.d.ts
 
 /media
 
+x/
+
+supabase/
+
 #custom
 
 .history

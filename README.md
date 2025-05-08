@@ -22,6 +22,9 @@ for (const [key, value] of headerList.entries()) {
 	console.log(`${key}: ${value}`);
 }
 
+supabase db reset --linked
+
+
 // for android local server 
 10.0.2.2
 
