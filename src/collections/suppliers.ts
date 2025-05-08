@@ -176,8 +176,20 @@ export const Suppliers: CollectionConfig = {
 					name: "theme",
 					type: "text",
 					label: {
-						en: "Theme",
-						fr: "Thématique",
+						en: "Theme(s)",
+						fr: "Thématique(s)",
+					},
+					admin: {
+						description: "Séparez les thématiques par une virgule.",
+					},
+					required: false,
+				},
+				{
+					name: "annotation",
+					type: "text",
+					label: {
+						en: "Annotation",
+						fr: "Remarque",
 					},
 					required: false,
 				},

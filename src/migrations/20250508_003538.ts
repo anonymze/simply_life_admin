@@ -68,7 +68,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "suppliers" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"name" varchar NOT NULL,
-  	"logo_id" uuid,
+  	"logo_mini_id" uuid,
+  	"logo_full_id" uuid,
   	"brochure_id" uuid,
   	"contact_info_lastname" varchar,
   	"contact_info_firstname" varchar,
@@ -77,6 +78,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"connexion_email" varchar,
   	"connexion_password" varchar,
   	"other_information_theme" varchar,
+  	"other_information_annotation" varchar,
   	"other_information_subscription_fee" varchar,
   	"other_information_duration" varchar,
   	"other_information_rentability" varchar,
@@ -317,7 +319,13 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
-   ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_logo_id_media_id_fk" FOREIGN KEY ("logo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+   ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_logo_mini_id_media_id_fk" FOREIGN KEY ("logo_mini_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_logo_full_id_media_id_fk" FOREIGN KEY ("logo_full_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -534,7 +542,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "fidnet_video_idx" ON "fidnet" USING btree ("video_id");
   CREATE INDEX IF NOT EXISTS "fidnet_updated_at_idx" ON "fidnet" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "fidnet_created_at_idx" ON "fidnet" USING btree ("created_at");
-  CREATE INDEX IF NOT EXISTS "suppliers_logo_idx" ON "suppliers" USING btree ("logo_id");
+  CREATE INDEX IF NOT EXISTS "suppliers_logo_mini_idx" ON "suppliers" USING btree ("logo_mini_id");
+  CREATE INDEX IF NOT EXISTS "suppliers_logo_full_idx" ON "suppliers" USING btree ("logo_full_id");
   CREATE INDEX IF NOT EXISTS "suppliers_brochure_idx" ON "suppliers" USING btree ("brochure_id");
   CREATE INDEX IF NOT EXISTS "suppliers_updated_at_idx" ON "suppliers" USING btree ("updated_at");
   CREATE INDEX IF NOT EXISTS "suppliers_created_at_idx" ON "suppliers" USING btree ("created_at");

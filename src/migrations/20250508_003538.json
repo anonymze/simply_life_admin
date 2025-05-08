@@ -1,5 +1,5 @@
 {
-  "id": "2cdb4db4-1d26-4c7c-8ec9-2a7f622fc268",
+  "id": "a632a3b0-30ea-4286-ba4d-26d7b435b08f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -779,8 +779,14 @@
           "primaryKey": false,
           "notNull": true
         },
-        "logo_id": {
-          "name": "logo_id",
+        "logo_mini_id": {
+          "name": "logo_mini_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "logo_full_id": {
+          "name": "logo_full_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -829,6 +835,12 @@
         },
         "other_information_theme": {
           "name": "other_information_theme",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "other_information_annotation": {
+          "name": "other_information_annotation",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -897,11 +909,26 @@
         }
       },
       "indexes": {
-        "suppliers_logo_idx": {
-          "name": "suppliers_logo_idx",
+        "suppliers_logo_mini_idx": {
+          "name": "suppliers_logo_mini_idx",
           "columns": [
             {
-              "expression": "logo_id",
+              "expression": "logo_mini_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "suppliers_logo_full_idx": {
+          "name": "suppliers_logo_full_idx",
+          "columns": [
+            {
+              "expression": "logo_full_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -959,12 +986,25 @@
         }
       },
       "foreignKeys": {
-        "suppliers_logo_id_media_id_fk": {
-          "name": "suppliers_logo_id_media_id_fk",
+        "suppliers_logo_mini_id_media_id_fk": {
+          "name": "suppliers_logo_mini_id_media_id_fk",
           "tableFrom": "suppliers",
           "tableTo": "media",
           "columnsFrom": [
-            "logo_id"
+            "logo_mini_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "suppliers_logo_full_id_media_id_fk": {
+          "name": "suppliers_logo_full_id_media_id_fk",
+          "tableFrom": "suppliers",
+          "tableTo": "media",
+          "columnsFrom": [
+            "logo_full_id"
           ],
           "columnsTo": [
             "id"

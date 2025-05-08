@@ -268,7 +268,11 @@ export interface Supplier {
     password?: string | null;
   };
   other_information?: {
+    /**
+     * Séparez les thématiques par une virgule.
+     */
     theme?: string | null;
+    annotation?: string | null;
     subscription_fee?: string | null;
     duration?: string | null;
     rentability?: string | null;
@@ -645,6 +649,7 @@ export interface SuppliersSelect<T extends boolean = true> {
     | T
     | {
         theme?: T;
+        annotation?: T;
         subscription_fee?: T;
         duration?: T;
         rentability?: T;
