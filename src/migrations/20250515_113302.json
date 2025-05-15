@@ -1,5 +1,5 @@
 {
-  "id": "a632a3b0-30ea-4286-ba4d-26d7b435b08f",
+  "id": "c55d683f-9505-4bbf-8fba-0507e57f2cf5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -778,6 +778,12 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "website": {
+          "name": "website",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "logo_mini_id": {
           "name": "logo_mini_id",

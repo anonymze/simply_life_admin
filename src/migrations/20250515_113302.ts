@@ -68,6 +68,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "suppliers" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"name" varchar NOT NULL,
+  	"website" varchar,
   	"logo_mini_id" uuid,
   	"logo_full_id" uuid,
   	"brochure_id" uuid,
