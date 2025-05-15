@@ -245,6 +245,7 @@ export interface SupplierProduct {
 export interface Supplier {
   id: string;
   name: string;
+  website?: string | null;
   /**
    * Le fichier doit être une image.
    */
@@ -261,6 +262,9 @@ export interface Supplier {
     lastname?: string | null;
     firstname?: string | null;
     email?: string | null;
+    /**
+     * Séparez les numéros par une virgule si plusieurs.
+     */
     phone?: string | null;
   };
   connexion?: {
@@ -280,6 +284,9 @@ export interface Supplier {
     commission?: string | null;
     commission_public_offer?: string | null;
     commission_offer_group_valorem?: string | null;
+    /**
+     * Séparez les SCPI par une virgule.
+     */
     scpi?: string | null;
   };
   updatedAt: string;
@@ -628,6 +635,7 @@ export interface FidnetSelect<T extends boolean = true> {
  */
 export interface SuppliersSelect<T extends boolean = true> {
   name?: T;
+  website?: T;
   logo_mini?: T;
   logo_full?: T;
   brochure?: T;

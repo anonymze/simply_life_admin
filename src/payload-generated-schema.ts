@@ -257,6 +257,7 @@ export const suppliers = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
+    website: varchar("website"),
     logo_mini: uuid("logo_mini_id").references(() => media.id, {
       onDelete: "set null",
     }),

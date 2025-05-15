@@ -40,6 +40,15 @@ export const Suppliers: CollectionConfig = {
 			required: true,
 		},
 		{
+			name: "website",
+			type: "text",
+			label: {
+				en: "Website",
+				fr: "Site internet",
+			},
+			required: false,
+		},
+		{
 			name: "logo_mini",
 			type: "upload",
 			relationTo: "media",
@@ -131,6 +140,9 @@ export const Suppliers: CollectionConfig = {
 					label: {
 						en: "Contact Phone",
 						fr: "Téléphone du contact",
+					},
+					admin: {
+						description: "Séparez les numéros par une virgule si plusieurs.",
 					},
 					required: false,
 				},
@@ -262,6 +274,9 @@ export const Suppliers: CollectionConfig = {
 					label: {
 						en: "SCPI",
 						fr: "SCPI",
+					},
+					admin: {
+						description: "Séparez les SCPI par une virgule.",
 					},
 					required: false,
 				},
