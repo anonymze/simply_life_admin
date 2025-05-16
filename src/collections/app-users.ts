@@ -1,6 +1,5 @@
 import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
-import { getPayload, type CollectionConfig } from "payload";
-import config from "@payload-config";
+import { type CollectionConfig } from "payload";
 
 
 export const AppUsers: CollectionConfig = {
@@ -26,12 +25,12 @@ export const AppUsers: CollectionConfig = {
 	},
 	labels: {
 		singular: {
-			en: "Mobile app user",
-			fr: "Utilisateur application mobile",
+			en: "User / Organisation chart",
+			fr: "Utilisateur  / Organigramme",
 		},
 		plural: {
-			en: "Mobile app users",
-			fr: "Utilisateurs application mobile",
+			en: "Users / Organisation chart",
+			fr: "Utilisateurs / Organigramme",
 		},
 	},
 	hooks: {
