@@ -4,6 +4,7 @@ import { enum_app_users_role } from "@/payload-generated-schema";
 import { AppUser } from "@/payload-types";
 import { FieldLabel, SelectInput, TextInput, useTranslation } from "@payloadcms/ui";
 import React, { useState } from "react";
+import z from "zod";
 
 export default function Fields() {
 	const { i18n } = useTranslation();
@@ -14,11 +15,11 @@ export default function Fields() {
 
 
 	React.useEffect(() => {
-		if (!email) return;
-		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-			setEmailError("Invalid email address");
-		} else {
+		if (!email) return setEmailError(null);
+		if (z.string().email().safeParse(email).success) {
 			setEmailError(null);
+		} else {
+			setEmailError("Invalid email address");
 		}
 	}, [email]);
 
@@ -31,13 +32,14 @@ export default function Fields() {
 					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
 					value={email}
 					required
+					showError={!!emailError}		
 				/>
-				{emailError && <p className="error">{emailError}</p>}
 			</div>
 			<div className="field-type text">
 				{/* @ts-ignore */}
 				<FieldLabel label={i18n.t("app-users:labelRole")} required />
 				<SelectInput
+					isClearable={false}
 					name="role"
 					path="role"
 					options={enum_app_users_role.enumValues.map((value) => ({

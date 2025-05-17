@@ -5,13 +5,12 @@ import React from "react";
 import Fields from "./_fields";
 
 
-export const CreateAppUserView: React.FC<AdminViewProps> = ({ initPageResult, params, searchParams }) => {
+export const CreateAppUserView: React.FC<AdminViewProps> = ({ initPageResult }) => {
 	const { t } = initPageResult.req.i18n;
-
 
 	return (
 		<main className="collection-edit collection-edit--admins">
-			<form action="" className="collection-edit__form form" method="POST" noValidate={undefined}>
+			<form action="" className="collection-edit__form form" method="POST">
 				<div className="gutter--left gutter--right doc-controls">
 					<div className="doc-controls__wrapper">
 						<div className="doc-controls__content">
