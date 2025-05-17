@@ -4,7 +4,6 @@ import { enum_app_users_role } from "@/payload-generated-schema";
 import { AppUser } from "@/payload-types";
 import { FieldLabel, SelectInput, TextInput, useTranslation } from "@payloadcms/ui";
 import React, { useState } from "react";
-import z from "zod";
 
 export default function Fields({
 	showErrorRole = false,

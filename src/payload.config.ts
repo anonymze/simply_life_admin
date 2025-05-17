@@ -159,14 +159,17 @@ export default buildConfig({
 		},
 	}),
 	sharp,
-	email: process.env.NODE_ENV === "production" ? undefined : nodemailerAdapter({
+	email: nodemailerAdapter({
 		defaultFromAddress: "info@simply-life.fr",
 		defaultFromName: "Simply Life",
 		transport: nodemailer.createTransport({
-			host: "127.0.0.1",
-			port: 1025,
-			ignoreTLS: true, // Add this for MailHog
-			
+			host: process.env.NODE_ENV === "production" ? process.env.SMTP_HOST : "127.0.0.1",
+			port: process.env.NODE_ENV === "production" ? Number(process.env.SMTP_PORT) : 1025,
+			ignoreTLS: false, // for 587 port and localhost
+			auth: {
+				user: process.env.NODE_ENV === "production" ? process.env.SMTP_USER : "user",
+				pass: process.env.NODE_ENV === "production" ? process.env.SMTP_PASS : "pass",
+			},
 		}),
 	}),
 	plugins: [

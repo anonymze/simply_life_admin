@@ -23,19 +23,19 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 
 		if (!z.string().email().safeParse(email).success) {
 			setShowErrorEmail(true);
+			return;
 		} else {	
 			setShowErrorEmail(false);
 		}
 
 		if (!role) {
 			setShowErrorRole(true);
+			return;
 		} else {
 			setShowErrorRole(false);
 		}
 
-		if (showErrorEmail || showErrorRole) {
-			return;
-		}
+		console.log(email, role);
 
 		try {
 			setIsSubmitting(true);

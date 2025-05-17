@@ -1,5 +1,6 @@
 import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
 import { type CollectionConfig } from "payload";
+import { sendEmail } from "@/utils/email";
 import { z } from "zod";
 
 
@@ -86,7 +87,7 @@ export const AppUsers: CollectionConfig = {
 						where: {
 							email: {
 								equals: validatedData.email,
-							}
+							},
 						},
 					});
 
@@ -97,8 +98,6 @@ export const AppUsers: CollectionConfig = {
 						});
 					}
 
-
-
 					// Create a new temporary user with just email and role
 					await req.payload.create({
 						collection: "temporary-app-users",
@@ -106,6 +105,14 @@ export const AppUsers: CollectionConfig = {
 							email: validatedData.email,
 							role: validatedData.role,
 						},
+					});
+
+					await sendEmail({
+						to: validatedData.email,
+						//@ts-ignore
+						subject: req.i18n.t("app-users:emailSubject"),
+						text: "c",
+						html: "c",
 					});
 
 					return Response.json({
