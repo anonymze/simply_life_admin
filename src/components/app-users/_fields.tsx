@@ -6,22 +6,17 @@ import { FieldLabel, SelectInput, TextInput, useTranslation } from "@payloadcms/
 import React, { useState } from "react";
 import z from "zod";
 
-export default function Fields() {
+export default function Fields({
+	showErrorRole = false,
+	showErrorEmail = false,
+}: {
+	showErrorRole?: boolean;
+	showErrorEmail?: boolean;
+}) {
 	const { i18n } = useTranslation();
 
 	const [email, setEmail] = useState("");
 	const [role, setRole] = useState<AppUser["role"]>("associate");
-	const [emailError, setEmailError] = useState<string | null>(null);
-
-
-	React.useEffect(() => {
-		if (!email) return setEmailError(null);
-		if (z.string().email().safeParse(email).success) {
-			setEmailError(null);
-		} else {
-			setEmailError("Invalid email address");
-		}
-	}, [email]);
 
 	return (
 		<div className="render-fields document-fields__fields">
@@ -31,14 +26,15 @@ export default function Fields() {
 					path="email"
 					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
 					value={email}
+					showError={showErrorEmail}
 					required
-					showError={!!emailError}		
 				/>
 			</div>
 			<div className="field-type text">
 				{/* @ts-ignore */}
 				<FieldLabel label={i18n.t("app-users:labelRole")} required />
 				<SelectInput
+					showError={showErrorRole}
 					isClearable={false}
 					name="role"
 					path="role"
@@ -54,6 +50,7 @@ export default function Fields() {
 					}}
 					required
 				/>
+				<input type="hidden" name="role" value={role} />
 			</div>
 		</div>
 	);
