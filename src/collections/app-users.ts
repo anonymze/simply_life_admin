@@ -22,6 +22,15 @@ export const AppUsers: CollectionConfig = {
 		},
 		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
 		useAsTitle: "email",
+		components: {
+			views: {
+				edit: {
+					default: {
+						Component: '/components/app-users/create-view.tsx',
+					},
+				},
+			},
+		},
 	},
 	labels: {
 		singular: {

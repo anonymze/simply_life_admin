@@ -19,6 +19,14 @@ export const customTranslations = {
 				createNew: "Create a new item",
 				createNewLabel: "Create a new item",
 			},
+			'app-users': {
+				createNewUser: "Create a new app user",
+				labelRole: "Role",	
+				associate: "Associate",
+				employee: "Employee",
+				independent: "Independent",
+				visitor: "Visitor",
+			},
 		},
 		fr: {
 			custom: {
@@ -31,6 +39,14 @@ export const customTranslations = {
 			general: {
 				createNew: "Créer un nouvel élément",
 				createNewLabel: "Créer un nouvel élément",
+			},
+			'app-users': {
+				createNewUser: "Création d'un nouvel utilisateur",
+				labelRole: "Rôle",
+				associate: "Associé",
+				employee: "Employé",
+				independent: "Indépendant",
+				visitor: "Visiteur",
 			},
 		},
 	},
