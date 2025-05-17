@@ -13,6 +13,7 @@ import sharp from "sharp";
 import path from "path";
 
 import { SupplierCategories } from "./collections/supplier-categories";
+import { TemporaryAppUsers } from "./collections/temporary-app-users";
 import { ContactCategories } from "./collections/contact-categories";
 import { websocketServerPlugin } from "./plugins/websocket-server";
 import { SupplierProducts } from "./collections/supplier-products";
@@ -122,6 +123,7 @@ export default buildConfig({
 		ChatRooms,
 		Messages,
 		Signatures,
+		TemporaryAppUsers,
 	],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",

@@ -1,8 +1,9 @@
 "use client";
 
 import type { AdminViewProps } from "payload";
-import { Gutter, useTranslation } from "@payloadcms/ui";
+import { Gutter, toast, useTranslation } from "@payloadcms/ui";
 import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 import Fields from "./_fields";
 import { z } from "zod";
@@ -11,8 +12,10 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 	const { i18n } = useTranslation();
 	const [showErrorEmail, setShowErrorEmail] = useState(false);
 	const [showErrorRole, setShowErrorRole] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const router = useRouter();
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
 		const email = formData.get("email") as string;
@@ -34,7 +37,37 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 			return;
 		}
 
-			
+		try {
+			setIsSubmitting(true);
+			const response = await fetch("/api/app-users/init-registration", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ email, role }),
+			});
+
+			if (!response.ok) {
+				if (response.status === 400) {
+					//@ts-ignore
+					throw new Error(i18n.t("app-users:emailExists"));
+				} else {
+					throw new Error(i18n.t("general:error"));
+				}
+			}
+
+			//@ts-ignore
+			toast.success(i18n.t("app-users:registrationSuccess"));
+			router.refresh();
+		} catch (error) {
+			if (error instanceof Error) {
+				toast.error(error.message);
+			} else {
+				toast.error(i18n.t("general:error"));
+			}
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -59,7 +92,7 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 										className="btn btn--icon-style-without-border btn--size-medium btn--withoutPopup btn--style-primary btn--withoutPopup"
 									>
 										<span className="btn__content">
-											<span className="btn__label">{i18n.t("general:save")}</span>
+											<span className="btn__label">{isSubmitting ? i18n.t("general:saving") : i18n.t("general:save")}</span>
 										</span>
 									</button>
 								</div>
@@ -81,3 +114,5 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 };
 
 export default CreateAppUserView;
+
+

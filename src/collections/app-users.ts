@@ -1,6 +1,12 @@
 import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
 import { type CollectionConfig } from "payload";
+import { z } from "zod";
 
+
+export const initialRegistrationSchema = z.object({
+	email: z.string().email(),
+	role: z.enum(["associate", "employee", "independent", "visitor"]),
+});
 
 export const AppUsers: CollectionConfig = {
 	slug: "app-users",
@@ -18,7 +24,7 @@ export const AppUsers: CollectionConfig = {
 	admin: {
 		group: {
 			en: "Users",
-			fr: "Utilisateurs",	
+			fr: "Utilisateurs",
 		},
 		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
 		useAsTitle: "email",
@@ -26,7 +32,7 @@ export const AppUsers: CollectionConfig = {
 			views: {
 				edit: {
 					default: {
-						Component: '/components/app-users/create-view.tsx',
+						Component: "/components/app-users/create-view.tsx",
 					},
 				},
 			},
@@ -45,6 +51,79 @@ export const AppUsers: CollectionConfig = {
 	hooks: {
 		beforeValidate: [validatePassword],
 	},
+	endpoints: [
+		{
+			path: "/init-registration",
+			method: "post",
+			handler: async (req) => {
+				try {
+					const data = await req.json?.();
+					const validatedData = initialRegistrationSchema.parse(data);
+
+					// Check if user already exists
+					const existingUser = await req.payload.find({
+						collection: "app-users",
+						where: {
+							email: {
+								equals: validatedData.email,
+							},
+						},
+					});
+
+					if (existingUser.docs.length > 0) {
+						return Response.json(
+							{
+								message: "KO",
+							},
+							{
+								status: 400,
+							}
+						);
+					}
+
+					const existingTemporaryUser = await req.payload.find({
+						collection: "temporary-app-users",
+						where: {
+							email: {
+								equals: validatedData.email,
+							}
+						},
+					});
+
+					if (existingTemporaryUser.docs.length > 0) {
+						await req.payload.delete({
+							collection: "temporary-app-users",
+							id: existingTemporaryUser.docs[0].id,
+						});
+					}
+
+
+
+					// Create a new temporary user with just email and role
+					await req.payload.create({
+						collection: "temporary-app-users",
+						data: {
+							email: validatedData.email,
+							role: validatedData.role,
+						},
+					});
+
+					return Response.json({
+						message: "OK",
+					});
+				} catch (error) {
+					return Response.json(
+						{
+							message: "KO",
+						},
+						{
+							status: 500,
+						}
+					);
+				}
+			},
+		},
+	],
 	fields: [
 		{
 			name: "lastname",
@@ -143,7 +222,7 @@ export const AppUsers: CollectionConfig = {
 		{
 			name: "description-below-password",
 			type: "ui",
-			
+
 			admin: {
 				components: {
 					Field: "/components/description-below-password.tsx",

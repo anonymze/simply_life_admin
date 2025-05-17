@@ -83,6 +83,7 @@ export interface Config {
     'chat-rooms': ChatRoom;
     messages: Message;
     signatures: Signature;
+    'temporary-app-users': TemporaryAppUser;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -104,6 +105,7 @@ export interface Config {
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
     signatures: SignaturesSelect<false> | SignaturesSelect<true>;
+    'temporary-app-users': TemporaryAppUsersSelect<false> | TemporaryAppUsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -452,6 +454,17 @@ export interface Signature {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "temporary-app-users".
+ */
+export interface TemporaryAppUser {
+  id: string;
+  email: string;
+  role: 'associate' | 'employee' | 'independent' | 'visitor';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -516,6 +529,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'signatures';
         value: string | Signature;
+      } | null)
+    | ({
+        relationTo: 'temporary-app-users';
+        value: string | TemporaryAppUser;
       } | null);
   globalSlug?: string | null;
   user:
@@ -804,6 +821,16 @@ export interface MessagesSelect<T extends boolean = true> {
 export interface SignaturesSelect<T extends boolean = true> {
   app_user?: T;
   file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "temporary-app-users_select".
+ */
+export interface TemporaryAppUsersSelect<T extends boolean = true> {
+  email?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
 }
