@@ -1,6 +1,8 @@
 import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
 import { type CollectionConfig } from "payload";
-import { sendEmail } from "@/utils/email";
+import { sendEmail } from "@/emails/email";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { z } from "zod";
 
 
@@ -107,12 +109,27 @@ export const AppUsers: CollectionConfig = {
 						},
 					});
 
+					const language = req.i18n.language === "fr" ? "fr" : "en";
+
 					await sendEmail({
 						to: validatedData.email,
 						//@ts-ignore
 						subject: req.i18n.t("app-users:emailSubject"),
-						text: "c",
-						html: "c",
+						text: readFileSync(
+							join(
+								process.cwd(),
+								`src/emails/templates/${language}/subscription-app-user.txt`
+							),
+							"utf-8"
+						).replace("{{registrationLink}}", req.payload.config.serverURL),
+
+						html: readFileSync(
+							join(
+								process.cwd(),
+								`src/emails/templates/${language}/subscription-app-user.html`
+							),
+							"utf-8"
+						).replace("{{registrationLink}}", req.payload.config.serverURL),
 					});
 
 					return Response.json({
