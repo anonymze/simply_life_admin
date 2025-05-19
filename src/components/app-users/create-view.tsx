@@ -35,8 +35,6 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 			setShowErrorRole(false);
 		}
 
-		console.log(email, role);
-
 		try {
 			setIsSubmitting(true);
 			const response = await fetch("/api/app-users/init-registration", {

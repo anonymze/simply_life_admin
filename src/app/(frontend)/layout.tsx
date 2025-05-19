@@ -4,8 +4,8 @@ import React from 'react';
 
 
 export const metadata = {
-  description: 'Admin office for Simply Life',
-  title: 'Admin office for Simply Life',
+  description: 'Simply Life',
+  title: 'Simply Life',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {

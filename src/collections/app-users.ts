@@ -116,18 +116,12 @@ export const AppUsers: CollectionConfig = {
 						//@ts-ignore
 						subject: req.i18n.t("app-users:emailSubject"),
 						text: readFileSync(
-							join(
-								process.cwd(),
-								`src/emails/templates/${language}/subscription-app-user.txt`
-							),
+							join(process.cwd(), `src/emails/templates/${language}/subscription-app-user.txt`),
 							"utf-8"
 						).replace("{{registrationLink}}", req.payload.config.serverURL),
 
 						html: readFileSync(
-							join(
-								process.cwd(),
-								`src/emails/templates/${language}/subscription-app-user.html`
-							),
+							join(process.cwd(), `src/emails/templates/${language}/subscription-app-user.html`),
 							"utf-8"
 						).replace("{{registrationLink}}", req.payload.config.serverURL),
 					});
@@ -145,6 +139,59 @@ export const AppUsers: CollectionConfig = {
 						}
 					);
 				}
+			},
+		},
+		{
+			path: "/create/:id",
+			method: "get",
+			handler: async (req) => {
+
+				const user = await req.payload.find({
+					collection: "temporary-app-users",
+					where: {
+						id: {
+							equals: req?.routeParams?.id,
+						},
+					},
+				});
+
+				if (user.docs.length === 0) {
+					return new Response(
+						`
+							<!DOCTYPE html>
+							<html>
+								<body>
+									<h1>Error</h1>
+									<p>An error occurred while loading the page!!!</p>
+								</body>
+							</html>
+							`,
+						{
+							status: 500,
+							headers: {
+								"Content-Type": "text/html",
+							},
+						}
+					);
+				}
+
+				return new Response(
+					`
+						<!DOCTYPE html>
+						<html>
+							<body>
+								<h1>Error</h1>
+								<p>An error occurred while loading the page!!!</p>
+							</body>
+						</html>
+						`,
+					{
+						status: 500,
+						headers: {
+							"Content-Type": "text/html",
+						},
+					}
+				);
 			},
 		},
 	],
