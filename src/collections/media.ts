@@ -30,7 +30,6 @@ export const Media: CollectionConfig = {
 	hooks: {
 		beforeValidate: [operationGenerationBlurHash],
 	},
-
 	upload: true,
 };
 

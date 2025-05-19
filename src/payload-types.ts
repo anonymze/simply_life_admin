@@ -74,6 +74,7 @@ export interface Config {
     fidnet: Fidnet;
     suppliers: Supplier;
     fundesys: Fundesy;
+    commissions: Commission;
     media: Media;
     reservations: Reservation;
     'supplier-products': SupplierProduct;
@@ -96,6 +97,7 @@ export interface Config {
     fidnet: FidnetSelect<false> | FidnetSelect<true>;
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
+    commissions: CommissionsSelect<false> | CommissionsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
@@ -333,10 +335,6 @@ export interface Fidnet {
    * Le fichier doit être au format PDF.
    */
   file: string | Media;
-  /**
-   * Le fichier doit être une vidéo.
-   */
-  video: string | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -360,20 +358,19 @@ export interface Fundesy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reservations".
+ * via the `definition` "commissions".
  */
-export interface Reservation {
+export interface Commission {
   id: string;
-  title: string;
-  invitations?:
-    | {
-        email: string;
-        id?: string | null;
-      }[]
-    | null;
-  day_reservation: string;
-  start_time_reservation?: string | null;
-  end_time_reservation?: string | null;
+  app_user: string | AppUser;
+  supplier: string | Supplier;
+  informations?: {
+    date?: string | null;
+    encours?: number | null;
+    production?: number | null;
+    pdf?: (string | null) | Media;
+    excel?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -401,6 +398,25 @@ export interface AppUser {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations".
+ */
+export interface Reservation {
+  id: string;
+  title: string;
+  invitations?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  day_reservation: string;
+  start_time_reservation?: string | null;
+  end_time_reservation?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -496,6 +512,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'fundesys';
         value: string | Fundesy;
+      } | null)
+    | ({
+        relationTo: 'commissions';
+        value: string | Commission;
       } | null)
     | ({
         relationTo: 'media';
@@ -648,7 +668,6 @@ export interface ContactsSelect<T extends boolean = true> {
 export interface FidnetSelect<T extends boolean = true> {
   date?: T;
   file?: T;
-  video?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -701,6 +720,25 @@ export interface FundesysSelect<T extends boolean = true> {
   date?: T;
   file?: T;
   video?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commissions_select".
+ */
+export interface CommissionsSelect<T extends boolean = true> {
+  app_user?: T;
+  supplier?: T;
+  informations?:
+    | T
+    | {
+        date?: T;
+        encours?: T;
+        production?: T;
+        pdf?: T;
+        excel?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

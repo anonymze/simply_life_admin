@@ -59,22 +59,5 @@ export const Fidnet: CollectionConfig = {
 			},
 			required: true,
 		},
-		{
-			name: "video",
-			type: "upload",
-			relationTo: "media",
-			label: {
-				en: "Video",
-				fr: "Vidéo",
-			},
-			// @ts-expect-error
-			validate: (data) => {
-				return validateMedia(data, "video/");
-			},
-			admin: {
-				description: "Le fichier doit être une vidéo.",
-			},
-			required: true,
-		},
 	],
 };

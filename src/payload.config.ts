@@ -19,6 +19,7 @@ import { websocketServerPlugin } from "./plugins/websocket-server";
 import { SupplierProducts } from "./collections/supplier-products";
 import { customTranslations } from "./utils/custom-translations";
 import { Reservations } from "./collections/reservations";
+import { Commissions } from "./collections/commissions";
 import { AgencyLife } from "./collections/agency-life";
 import { Signatures } from "./collections/signatures";
 import { ChatRooms } from "./collections/chat-rooms";
@@ -114,6 +115,7 @@ export default buildConfig({
 		Fidnet,
 		Suppliers,
 		Fundesys,
+		Commissions,
 		Media,
 		Reservations,
 		SupplierProducts,

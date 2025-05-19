@@ -28,13 +28,6 @@ export const Messages: CollectionConfig = {
 			relationTo: "app-users",
 			required: true,
 			hasMany: false,
-			filterOptions: () => {
-				return true;
-			},
-			// prevent admin interface from modifying this value
-			// admin: {
-			// 	readOnly: true,
-			// },
 		},
 		{
 			name: "chat_room",

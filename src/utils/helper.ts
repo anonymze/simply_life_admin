@@ -213,7 +213,7 @@ export const generateVideoBlurHash = async (buffer: Buffer) => {
 	return undefined;
 };
 
-export const validateMedia = async (data: string | undefined, mimeType: "image/" | "video/" | "application/pdf" = "image/") => {
+export const validateMedia = async (data: string | undefined, mimeType: "image/" | "video/" | "application/pdf" | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "image/") => {
 	if (!data) return;
 	const payload = await getPayload({
 		config,
@@ -227,5 +227,6 @@ export const validateMedia = async (data: string | undefined, mimeType: "image/"
 		if (mimeType === "image/") return "Le fichier doit être une image.";
 		if (mimeType === "video/") return "Le fichier doit être une vidéo.";
 		if (mimeType === "application/pdf") return "Le fichier doit être un PDF.";
+		if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return "Le fichier doit être un Excel.";
 	}
 };
