@@ -1,19 +1,37 @@
 "use client";
 
-import type { AdminViewProps } from "payload";
+import type { Data, DocumentViewClientProps } from "payload";
 import { Gutter, toast, useTranslation } from "@payloadcms/ui";
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useDocumentInfo } from "@payloadcms/ui";
 
 import Fields from "./_fields";
 import { z } from "zod";
+import FieldsEdit from "./_fields-edit";
+import { AppUser } from "@/payload-types";
 
-export const CreateAppUserView: React.FC<AdminViewProps> = () => {
+export const CreateAppUserView: React.FC<DocumentViewClientProps> = () => {
 	const { i18n } = useTranslation();
 	const [showErrorEmail, setShowErrorEmail] = useState(false);
 	const [showErrorRole, setShowErrorRole] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const router = useRouter();
+	const { id, initialData } = useDocumentInfo();
+
+	if (id) {
+		return (
+			<main className="collection-edit collection-edit--admins">
+				<div className="document-fields document-fields--no-sidebar">
+					<div className="document-fields__main">
+						<Gutter className="document-fields__edit">
+							<FieldsEdit initialData={initialData as AppUser} />
+						</Gutter>
+					</div>
+				</div>
+			</main>
+		);
+	}
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -24,7 +42,7 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 		if (!z.string().email().safeParse(email).success) {
 			setShowErrorEmail(true);
 			return;
-		} else {	
+		} else {
 			setShowErrorEmail(false);
 		}
 
@@ -90,7 +108,9 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 										className="btn btn--icon-style-without-border btn--size-medium btn--withoutPopup btn--style-primary btn--withoutPopup"
 									>
 										<span className="btn__content">
-											<span className="btn__label">{isSubmitting ? i18n.t("general:saving") : i18n.t("general:save")}</span>
+											<span className="btn__label">
+												{isSubmitting ? i18n.t("general:saving") : i18n.t("general:save")}
+											</span>
 										</span>
 									</button>
 								</div>
@@ -112,5 +132,3 @@ export const CreateAppUserView: React.FC<AdminViewProps> = () => {
 };
 
 export default CreateAppUserView;
-
-

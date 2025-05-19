@@ -125,7 +125,7 @@ export const AppUsers: CollectionConfig = {
 					}
 
 					// Create a new temporary user with just email and role
-					await req.payload.create({
+					const userTemporary = await req.payload.create({
 						collection: "temporary-app-users",
 						data: {
 							email: validatedData.email,
@@ -135,6 +135,8 @@ export const AppUsers: CollectionConfig = {
 
 					const language = req.i18n.language === "fr" ? "fr" : "en";
 
+					const link = `/app-users/create/${userTemporary.id}`;
+
 					await sendEmail({
 						to: validatedData.email,
 						//@ts-ignore
@@ -142,12 +144,12 @@ export const AppUsers: CollectionConfig = {
 						text: readFileSync(
 							join(process.cwd(), `src/emails/templates/${language}/subscription-app-user.txt`),
 							"utf-8"
-						).replace("{{registrationLink}}", req.payload.config.serverURL),
+						).replace("{{registrationLink}}", req.payload.config.serverURL + link),
 
 						html: readFileSync(
 							join(process.cwd(), `src/emails/templates/${language}/subscription-app-user.html`),
 							"utf-8"
-						).replace("{{registrationLink}}", req.payload.config.serverURL),
+						).replace("{{registrationLink}}", req.payload.config.serverURL + link),
 					});
 
 					return Response.json({
