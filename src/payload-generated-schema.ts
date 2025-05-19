@@ -5,23 +5,10 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify your source Payload config,
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
+import { pgTable, index, uniqueIndex, foreignKey, uuid, varchar, timestamp, numeric, integer, serial, boolean, jsonb, pgEnum, } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
+import { relations } from "@payloadcms/db-vercel-postgres/drizzle";
 
-import {
-  pgTable,
-  index,
-  uniqueIndex,
-  foreignKey,
-  uuid,
-  varchar,
-  timestamp,
-  numeric,
-  integer,
-  serial,
-  boolean,
-  jsonb,
-  pgEnum,
-} from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
-import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
+
 export const enum__locales = pgEnum("enum__locales", ["fr", "en"]);
 export const enum_app_users_role = pgEnum("enum_app_users_role", [
   "associate",

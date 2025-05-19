@@ -1,4 +1,5 @@
-import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
+import { canAccessApi, generateImageBlurHash, generateVideoBlurHash, validateMedia, validatePassword, } from "@/utils/helper";
+import { enum_app_users_role } from "@/payload-generated-schema";
 import { type CollectionConfig } from "payload";
 import { sendEmail } from "@/emails/email";
 import { readFileSync } from "fs";
@@ -8,7 +9,30 @@ import { z } from "zod";
 
 export const initialRegistrationSchema = z.object({
 	email: z.string().email(),
-	role: z.enum(["associate", "employee", "independent", "visitor"]),
+	role: z.enum(enum_app_users_role.enumValues),
+});
+
+const finalRegistrationSchema = z.object({
+	id: z.string(),
+	email: z.string().email({ message: "Entrez une adresse mail valide" }),
+	role: z.enum(enum_app_users_role.enumValues),
+	password: z
+		.string()
+		.min(10, { message: "Le mot de passe doit comporter au moins 10 caractères" })
+		.refine((password) => /[a-zA-Z]/.test(password), {
+			message: "Le mot de passe doit contenir au moins une lettre",
+		})
+		.refine((password) => /\d/.test(password), {
+			message: "Le mot de passe doit contenir au moins un chiffre",
+		}),
+	lastName: z.string().min(1, { message: "Le nom est requis" }),
+	firstName: z.string().min(1, { message: "Le prénom est requis" }),
+	phone: z
+		.string()
+		.min(10, { message: "Le numéro de téléphone doit comporter au moins 10 caractères" })
+		.optional()
+		.or(z.literal("")),
+	file: z.any().optional(),
 });
 
 export const AppUsers: CollectionConfig = {
@@ -142,56 +166,84 @@ export const AppUsers: CollectionConfig = {
 			},
 		},
 		{
-			path: "/create/:id",
-			method: "get",
+			path: "/finish-registration",
+			method: "post",
 			handler: async (req) => {
+				try {
+					const formData = await req.formData?.();
 
-				const user = await req.payload.find({
-					collection: "temporary-app-users",
-					where: {
-						id: {
-							equals: req?.routeParams?.id,
+					if (!formData) throw new Error();
+
+					const validatedData = finalRegistrationSchema.parse(Object.fromEntries(formData));
+
+					// check id is from temporary-app-users
+					const temporaryUser = await req.payload.find({
+						collection: "temporary-app-users",
+						where: {
+							email: {
+								equals: validatedData.email,
+							},
 						},
-					},
-				});
+					});
 
-				if (user.docs.length === 0) {
-					return new Response(
-						`
-							<!DOCTYPE html>
-							<html>
-								<body>
-									<h1>Error</h1>
-									<p>An error occurred while loading the page!!!</p>
-								</body>
-							</html>
-							`,
+					if (temporaryUser.docs.length === 0) throw new Error();
+
+					let image = null;
+
+					// check if there is a file and if it is an image
+					if (validatedData.file) {
+						if (!validatedData.file.type.startsWith("image/")) throw new Error();
+						const fileBuffer = Buffer.from(await validatedData.file.arrayBuffer());
+						// // create image
+						image = await req.payload.create({
+							collection: "media",
+							file: {
+								data: fileBuffer,
+								size: validatedData.file.size,
+								name: validatedData.file.name,
+								mimetype: validatedData.file.type,
+							},
+							data: {
+								alt: validatedData.file.name,
+								blurhash: await generateImageBlurHash(fileBuffer),
+							},
+						});
+					}
+
+					// create real user
+					await req.payload.create({
+						collection: "app-users",
+						data: {
+							email: validatedData.email,
+							password: validatedData.password,
+							role: validatedData.role,
+							lastname: validatedData.lastName,
+							firstname: validatedData.firstName,
+							phone: validatedData.phone,
+							photo: image?.id,
+						},
+					});
+
+					// delete temporary user
+					await req.payload.delete({
+						collection: "temporary-app-users",
+						id: temporaryUser.docs[0].id,
+					});
+
+					return Response.json({
+						message: "OK",
+					});
+				} catch (error) {
+					console.log(error);
+					return Response.json(
+						{
+							message: "KO",
+						},
 						{
 							status: 500,
-							headers: {
-								"Content-Type": "text/html",
-							},
 						}
 					);
 				}
-
-				return new Response(
-					`
-						<!DOCTYPE html>
-						<html>
-							<body>
-								<h1>Error</h1>
-								<p>An error occurred while loading the page!!!</p>
-							</body>
-						</html>
-						`,
-					{
-						status: 500,
-						headers: {
-							"Content-Type": "text/html",
-						},
-					}
-				);
 			},
 		},
 	],

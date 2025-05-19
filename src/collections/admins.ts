@@ -31,6 +31,7 @@ export const Admins: CollectionConfig = {
 	// email and password added by default
 	
 	auth: {
+		useAPIKey: true,		
 		maxLoginAttempts: 4,
 		tokenExpiration: 60 * 60 * 24 * 30, // 30 days
 	},
