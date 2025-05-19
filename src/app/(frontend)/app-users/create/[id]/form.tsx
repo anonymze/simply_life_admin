@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { X, Upload, Link } from "lucide-react"
+import { enum_app_users_role } from "@/payload-generated-schema";
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,6 +17,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
+	id: z.string(),
+	role: z.string(),	
   email: z.string().email({ message: "Entrez une adresse mail valide" }),
   password: z.string().min(10, { message: "Le mot de passe doit comporter au moins 10 caractères" }),
   lastName: z.string().min(1, { message: "Le nom est requis" }),
@@ -24,7 +27,8 @@ const formSchema = z.object({
   image: z.any().optional(),
 })
 
-export default function Page() {
+
+export default function FormPage({ email, id, role }: { email: string, id: string, role: string }) {
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,7 +36,9 @@ export default function Page() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+			id,
+			role,
+      email,
       password: "",
       lastName: "",
       firstName: "",
