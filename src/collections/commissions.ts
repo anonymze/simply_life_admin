@@ -115,6 +115,16 @@ export const Commissions: CollectionConfig = {
 						return validateMedia(data, "application/pdf");
 					},
 					required: false,
+					hooks: {
+						afterChange: [
+							async ({ value, siblingData, req }) => {
+								if (value) {
+								
+								}
+								return value;
+							}
+						]
+					}
 				},
 				{
 					name: "excel",

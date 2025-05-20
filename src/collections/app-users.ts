@@ -38,7 +38,7 @@ const finalRegistrationSchema = z.object({
 export const AppUsers: CollectionConfig = {
 	slug: "app-users",
 	access: {
-		read: ({ req }) => canAccessApi(req, []),
+		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		create: ({ req }) => canAccessApi(req, []),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
