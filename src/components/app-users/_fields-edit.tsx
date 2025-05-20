@@ -59,7 +59,8 @@ export default function FieldsEdit({ initialData }: { initialData: AppUser }) {
 				<TextInput
 					path="role"
 					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
-					value={initialData.role}
+					// @ts-ignore
+					value={i18n.t(`app-users:${initialData.role}`)}
 					readOnly
 				/>
 			</div>

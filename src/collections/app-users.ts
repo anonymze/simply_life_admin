@@ -53,7 +53,7 @@ export const AppUsers: CollectionConfig = {
 			en: "Users",
 			fr: "Utilisateurs",
 		},
-		// defaultColumns: ["name", "range", "price", "priceType", "threshold"],
+		defaultColumns: ["photo", "email", "role", "lastname", "firstname"],
 		useAsTitle: "email",
 		components: {
 			views: {
