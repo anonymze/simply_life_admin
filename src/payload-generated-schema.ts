@@ -653,7 +653,7 @@ export const chat_rooms = pgTable(
     app_user: uuid("app_user_id")
       .notNull()
       .references(() => app_users.id, {
-        onDelete: "set null",
+        onDelete: "cascade",
       }),
     name: varchar("name").notNull(),
     description: varchar("description"),
@@ -695,12 +695,12 @@ export const messages = pgTable(
     app_user: uuid("app_user_id")
       .notNull()
       .references(() => app_users.id, {
-        onDelete: "set null",
+        onDelete: "cascade",
       }),
     chat_room: uuid("chat_room_id")
       .notNull()
       .references(() => chat_rooms.id, {
-        onDelete: "set null",
+        onDelete: "cascade",
       }),
     message: varchar("message"),
     file: uuid("file_id").references(() => media.id, {

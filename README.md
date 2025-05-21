@@ -31,6 +31,4 @@ supabase db reset --linked
 TODO
 
 update password protection (forgot password)
-email send
-
-http://localhost:3000/api/admins/reset-password
+email prod

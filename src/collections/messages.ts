@@ -25,7 +25,7 @@ export const Messages: CollectionConfig = {
 		{
 			name: "app_user",
 			type: "relationship",
-			relationTo: "app-users",
+			relationTo: "app-users",			
 			required: true,
 			hasMany: false,
 		},
