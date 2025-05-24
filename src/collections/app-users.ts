@@ -1,4 +1,4 @@
-import { canAccessApi, generateImageBlurHash, generateVideoBlurHash, validateMedia, validatePassword, } from "@/utils/helper";
+import { canAccessApi, generateImageBlurHash, validateMedia, validatePassword, } from "@/utils/helper";
 import { enum_app_users_role } from "@/payload-generated-schema";
 import { type CollectionConfig } from "payload";
 import { sendEmail } from "@/emails/email";

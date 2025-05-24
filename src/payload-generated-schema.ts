@@ -5,10 +5,23 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify your source Payload config,
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
-import { pgTable, index, uniqueIndex, foreignKey, uuid, varchar, timestamp, numeric, integer, serial, boolean, jsonb, pgEnum, } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
-import { relations } from "@payloadcms/db-vercel-postgres/drizzle";
 
-
+import {
+  pgTable,
+  index,
+  uniqueIndex,
+  foreignKey,
+  uuid,
+  varchar,
+  timestamp,
+  boolean,
+  numeric,
+  integer,
+  serial,
+  jsonb,
+  pgEnum,
+} from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
+import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
 export const enum__locales = pgEnum("enum__locales", ["fr", "en"]);
 export const enum_app_users_role = pgEnum("enum_app_users_role", [
   "associate",
@@ -19,6 +32,10 @@ export const enum_app_users_role = pgEnum("enum_app_users_role", [
 export const enum_agency_life_type = pgEnum("enum_agency_life_type", [
   "general",
 ]);
+export const enum_temporary_app_users_role = pgEnum(
+  "enum_temporary_app_users_role",
+  ["associate", "employee", "independent", "visitor"],
+);
 
 export const admins = pgTable(
   "admins",
@@ -39,6 +56,9 @@ export const admins = pgTable(
     })
       .defaultNow()
       .notNull(),
+    enableAPIKey: boolean("enable_a_p_i_key"),
+    apiKey: varchar("api_key"),
+    apiKeyIndex: varchar("api_key_index"),
     email: varchar("email").notNull(),
     resetPasswordToken: varchar("reset_password_token"),
     resetPasswordExpiration: timestamp("reset_password_expiration", {
@@ -211,11 +231,6 @@ export const fidnet = pgTable(
       .references(() => media.id, {
         onDelete: "set null",
       }),
-    video: uuid("video_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -233,7 +248,6 @@ export const fidnet = pgTable(
   },
   (columns) => ({
     fidnet_file_idx: index("fidnet_file_idx").on(columns.file),
-    fidnet_video_idx: index("fidnet_video_idx").on(columns.video),
     fidnet_updated_at_idx: index("fidnet_updated_at_idx").on(columns.updatedAt),
     fidnet_created_at_idx: index("fidnet_created_at_idx").on(columns.createdAt),
   }),
@@ -353,6 +367,73 @@ export const fundesys = pgTable(
       columns.updatedAt,
     ),
     fundesys_created_at_idx: index("fundesys_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const commissions = pgTable(
+  "commissions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    supplier: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, {
+        onDelete: "set null",
+      }),
+    informations_date: timestamp("informations_date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    informations_encours: numeric("informations_encours"),
+    informations_production: numeric("informations_production"),
+    informations_pdf: uuid("informations_pdf_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
+    informations_excel: uuid("informations_excel_id").references(
+      () => media.id,
+      {
+        onDelete: "set null",
+      },
+    ),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    commissions_app_user_idx: index("commissions_app_user_idx").on(
+      columns.app_user,
+    ),
+    commissions_supplier_idx: index("commissions_supplier_idx").on(
+      columns.supplier,
+    ),
+    commissions_informations_informations_pdf_idx: index(
+      "commissions_informations_informations_pdf_idx",
+    ).on(columns.informations_pdf),
+    commissions_informations_informations_excel_idx: index(
+      "commissions_informations_informations_excel_idx",
+    ).on(columns.informations_excel),
+    commissions_updated_at_idx: index("commissions_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    commissions_created_at_idx: index("commissions_created_at_idx").on(
       columns.createdAt,
     ),
   }),
@@ -653,13 +734,11 @@ export const chat_rooms = pgTable(
     app_user: uuid("app_user_id")
       .notNull()
       .references(() => app_users.id, {
-        onDelete: "cascade",
+        onDelete: "set null",
       }),
     name: varchar("name").notNull(),
     description: varchar("description"),
     color: varchar("color"),
-    category: varchar("category"),
-    private: boolean("private"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -688,6 +767,35 @@ export const chat_rooms = pgTable(
   }),
 );
 
+export const chat_rooms_rels = pgTable(
+  "chat_rooms_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: uuid("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    "app-usersID": uuid("app_users_id"),
+  },
+  (columns) => ({
+    order: index("chat_rooms_rels_order_idx").on(columns.order),
+    parentIdx: index("chat_rooms_rels_parent_idx").on(columns.parent),
+    pathIdx: index("chat_rooms_rels_path_idx").on(columns.path),
+    chat_rooms_rels_app_users_id_idx: index(
+      "chat_rooms_rels_app_users_id_idx",
+    ).on(columns["app-usersID"]),
+    parentFk: foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [chat_rooms.id],
+      name: "chat_rooms_rels_parent_fk",
+    }).onDelete("cascade"),
+    "app-usersIdFk": foreignKey({
+      columns: [columns["app-usersID"]],
+      foreignColumns: [app_users.id],
+      name: "chat_rooms_rels_app_users_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
 export const messages = pgTable(
   "messages",
   {
@@ -695,12 +803,12 @@ export const messages = pgTable(
     app_user: uuid("app_user_id")
       .notNull()
       .references(() => app_users.id, {
-        onDelete: "cascade",
+        onDelete: "set null",
       }),
     chat_room: uuid("chat_room_id")
       .notNull()
       .references(() => chat_rooms.id, {
-        onDelete: "cascade",
+        onDelete: "set null",
       }),
     message: varchar("message"),
     file: uuid("file_id").references(() => media.id, {
@@ -779,6 +887,37 @@ export const signatures = pgTable(
   }),
 );
 
+export const temporary_app_users = pgTable(
+  "temporary_app_users",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    email: varchar("email").notNull(),
+    role: enum_temporary_app_users_role("role").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    temporary_app_users_updated_at_idx: index(
+      "temporary_app_users_updated_at_idx",
+    ).on(columns.updatedAt),
+    temporary_app_users_created_at_idx: index(
+      "temporary_app_users_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -825,6 +964,7 @@ export const payload_locked_documents_rels = pgTable(
     fidnetID: uuid("fidnet_id"),
     suppliersID: uuid("suppliers_id"),
     fundesysID: uuid("fundesys_id"),
+    commissionsID: uuid("commissions_id"),
     mediaID: uuid("media_id"),
     reservationsID: uuid("reservations_id"),
     "supplier-productsID": uuid("supplier_products_id"),
@@ -834,6 +974,7 @@ export const payload_locked_documents_rels = pgTable(
     "chat-roomsID": uuid("chat_rooms_id"),
     messagesID: uuid("messages_id"),
     signaturesID: uuid("signatures_id"),
+    "temporary-app-usersID": uuid("temporary_app_users_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -859,6 +1000,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_fundesys_id_idx: index(
       "payload_locked_documents_rels_fundesys_id_idx",
     ).on(columns.fundesysID),
+    payload_locked_documents_rels_commissions_id_idx: index(
+      "payload_locked_documents_rels_commissions_id_idx",
+    ).on(columns.commissionsID),
     payload_locked_documents_rels_media_id_idx: index(
       "payload_locked_documents_rels_media_id_idx",
     ).on(columns.mediaID),
@@ -886,6 +1030,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_signatures_id_idx: index(
       "payload_locked_documents_rels_signatures_id_idx",
     ).on(columns.signaturesID),
+    payload_locked_documents_rels_temporary_app_users_id_idx: index(
+      "payload_locked_documents_rels_temporary_app_users_id_idx",
+    ).on(columns["temporary-app-usersID"]),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -920,6 +1067,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["fundesysID"]],
       foreignColumns: [fundesys.id],
       name: "payload_locked_documents_rels_fundesys_fk",
+    }).onDelete("cascade"),
+    commissionsIdFk: foreignKey({
+      columns: [columns["commissionsID"]],
+      foreignColumns: [commissions.id],
+      name: "payload_locked_documents_rels_commissions_fk",
     }).onDelete("cascade"),
     mediaIdFk: foreignKey({
       columns: [columns["mediaID"]],
@@ -965,6 +1117,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["signaturesID"]],
       foreignColumns: [signatures.id],
       name: "payload_locked_documents_rels_signatures_fk",
+    }).onDelete("cascade"),
+    "temporary-app-usersIdFk": foreignKey({
+      columns: [columns["temporary-app-usersID"]],
+      foreignColumns: [temporary_app_users.id],
+      name: "payload_locked_documents_rels_temporary_app_users_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -1132,11 +1289,6 @@ export const relations_fidnet = relations(fidnet, ({ one }) => ({
     references: [media.id],
     relationName: "file",
   }),
-  video: one(media, {
-    fields: [fidnet.video],
-    references: [media.id],
-    relationName: "video",
-  }),
 }));
 export const relations_suppliers = relations(suppliers, ({ one }) => ({
   logo_mini: one(media, {
@@ -1165,6 +1317,28 @@ export const relations_fundesys = relations(fundesys, ({ one }) => ({
     fields: [fundesys.video],
     references: [media.id],
     relationName: "video",
+  }),
+}));
+export const relations_commissions = relations(commissions, ({ one }) => ({
+  app_user: one(app_users, {
+    fields: [commissions.app_user],
+    references: [app_users.id],
+    relationName: "app_user",
+  }),
+  supplier: one(suppliers, {
+    fields: [commissions.supplier],
+    references: [suppliers.id],
+    relationName: "supplier",
+  }),
+  informations_pdf: one(media, {
+    fields: [commissions.informations_pdf],
+    references: [media.id],
+    relationName: "informations_pdf",
+  }),
+  informations_excel: one(media, {
+    fields: [commissions.informations_excel],
+    references: [media.id],
+    relationName: "informations_excel",
   }),
 }));
 export const relations_media = relations(media, () => ({}));
@@ -1218,11 +1392,29 @@ export const relations_app_users = relations(app_users, ({ one }) => ({
   }),
 }));
 export const relations_agency_life = relations(agency_life, () => ({}));
-export const relations_chat_rooms = relations(chat_rooms, ({ one }) => ({
+export const relations_chat_rooms_rels = relations(
+  chat_rooms_rels,
+  ({ one }) => ({
+    parent: one(chat_rooms, {
+      fields: [chat_rooms_rels.parent],
+      references: [chat_rooms.id],
+      relationName: "_rels",
+    }),
+    "app-usersID": one(app_users, {
+      fields: [chat_rooms_rels["app-usersID"]],
+      references: [app_users.id],
+      relationName: "app-users",
+    }),
+  }),
+);
+export const relations_chat_rooms = relations(chat_rooms, ({ one, many }) => ({
   app_user: one(app_users, {
     fields: [chat_rooms.app_user],
     references: [app_users.id],
     relationName: "app_user",
+  }),
+  _rels: many(chat_rooms_rels, {
+    relationName: "_rels",
   }),
 }));
 export const relations_messages = relations(messages, ({ one }) => ({
@@ -1254,6 +1446,10 @@ export const relations_signatures = relations(signatures, ({ one }) => ({
     relationName: "file",
   }),
 }));
+export const relations_temporary_app_users = relations(
+  temporary_app_users,
+  () => ({}),
+);
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -1291,6 +1487,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.fundesysID],
       references: [fundesys.id],
       relationName: "fundesys",
+    }),
+    commissionsID: one(commissions, {
+      fields: [payload_locked_documents_rels.commissionsID],
+      references: [commissions.id],
+      relationName: "commissions",
     }),
     mediaID: one(media, {
       fields: [payload_locked_documents_rels.mediaID],
@@ -1336,6 +1537,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.signaturesID],
       references: [signatures.id],
       relationName: "signatures",
+    }),
+    "temporary-app-usersID": one(temporary_app_users, {
+      fields: [payload_locked_documents_rels["temporary-app-usersID"]],
+      references: [temporary_app_users.id],
+      relationName: "temporary-app-users",
     }),
   }),
 );
@@ -1384,6 +1590,7 @@ type DatabaseSchema = {
   enum__locales: typeof enum__locales;
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
+  enum_temporary_app_users_role: typeof enum_temporary_app_users_role;
   admins: typeof admins;
   supplier_categories_offers: typeof supplier_categories_offers;
   supplier_categories: typeof supplier_categories;
@@ -1392,6 +1599,7 @@ type DatabaseSchema = {
   fidnet: typeof fidnet;
   suppliers: typeof suppliers;
   fundesys: typeof fundesys;
+  commissions: typeof commissions;
   media: typeof media;
   reservations_invitations: typeof reservations_invitations;
   reservations: typeof reservations;
@@ -1401,8 +1609,10 @@ type DatabaseSchema = {
   app_users: typeof app_users;
   agency_life: typeof agency_life;
   chat_rooms: typeof chat_rooms;
+  chat_rooms_rels: typeof chat_rooms_rels;
   messages: typeof messages;
   signatures: typeof signatures;
+  temporary_app_users: typeof temporary_app_users;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -1416,6 +1626,7 @@ type DatabaseSchema = {
   relations_fidnet: typeof relations_fidnet;
   relations_suppliers: typeof relations_suppliers;
   relations_fundesys: typeof relations_fundesys;
+  relations_commissions: typeof relations_commissions;
   relations_media: typeof relations_media;
   relations_reservations_invitations: typeof relations_reservations_invitations;
   relations_reservations: typeof relations_reservations;
@@ -1424,9 +1635,11 @@ type DatabaseSchema = {
   relations_contact_categories: typeof relations_contact_categories;
   relations_app_users: typeof relations_app_users;
   relations_agency_life: typeof relations_agency_life;
+  relations_chat_rooms_rels: typeof relations_chat_rooms_rels;
   relations_chat_rooms: typeof relations_chat_rooms;
   relations_messages: typeof relations_messages;
   relations_signatures: typeof relations_signatures;
+  relations_temporary_app_users: typeof relations_temporary_app_users;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

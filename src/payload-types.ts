@@ -439,11 +439,10 @@ export interface AgencyLife {
 export interface ChatRoom {
   id: string;
   app_user: string | AppUser;
+  guests: (string | AppUser)[];
   name: string;
   description?: string | null;
   color?: string | null;
-  category?: string | null;
-  private?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -838,11 +837,10 @@ export interface AgencyLifeSelect<T extends boolean = true> {
  */
 export interface ChatRoomsSelect<T extends boolean = true> {
   app_user?: T;
+  guests?: T;
   name?: T;
   description?: T;
   color?: T;
-  category?: T;
-  private?: T;
   updatedAt?: T;
   createdAt?: T;
 }

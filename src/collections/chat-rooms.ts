@@ -23,6 +23,14 @@ export const ChatRooms: CollectionConfig = {
 			hasMany: false,
 		},
 		{
+			name: "guests",
+			type: "relationship",
+			relationTo: "app-users",
+			required: true,
+			hasMany: true,
+			maxDepth: 0,
+		},
+		{
 			name: "name",
 			type: "text",
 			label: {
@@ -34,38 +42,12 @@ export const ChatRooms: CollectionConfig = {
 		{
 			name: "description",
 			type: "text",
-			label: {
-				en: "Description",
-				fr: "Description",
-			},
 			required: false,
 		},
 		{
 			name: "color",
 			type: "text",
-			label: {
-				en: "Color",
-				fr: "Couleur",
-			},
 			required: false,
-		},
-		{
-			name: "category",
-			type: "text",
-			label: {
-				en: "Category",
-				fr: "Catégorie",
-			},
-			required: false,
-		},
-		{
-			name: "private",
-			type: "checkbox",
-			label: {
-				en: "Private",
-				fr: "Privé",
-			},
-			required: false,
-		},
+		}
 	],
 };
