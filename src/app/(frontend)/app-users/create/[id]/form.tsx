@@ -282,7 +282,7 @@ export default function FormPage({
 						<div className="flex justify-center mb-2">
 							<CheckCircle className="h-16 w-16 text-green-500" />
 						</div>
-						<CardTitle className="text-2xl text-center">Inscription terminée!</CardTitle>
+						<CardTitle className="text-2xl text-center">Inscription terminée !</CardTitle>
 						<CardDescription className="text-center">Votre compte a été créé avec succès.</CardDescription>
 					</CardHeader>
 					<CardContent className="text-center">
