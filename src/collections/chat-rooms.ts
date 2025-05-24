@@ -28,7 +28,7 @@ export const ChatRooms: CollectionConfig = {
 			relationTo: "app-users",
 			required: true,
 			hasMany: true,
-			maxDepth: 0,
+			// maxDepth: 0,
 		},
 		{
 			name: "name",
