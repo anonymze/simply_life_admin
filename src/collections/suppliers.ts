@@ -4,7 +4,7 @@ import { type CollectionConfig } from "payload";
 
 export const Suppliers: CollectionConfig = {
 	access: {
-		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		read: ({ req }) => true,
 		create: ({ req }) => canAccessApi(req, []),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
