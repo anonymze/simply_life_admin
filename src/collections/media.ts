@@ -5,7 +5,7 @@ import type { CollectionConfig } from "payload";
 export const Media: CollectionConfig = {
 	slug: "media",
 	access: {
-		read: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
+		read: ({ req }) => true,
 		create: ({ req }) => canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
 		update: ({ req }) => canAccessApi(req, []),
 		delete: ({ req }) => canAccessApi(req, []),
