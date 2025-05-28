@@ -194,10 +194,6 @@ export interface Admin {
 export interface SupplierCategory {
   id: string;
   name: string;
-  /**
-   * Le fichier doit être une image.
-   */
-  logo?: (string | null) | Media;
   product_suppliers: (string | SupplierProduct)[];
   offers?:
     | {
@@ -212,27 +208,6 @@ export interface SupplierCategory {
     | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt: string;
-  blurhash?: string | null;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -298,6 +273,27 @@ export interface Supplier {
   };
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt: string;
+  blurhash?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -634,7 +630,6 @@ export interface AdminsSelect<T extends boolean = true> {
  */
 export interface SupplierCategoriesSelect<T extends boolean = true> {
   name?: T;
-  logo?: T;
   product_suppliers?: T;
   offers?:
     | T

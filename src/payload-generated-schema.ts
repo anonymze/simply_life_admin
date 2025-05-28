@@ -117,9 +117,6 @@ export const supplier_categories = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull(),
-    logo: uuid("logo_id").references(() => media.id, {
-      onDelete: "set null",
-    }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -136,9 +133,6 @@ export const supplier_categories = pgTable(
       .notNull(),
   },
   (columns) => ({
-    supplier_categories_logo_idx: index("supplier_categories_logo_idx").on(
-      columns.logo,
-    ),
     supplier_categories_updated_at_idx: index(
       "supplier_categories_updated_at_idx",
     ).on(columns.updatedAt),
@@ -642,6 +636,7 @@ export const app_users = pgTable(
     photo: uuid("photo_id").references(() => media.id, {
       onDelete: "set null",
     }),
+    notifications_token: varchar("notifications_token"),
     role: enum_app_users_role("role").notNull().default("independent"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
@@ -1262,12 +1257,7 @@ export const relations_supplier_categories_rels = relations(
 );
 export const relations_supplier_categories = relations(
   supplier_categories,
-  ({ one, many }) => ({
-    logo: one(media, {
-      fields: [supplier_categories.logo],
-      references: [media.id],
-      relationName: "logo",
-    }),
+  ({ many }) => ({
     offers: many(supplier_categories_offers, {
       relationName: "offers",
     }),

@@ -39,23 +39,6 @@ export const SupplierCategories: CollectionConfig = {
 			required: true,
 		},
 		{
-			name: "logo",
-			type: "upload",
-			relationTo: "media",
-			admin: {
-				description: "Le fichier doit être une image.",
-			},
-			// @ts-expect-error
-			validate: (data) => {
-				return validateMedia(data);
-			},
-			label: {
-				en: "Logo",
-				fr: "Logo",
-			},
-			required: false,
-		},
-		{
 			name: "product_suppliers",
 			type: "relationship",
 			relationTo: "supplier-products",
