@@ -387,6 +387,7 @@ export interface AppUser {
    * Le fichier doit être une image.
    */
   photo?: (string | null) | Media;
+  notifications_token?: string | null;
   role: 'associate' | 'employee' | 'independent' | 'visitor';
   updatedAt: string;
   createdAt: string;
@@ -807,6 +808,7 @@ export interface AppUsersSelect<T extends boolean = true> {
   firstname?: T;
   phone?: T;
   photo?: T;
+  notifications_token?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;

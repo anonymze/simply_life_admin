@@ -304,6 +304,18 @@ export const AppUsers: CollectionConfig = {
 			},
 		},
 		{
+			name: "notifications_token",
+			type: "text",
+			required: false,
+			label: {
+				en: "Notifications token",
+				fr: "Token de notifications",
+			},
+			admin: {
+				hidden: true,
+			},
+		},
+		{
 			name: "role",
 			type: "select",
 			required: true,
