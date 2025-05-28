@@ -80,9 +80,7 @@ export const AppUsers: CollectionConfig = {
 		beforeValidate: [validatePassword],
 		afterLogin: [
 			async (payloadRequest) => {
-				console.log(payloadRequest);
 				const { expoPushToken } = await payloadRequest.req?.json?.();
-				console.log(expoPushToken);
 				if (!expoPushToken) return;
 
 				await payloadRequest.req?.payload?.update({
