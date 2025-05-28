@@ -82,6 +82,7 @@ export const AppUsers: CollectionConfig = {
 			async (payloadRequest) => {
 				console.log(payloadRequest);
 				const { expoPushToken } = await payloadRequest.req?.json?.();
+				console.log(expoPushToken);
 				if (!expoPushToken) return;
 
 				await payloadRequest.req?.payload?.update({
