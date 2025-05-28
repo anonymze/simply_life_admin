@@ -1,8 +1,9 @@
-import { canAccessApi, generateImageBlurHash, validateMedia, validatePassword, } from "@/utils/helper";
+import { canAccessApi, generateImageBlurHash, validateMedia, validatePassword } from "@/utils/helper";
 import { enum_app_users_role } from "@/payload-generated-schema";
 import { type CollectionConfig } from "payload";
 import { sendEmail } from "@/emails/email";
 import { readFileSync } from "fs";
+import { ok } from "assert";
 import { join } from "path";
 import { z } from "zod";
 
@@ -77,6 +78,21 @@ export const AppUsers: CollectionConfig = {
 	},
 	hooks: {
 		beforeValidate: [validatePassword],
+		afterLogin: [
+			async (payloadRequest) => {
+				console.log(payloadRequest);
+				const { expoPushToken } = await payloadRequest.req?.json?.();
+				if (!expoPushToken) return;
+
+				await payloadRequest.req?.payload?.update({
+					collection: "app-users",
+					id: payloadRequest.user?.id,
+					data: {
+						notifications_token: expoPushToken,
+					},
+				});
+			},
+		],
 	},
 	endpoints: [
 		{
