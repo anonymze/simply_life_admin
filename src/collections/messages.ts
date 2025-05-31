@@ -25,7 +25,7 @@ export const Messages: CollectionConfig = {
 		{
 			name: "app_user",
 			type: "relationship",
-			relationTo: "app-users",			
+			relationTo: "app-users",
 			required: true,
 			hasMany: false,
 		},
@@ -68,6 +68,43 @@ export const Messages: CollectionConfig = {
 				if (hasMessage && hasFile) throw new Error("A message cannot have both text and a file.");
 
 				return data;
+			},
+		],
+		afterOperation: [
+			async ({ req, operation }) => {
+				if (operation === "create") {
+					const { data, payload } = req;
+
+					const chatRoom = await payload.findByID({
+						collection: "chat-rooms",
+						id: data?.chat_room,
+						depth: 1,
+					});
+
+					if (!chatRoom) return;
+
+					const requests = chatRoom.guests.map((guest) => {
+						if (typeof guest === "string" || !guest.notifications_token) return;
+						return fetch("https://api.expo.dev/v2/push/send", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+								Accept: "application/json",
+							},
+							body: JSON.stringify({
+								to: guest.notifications_token,
+								title: "Nouveau message",
+								body: data?.message,
+								sound: "default",
+								data: {
+									chat_room: chatRoom.id,
+								},
+							}),
+						});
+					});
+
+					await Promise.all(requests).catch(console.error);
+				}
 			},
 		],
 	},
