@@ -97,7 +97,7 @@ export const Messages: CollectionConfig = {
 								body: data?.message || "",
 								sound: "default",
 								data: {
-									chat_room: chatRoom.id,
+									chatRoomId: chatRoom.id,
 								},
 							}),
 						});
