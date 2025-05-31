@@ -94,7 +94,7 @@ export const Messages: CollectionConfig = {
 							body: JSON.stringify({
 								to: guest.notifications_token,
 								title: "Nouveau message",
-								body: data?.message,
+								body: data?.message || "",
 								sound: "default",
 								data: {
 									chat_room: chatRoom.id,
