@@ -75,6 +75,7 @@ export interface Config {
     suppliers: Supplier;
     fundesys: Fundesy;
     commissions: Commission;
+    'commission-imports': CommissionImport;
     media: Media;
     reservations: Reservation;
     'supplier-products': SupplierProduct;
@@ -98,6 +99,7 @@ export interface Config {
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
     commissions: CommissionsSelect<false> | CommissionsSelect<true>;
+    'commission-imports': CommissionImportsSelect<false> | CommissionImportsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
@@ -360,12 +362,15 @@ export interface Commission {
   id: string;
   app_user: string | AppUser;
   supplier: string | Supplier;
+  structured_product?: boolean | null;
   informations?: {
     date?: string | null;
     encours?: number | null;
     production?: number | null;
     pdf?: (string | null) | Media;
-    excel?: (string | null) | Media;
+    title?: string | null;
+    up_front?: number | null;
+    broqueur?: string | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -395,6 +400,25 @@ export interface AppUser {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-imports".
+ */
+export interface CommissionImport {
+  id: string;
+  files?:
+    | {
+        supplier: string | Supplier;
+        /**
+         * Le fichier doit être au format EXCEL ou CSV.
+         */
+        file: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -512,6 +536,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'commissions';
         value: string | Commission;
+      } | null)
+    | ({
+        relationTo: 'commission-imports';
+        value: string | CommissionImport;
       } | null)
     | ({
         relationTo: 'media';
@@ -725,6 +753,7 @@ export interface FundesysSelect<T extends boolean = true> {
 export interface CommissionsSelect<T extends boolean = true> {
   app_user?: T;
   supplier?: T;
+  structured_product?: T;
   informations?:
     | T
     | {
@@ -732,7 +761,24 @@ export interface CommissionsSelect<T extends boolean = true> {
         encours?: T;
         production?: T;
         pdf?: T;
-        excel?: T;
+        title?: T;
+        up_front?: T;
+        broqueur?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-imports_select".
+ */
+export interface CommissionImportsSelect<T extends boolean = true> {
+  files?:
+    | T
+    | {
+        supplier?: T;
+        file?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

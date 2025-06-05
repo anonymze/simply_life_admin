@@ -1,4 +1,4 @@
-import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint, APIError, getPayload } from "payload";
+import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint, APIError, getPayload, } from "payload";
 import { getPlaiceholder } from "plaiceholder";
 import config from "@payload-config";
 
@@ -213,7 +213,15 @@ export const generateVideoBlurHash = async (buffer: Buffer) => {
 	return undefined;
 };
 
-export const validateMedia = async (data: string | undefined, mimeType: "image/" | "video/" | "application/pdf" | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "image/") => {
+export const validateMedia = async (
+	data: string | undefined,
+	mimeType:
+		| "image/"
+		| "video/"
+		| "application/pdf"
+		| "sheet"
+		| "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "image/"
+) => {
 	if (!data) return;
 	const payload = await getPayload({
 		config,
@@ -227,6 +235,38 @@ export const validateMedia = async (data: string | undefined, mimeType: "image/"
 		if (mimeType === "image/") return "Le fichier doit être une image.";
 		if (mimeType === "video/") return "Le fichier doit être une vidéo.";
 		if (mimeType === "application/pdf") return "Le fichier doit être un PDF.";
-		if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return "Le fichier doit être un Excel.";
+		if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+			return "Le fichier doit être un Excel.";
 	}
 };
+
+export const rolesOptions = [
+	{
+		label: {
+			en: "Associate",
+			fr: "Associé",
+		},
+		value: "associate",
+	},
+	{
+		label: {
+			en: "Employee",
+			fr: "Employé",
+		},
+		value: "employee",
+	},
+	{
+		label: {
+			en: "Independent",
+			fr: "Indépendant",
+		},
+		value: "independent",
+	},
+	{
+		label: {
+			en: "Visitor",
+			fr: "Visiteur",
+		},
+		value: "visitor",
+	},
+]

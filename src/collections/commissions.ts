@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload";
-import { z } from "zod";
 
-import { canAccessApi, generateImageBlurHash, generateVideoBlurHash, validateMedia } from "../utils/helper";
+import { canAccessApi, validateMedia } from "../utils/helper";
 
 
 export const Commissions: CollectionConfig = {
@@ -12,6 +11,12 @@ export const Commissions: CollectionConfig = {
 		delete: ({ req }) => canAccessApi(req, []),
 	},
 	slug: "commissions",
+	admin: {
+		group: {
+			en: "Commissions",
+			fr: "Commissions",
+		},
+	},
 	fields: [
 		{
 			name: "app_user",
@@ -36,6 +41,15 @@ export const Commissions: CollectionConfig = {
 			hasMany: false,
 		},
 		{
+			name: "structured_product",
+			type: "checkbox",
+			label: {
+				en: "Structured product",
+				fr: "Produit structuré",
+			},
+			required: false,
+		},
+		{
 			name: "informations",
 			type: "group",
 			admin: {
@@ -51,14 +65,12 @@ export const Commissions: CollectionConfig = {
 				{
 					name: "date",
 					type: "date",
+					// defaultValue: new Date(),
 					admin: {
-						condition: (data) => {
-							return data.supplier === "049a54ce-43bf-4ba8-9741-ae67f0e0f407";
-						},
 						date: {
 							displayFormat: "MM/yyyy",
 							pickerAppearance: "monthOnly",
-						},
+						},	
 					},
 					label: {
 						en: "Date of commission",
@@ -69,10 +81,11 @@ export const Commissions: CollectionConfig = {
 				{
 					name: "encours",
 					type: "number",
+
 					admin: {
 						step: 0.01,
 						condition: (data) => {
-							return data.supplier === "049a54ce-43bf-4ba8-9741-ae67f0e0f407";
+							return !data.structured_product;
 						},
 					},
 
@@ -88,7 +101,7 @@ export const Commissions: CollectionConfig = {
 					admin: {
 						step: 0.01,
 						condition: (data) => {
-							return data.supplier === "049a54ce-43bf-4ba8-9741-ae67f0e0f407";
+							return !data.structured_product;
 						},
 					},
 					label: {
@@ -103,7 +116,7 @@ export const Commissions: CollectionConfig = {
 					relationTo: "media",
 					admin: {
 						condition: (data) => {
-							return data.supplier !== "049a54ce-43bf-4ba8-9741-ae67f0e0f407";
+							return !data.structured_product;
 						},
 					},
 					label: {
@@ -115,36 +128,53 @@ export const Commissions: CollectionConfig = {
 						return validateMedia(data, "application/pdf");
 					},
 					required: false,
-					hooks: {
-						afterChange: [
-							async ({ value, siblingData, req }) => {
-								if (value) {
-								
-								}
-								return value;
-							}
-						]
-					}
 				},
 				{
-					name: "excel",
-					type: "upload",
-					relationTo: "media",
+					name: "title",
+					type: "text",
 					admin: {
 						condition: (data) => {
-							return data.supplier !== "049a54ce-43bf-4ba8-9741-ae67f0e0f407";
+
+							console.log(data)
+							return data.structured_product;
 						},
 					},
 					label: {
-						en: "Commission Excel",
-						fr: "Fichier de commission en Excel",
-					},
-					// @ts-expect-error
-					validate: (data) => {
-						return validateMedia(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+						en: "Title",
+						fr: "Titre",
 					},
 					required: false,
 				},
+				{
+					name: "up_front",
+					type: "number",
+
+					admin: {
+						step: 0.01,
+						condition: (data) => {
+							return data.structured_product;
+						},
+					},
+					label: {
+						en: "Amount (up-front)",
+						fr: "Montant (up-front)",
+					},
+					required: false,
+				},				{
+					name: "broqueur",
+					type: "text",
+
+					admin: {
+						condition: (data) => {
+							return data.structured_product;
+						},
+					},
+					label: {
+						en: "Broqueur",
+						fr: "Broqueur",
+					},
+					required: false,
+				}
 			],
 		},
 	],

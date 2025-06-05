@@ -1,4 +1,4 @@
-import { canAccessApi, generateImageBlurHash, validateMedia, validatePassword } from "@/utils/helper";
+import { canAccessApi, generateImageBlurHash, rolesOptions, validateMedia, validatePassword } from "@/utils/helper";
 import { enum_app_users_role } from "@/payload-generated-schema";
 import { type CollectionConfig } from "payload";
 import { sendEmail } from "@/emails/email";
@@ -339,36 +339,7 @@ export const AppUsers: CollectionConfig = {
 				en: "Role",
 				fr: "Rôle",
 			},
-			options: [
-				{
-					label: {
-						en: "Associate",
-						fr: "Associé",
-					},
-					value: "associate",
-				},
-				{
-					label: {
-						en: "Employee",
-						fr: "Employé",
-					},
-					value: "employee",
-				},
-				{
-					label: {
-						en: "Independent",
-						fr: "Indépendant",
-					},
-					value: "independent",
-				},
-				{
-					label: {
-						en: "Visitor",
-						fr: "Visiteur",
-					},
-					value: "visitor",
-				},
-			],
+			options: rolesOptions,
 			defaultValue: "independent",
 		},
 		{

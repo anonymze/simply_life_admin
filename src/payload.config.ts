@@ -3,8 +3,6 @@ import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { fr } from "@payloadcms/translations/languages/fr";
-import { en } from "@payloadcms/translations/languages/en";
 import { openapi, swaggerUI } from "payload-oapi";
 import { buildConfig } from "payload";
 import nodemailer from "nodemailer";
@@ -15,6 +13,7 @@ import path from "path";
 import { SupplierCategories } from "./collections/supplier-categories";
 import { TemporaryAppUsers } from "./collections/temporary-app-users";
 import { ContactCategories } from "./collections/contact-categories";
+import { CommissionImports } from "./collections/commission-imports";
 import { websocketServerPlugin } from "./plugins/websocket-server";
 import { SupplierProducts } from "./collections/supplier-products";
 import { customTranslations } from "./utils/custom-translations";
@@ -116,6 +115,7 @@ export default buildConfig({
 		Suppliers,
 		Fundesys,
 		Commissions,
+		CommissionImports,
 		Media,
 		Reservations,
 		SupplierProducts,

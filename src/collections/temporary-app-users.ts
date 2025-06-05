@@ -1,5 +1,5 @@
-import { canAccessApi, validateMedia, validatePassword } from "@/utils/helper";
 import { enum_app_users_role } from "@/payload-generated-schema";
+import { canAccessApi, rolesOptions } from "@/utils/helper";
 import { type CollectionConfig } from "payload";
 
 
@@ -24,10 +24,7 @@ export const TemporaryAppUsers: CollectionConfig = {
 			name: "role",
 			type: "select",
 			required: true,
-			options: enum_app_users_role.enumValues.map((role) => ({
-				label: role,
-				value: role,
-			})),
+			options: rolesOptions,
 		},
 	],
 };

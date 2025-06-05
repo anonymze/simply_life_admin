@@ -380,6 +380,7 @@ export const commissions = pgTable(
       .references(() => suppliers.id, {
         onDelete: "set null",
       }),
+    structured_product: boolean("structured_product"),
     informations_date: timestamp("informations_date", {
       mode: "string",
       withTimezone: true,
@@ -390,12 +391,9 @@ export const commissions = pgTable(
     informations_pdf: uuid("informations_pdf_id").references(() => media.id, {
       onDelete: "set null",
     }),
-    informations_excel: uuid("informations_excel_id").references(
-      () => media.id,
-      {
-        onDelete: "set null",
-      },
-    ),
+    informations_title: varchar("informations_title"),
+    informations_up_front: numeric("informations_up_front"),
+    informations_broqueur: varchar("informations_broqueur"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -421,15 +419,77 @@ export const commissions = pgTable(
     commissions_informations_informations_pdf_idx: index(
       "commissions_informations_informations_pdf_idx",
     ).on(columns.informations_pdf),
-    commissions_informations_informations_excel_idx: index(
-      "commissions_informations_informations_excel_idx",
-    ).on(columns.informations_excel),
     commissions_updated_at_idx: index("commissions_updated_at_idx").on(
       columns.updatedAt,
     ),
     commissions_created_at_idx: index("commissions_created_at_idx").on(
       columns.createdAt,
     ),
+  }),
+);
+
+export const commission_imports_files = pgTable(
+  "commission_imports_files",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    supplier: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, {
+        onDelete: "set null",
+      }),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+  },
+  (columns) => ({
+    _orderIdx: index("commission_imports_files_order_idx").on(columns._order),
+    _parentIDIdx: index("commission_imports_files_parent_id_idx").on(
+      columns._parentID,
+    ),
+    commission_imports_files_supplier_idx: index(
+      "commission_imports_files_supplier_idx",
+    ).on(columns.supplier),
+    commission_imports_files_file_idx: index(
+      "commission_imports_files_file_idx",
+    ).on(columns.file),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [commission_imports.id],
+      name: "commission_imports_files_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
+export const commission_imports = pgTable(
+  "commission_imports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    commission_imports_updated_at_idx: index(
+      "commission_imports_updated_at_idx",
+    ).on(columns.updatedAt),
+    commission_imports_created_at_idx: index(
+      "commission_imports_created_at_idx",
+    ).on(columns.createdAt),
   }),
 );
 
@@ -960,6 +1020,7 @@ export const payload_locked_documents_rels = pgTable(
     suppliersID: uuid("suppliers_id"),
     fundesysID: uuid("fundesys_id"),
     commissionsID: uuid("commissions_id"),
+    "commission-importsID": uuid("commission_imports_id"),
     mediaID: uuid("media_id"),
     reservationsID: uuid("reservations_id"),
     "supplier-productsID": uuid("supplier_products_id"),
@@ -998,6 +1059,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_commissions_id_idx: index(
       "payload_locked_documents_rels_commissions_id_idx",
     ).on(columns.commissionsID),
+    payload_locked_documents_rels_commission_imports_id_idx: index(
+      "payload_locked_documents_rels_commission_imports_id_idx",
+    ).on(columns["commission-importsID"]),
     payload_locked_documents_rels_media_id_idx: index(
       "payload_locked_documents_rels_media_id_idx",
     ).on(columns.mediaID),
@@ -1067,6 +1131,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["commissionsID"]],
       foreignColumns: [commissions.id],
       name: "payload_locked_documents_rels_commissions_fk",
+    }).onDelete("cascade"),
+    "commission-importsIdFk": foreignKey({
+      columns: [columns["commission-importsID"]],
+      foreignColumns: [commission_imports.id],
+      name: "payload_locked_documents_rels_commission_imports_fk",
     }).onDelete("cascade"),
     mediaIdFk: foreignKey({
       columns: [columns["mediaID"]],
@@ -1325,12 +1394,35 @@ export const relations_commissions = relations(commissions, ({ one }) => ({
     references: [media.id],
     relationName: "informations_pdf",
   }),
-  informations_excel: one(media, {
-    fields: [commissions.informations_excel],
-    references: [media.id],
-    relationName: "informations_excel",
-  }),
 }));
+export const relations_commission_imports_files = relations(
+  commission_imports_files,
+  ({ one }) => ({
+    _parentID: one(commission_imports, {
+      fields: [commission_imports_files._parentID],
+      references: [commission_imports.id],
+      relationName: "files",
+    }),
+    supplier: one(suppliers, {
+      fields: [commission_imports_files.supplier],
+      references: [suppliers.id],
+      relationName: "supplier",
+    }),
+    file: one(media, {
+      fields: [commission_imports_files.file],
+      references: [media.id],
+      relationName: "file",
+    }),
+  }),
+);
+export const relations_commission_imports = relations(
+  commission_imports,
+  ({ many }) => ({
+    files: many(commission_imports_files, {
+      relationName: "files",
+    }),
+  }),
+);
 export const relations_media = relations(media, () => ({}));
 export const relations_reservations_invitations = relations(
   reservations_invitations,
@@ -1483,6 +1575,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [commissions.id],
       relationName: "commissions",
     }),
+    "commission-importsID": one(commission_imports, {
+      fields: [payload_locked_documents_rels["commission-importsID"]],
+      references: [commission_imports.id],
+      relationName: "commission-imports",
+    }),
     mediaID: one(media, {
       fields: [payload_locked_documents_rels.mediaID],
       references: [media.id],
@@ -1590,6 +1687,8 @@ type DatabaseSchema = {
   suppliers: typeof suppliers;
   fundesys: typeof fundesys;
   commissions: typeof commissions;
+  commission_imports_files: typeof commission_imports_files;
+  commission_imports: typeof commission_imports;
   media: typeof media;
   reservations_invitations: typeof reservations_invitations;
   reservations: typeof reservations;
@@ -1617,6 +1716,8 @@ type DatabaseSchema = {
   relations_suppliers: typeof relations_suppliers;
   relations_fundesys: typeof relations_fundesys;
   relations_commissions: typeof relations_commissions;
+  relations_commission_imports_files: typeof relations_commission_imports_files;
+  relations_commission_imports: typeof relations_commission_imports;
   relations_media: typeof relations_media;
   relations_reservations_invitations: typeof relations_reservations_invitations;
   relations_reservations: typeof relations_reservations;
