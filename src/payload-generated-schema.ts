@@ -6,6 +6,7 @@
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
 
+import type {} from "@payloadcms/db-vercel-postgres";
 import {
   pgTable,
   index,
