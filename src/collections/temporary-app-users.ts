@@ -23,6 +23,7 @@ export const TemporaryAppUsers: CollectionConfig = {
 		{
 			name: "role",
 			type: "select",
+			enumName: "enum_app_users_role",
 			required: true,
 			options: rolesOptions,
 		},

@@ -33,10 +33,6 @@ export const enum_app_users_role = pgEnum("enum_app_users_role", [
 export const enum_agency_life_type = pgEnum("enum_agency_life_type", [
   "general",
 ]);
-export const enum_temporary_app_users_role = pgEnum(
-  "enum_temporary_app_users_role",
-  ["associate", "employee", "independent", "visitor"],
-);
 
 export const admins = pgTable(
   "admins",
@@ -948,7 +944,7 @@ export const temporary_app_users = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     email: varchar("email").notNull(),
-    role: enum_temporary_app_users_role("role").notNull(),
+    role: enum_app_users_role("role").notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -1678,7 +1674,6 @@ type DatabaseSchema = {
   enum__locales: typeof enum__locales;
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
-  enum_temporary_app_users_role: typeof enum_temporary_app_users_role;
   admins: typeof admins;
   supplier_categories_offers: typeof supplier_categories_offers;
   supplier_categories: typeof supplier_categories;
