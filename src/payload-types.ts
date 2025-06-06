@@ -407,11 +407,14 @@ export interface AppUser {
  */
 export interface CommissionImport {
   id: string;
+  /**
+   * Quand un fichier est importé pour un fournisseur, il écrase le précédent fichier importé pour celui-ci. Ensuite les données de ce fichier rempliront les commissions futures des employés concernés.
+   */
   files?:
     | {
         supplier: string | Supplier;
         /**
-         * Le fichier doit être au format EXCEL ou CSV.
+         * Le fichier doit être au format Excel ou CSV.
          */
         file: string | Media;
         id?: string | null;
@@ -450,6 +453,7 @@ export interface AgencyLife {
   type: 'general';
   event_start: string;
   event_end: string;
+  address?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -871,6 +875,7 @@ export interface AgencyLifeSelect<T extends boolean = true> {
   type?: T;
   event_start?: T;
   event_end?: T;
+  address?: T;
   updatedAt?: T;
   createdAt?: T;
 }

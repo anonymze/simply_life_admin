@@ -117,5 +117,14 @@ export const AgencyLife: CollectionConfig = {
 			},
 			required: true,
 		},
+		{
+			name: "address",
+			type: "text",
+			label: {
+				en: "Address of the event",
+				fr: "Adresse de l'évènement",
+			},
+			required: false,
+		},
 	],
 };

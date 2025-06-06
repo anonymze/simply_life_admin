@@ -32,8 +32,22 @@ export const CommissionImports: CollectionConfig = {
 			name: "files",
 			type: "array",
 			label: {
-				en: "Global file commission",
-				fr: "Fichier global de commission",
+				en: "Global files commission",
+				fr: "Fichiers global de commission",
+			},
+			admin: {
+				description:
+					"Quand un fichier est importé pour un fournisseur, il écrase le précédent fichier importé pour celui-ci. Ensuite les données de ce fichier rempliront les commissions futures des employés concernés.",
+			},
+			labels: {
+				singular: {
+					en: "file",
+					fr: "fichier",
+				},
+				plural: {
+					en: "files",
+					fr: "fichiers",
+				},
 			},
 			fields: [
 				{
@@ -45,7 +59,7 @@ export const CommissionImports: CollectionConfig = {
 						en: "Supplier",
 						fr: "Fournisseur",
 					},
-					required: true
+					required: true,
 				},
 				{
 					name: "file",
@@ -53,14 +67,14 @@ export const CommissionImports: CollectionConfig = {
 					relationTo: "media",
 					// @ts-expect-error
 					validate: (data) => {
-						return validateMedia(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+						return validateMedia(data, "sheet");
 					},
 					label: {
 						en: "Commission file",
 						fr: "Fichier de commission",
 					},
 					admin: {
-						description: "Le fichier doit être au format EXCEL ou CSV.",
+						description: "Le fichier doit être au format Excel ou CSV.",
 					},
 					required: true,
 				},
