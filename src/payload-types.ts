@@ -430,15 +430,16 @@ export interface CommissionImport {
 export interface Reservation {
   id: string;
   title: string;
+  desk: '1' | '2' | '3';
+  day_reservation: string;
+  start_time_reservation?: string | null;
+  end_time_reservation?: string | null;
   invitations?:
     | {
         email: string;
         id?: string | null;
       }[]
     | null;
-  day_reservation: string;
-  start_time_reservation?: string | null;
-  end_time_reservation?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -813,15 +814,16 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ReservationsSelect<T extends boolean = true> {
   title?: T;
+  desk?: T;
+  day_reservation?: T;
+  start_time_reservation?: T;
+  end_time_reservation?: T;
   invitations?:
     | T
     | {
         email?: T;
         id?: T;
       };
-  day_reservation?: T;
-  start_time_reservation?: T;
-  end_time_reservation?: T;
   updatedAt?: T;
   createdAt?: T;
 }

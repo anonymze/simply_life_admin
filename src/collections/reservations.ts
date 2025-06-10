@@ -45,7 +45,6 @@ export const Reservations: CollectionConfig = {
 					});
 				}
 
-
 				const existingReservations = await req.payload.find({
 					collection: "reservations",
 					where: {
@@ -107,23 +106,36 @@ export const Reservations: CollectionConfig = {
 			required: true,
 		},
 		{
-			name: "invitations",
-			type: "array",
+			name: "desk",
+			type: "select",
 			label: {
-				en: "Invitations",
-				fr: "Invitations",
+				en: "Desk",
+				fr: "Bureau",
 			},
-			required: false,
-			fields: [
+			required: true,
+			options: [
 				{
-					name: "email",
-					type: "email",
 					label: {
-						en: "Email",
-						fr: "Email",
+						en: "Desk 1",
+						fr: "Bureau 1",
 					},
-					required: true,
+					value: "1",
 				},
+				{
+					label: {
+						en: "Desk 2",
+						fr: "Bureau 2",
+					},
+					value: "2",
+				},
+				{
+					label: {
+						en: "Desk 3",
+						fr: "Bureau 3",
+					},
+					value: "3",
+				},
+				
 			],
 		},
 		{
@@ -179,6 +191,26 @@ export const Reservations: CollectionConfig = {
 				fr: "Heure de fin de réservation",
 			},
 			required: true,
+		},
+		{
+			name: "invitations",
+			type: "array",
+			label: {
+				en: "Invitations",
+				fr: "Invitations",
+			},
+			required: false,
+			fields: [
+				{
+					name: "email",
+					type: "email",
+					label: {
+						en: "Email",
+						fr: "Email",
+					},
+					required: true,
+				},
+			],
 		},
 		// {
 		// 	name: "dates",
