@@ -106,6 +106,17 @@ export const Reservations: CollectionConfig = {
 			required: true,
 		},
 		{
+			name: "app_user",
+			label: {
+				en: "Reservation by",
+				fr: "Réservation par",
+			},
+			type: "relationship",
+			relationTo: "app-users",
+			required: true,
+			hasMany: false,
+		},
+		{
 			name: "desk",
 			type: "select",
 			label: {

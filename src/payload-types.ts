@@ -430,6 +430,7 @@ export interface CommissionImport {
 export interface Reservation {
   id: string;
   title: string;
+  app_user: string | AppUser;
   desk: '1' | '2' | '3';
   day_reservation: string;
   start_time_reservation?: string | null;
@@ -814,6 +815,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ReservationsSelect<T extends boolean = true> {
   title?: T;
+  app_user?: T;
   desk?: T;
   day_reservation?: T;
   start_time_reservation?: T;
