@@ -45,6 +45,9 @@ export const Reservations: CollectionConfig = {
 					});
 				}
 
+				console.log(data.day_reservation);
+				console.log(data.desk);
+
 				const existingReservations = await req.payload.find({
 					collection: "reservations",
 					where: {
@@ -68,6 +71,8 @@ export const Reservations: CollectionConfig = {
 						],
 					},
 				});
+
+				console.log(existingReservations);
 
 				if (existingReservations.docs.length === 0) return;
 
