@@ -55,6 +55,11 @@ export const Reservations: CollectionConfig = {
 								},
 							},
 							{
+								desk: {
+									equals: data.desk,
+								},
+							},
+							{
 								id: {
 									// ignore the current reservation (patch update)
 									not_equals: req.routeParams?.id ?? null,
