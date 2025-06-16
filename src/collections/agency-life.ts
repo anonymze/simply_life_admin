@@ -11,12 +11,12 @@ export const AgencyLife: CollectionConfig = {
 	},
 	labels: {
 		singular: {
-			en: "Agency life",
-			fr: "Vie d'agence",
+			en: "Agency life event",
+			fr: "Évènement Groupe Valorem",
 		},
 		plural: {
-			en: "Agency life",
-			fr: "Vie d'agence",
+			en: "Agency life events",
+			fr: "Évènements Groupe Valorem",
 		},
 	},
 	admin: {
