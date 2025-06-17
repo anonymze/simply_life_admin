@@ -210,14 +210,18 @@ export const Messages: CollectionConfig = {
 				console.log(chat_room);
 
 				for await (const file of uploadedFiles) {
+					try {
 					await req.payload.create({
 						collection: "messages",
 						data: {
 							app_user,
 							chat_room,
 							file: file.id,
-						},
-					});
+							},
+						});
+					} catch (error) {
+						console.error(error);
+					}
 				}
 
 				return Response.json({
