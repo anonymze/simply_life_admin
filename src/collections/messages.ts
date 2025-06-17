@@ -72,7 +72,6 @@ export const Messages: CollectionConfig = {
 		],
 		afterOperation: [
 			async ({ req, operation }) => {
-				return;
 				if (operation === "create") {
 					const { data, payload } = req;
 
@@ -206,8 +205,12 @@ export const Messages: CollectionConfig = {
 					})
 				);
 
+				console.log(uploadedFiles);
+
 				await Promise.all(
 					uploadedFiles.map(async (file) => {
+						console.log(file);
+
 						return req.payload.create({
 							collection: "messages",
 							data: {
