@@ -209,18 +209,16 @@ export const Messages: CollectionConfig = {
 				console.log(app_user);
 				console.log(chat_room);
 
-				// await Promise.all(
-				// 	uploadedFiles.map(async (file) => {
-				// 		return req.payload.create({
-				// 			collection: "messages",
-				// 			data: {
-				// 				app_user,
-				// 				chat_room,
-				// 				file: file.id,
-				// 			},
-				// 		});
-				// 	})
-				// );
+				for await (const file of uploadedFiles) {
+					await req.payload.create({
+						collection: "messages",
+						data: {
+							app_user,
+							chat_room,
+							file: file.id,
+						},
+					});
+				}
 
 				return Response.json({
 					message: "OK",
