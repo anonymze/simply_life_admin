@@ -109,7 +109,7 @@ export const Messages: CollectionConfig = {
 
 						await Promise.all(requests).catch(console.error);
 					} catch (error) {
-						console.error('Error in afterOperation hook:', error);
+						// console.error('Error in afterOperation hook:', error);
 						// Don't throw the error, just log it
 					}
 				}

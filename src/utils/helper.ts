@@ -203,7 +203,7 @@ export const operationGenerationBlurHash: CollectionBeforeValidateHook = async (
 };
 
 export const generateImageBlurHash = async (buffer: Buffer) => {
-	const { base64 } = await getPlaiceholder(buffer, { size: 32 });
+	const { base64 } = await getPlaiceholder(buffer, { size: 32, removeAlpha: true });
 	return base64;
 };
 
