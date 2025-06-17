@@ -1,6 +1,7 @@
 import { CollectionBeforeValidateHook, PayloadRequest, ValidationError, Endpoint, APIError, getPayload, } from "payload";
 import { getPlaiceholder } from "plaiceholder";
 import config from "@payload-config";
+import sharp from "sharp";
 
 import type { AppUser } from "../payload-types";
 
@@ -203,7 +204,12 @@ export const operationGenerationBlurHash: CollectionBeforeValidateHook = async (
 };
 
 export const generateImageBlurHash = async (buffer: Buffer) => {
-	const { base64 } = await getPlaiceholder(buffer, { size: 32, removeAlpha: true });
+	// First process the image with Sharp to handle orientation
+	const processedBuffer = await sharp(buffer)
+		.rotate() // This will automatically rotate based on EXIF orientation
+		.toBuffer();
+	
+	const { base64 } = await getPlaiceholder(processedBuffer, { size: 32 });
 	return base64;
 };
 
