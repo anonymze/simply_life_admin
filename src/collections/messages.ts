@@ -211,16 +211,43 @@ export const Messages: CollectionConfig = {
 
 				for await (const file of uploadedFiles) {
 					try {
-					await req.payload.create({
-						collection: "messages",
-						data: {
+						// Add validation checks
+						const user = await req.payload.findByID({
+							collection: "app-users",
+							id: app_user,
+						});
+						
+						if (!user) {
+							throw new Error(`User with ID ${app_user} not found`);
+						}
+
+						const chatRoom = await req.payload.findByID({
+							collection: "chat-rooms",
+							id: chat_room,
+						});
+						
+						if (!chatRoom) {
+							throw new Error(`Chat room with ID ${chat_room} not found`);
+						}
+
+						// Log the data we're trying to create
+						console.log('Creating message with:', {
 							app_user,
 							chat_room,
-							file: file.id,
+							file_id: file.id
+						});
+
+						await req.payload.create({
+							collection: "messages",
+							data: {
+								app_user,
+								chat_room,
+								file: file.id,
 							},
 						});
 					} catch (error) {
-						console.error(error);
+						console.error('Error creating message:', error);
+						throw error; // Re-throw to see the actual error
 					}
 				}
 
