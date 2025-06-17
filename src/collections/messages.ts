@@ -72,6 +72,7 @@ export const Messages: CollectionConfig = {
 		],
 		afterOperation: [
 			async ({ req, operation }) => {
+				return;
 				if (operation === "create") {
 					const { data, payload } = req;
 
