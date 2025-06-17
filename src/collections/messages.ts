@@ -205,10 +205,6 @@ export const Messages: CollectionConfig = {
 					})
 				);
 
-				console.log(uploadedFiles[0].id);
-				console.log(app_user);
-				console.log(chat_room);
-
 				for await (const file of uploadedFiles) {
 					try {
 						// Add validation checks
