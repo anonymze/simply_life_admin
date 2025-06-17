@@ -205,12 +205,12 @@ export const Messages: CollectionConfig = {
 					})
 				);
 
-				console.log(uploadedFiles);
+				console.log(uploadedFiles[0].id);
+				console.log(app_user);
+				console.log(chat_room);
 
 				await Promise.all(
 					uploadedFiles.map(async (file) => {
-						console.log(file);
-
 						return req.payload.create({
 							collection: "messages",
 							data: {
