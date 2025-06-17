@@ -75,35 +75,43 @@ export const Messages: CollectionConfig = {
 				if (operation === "create") {
 					const { data, payload } = req;
 
-					const chatRoom = await payload.findByID({
-						collection: "chat-rooms",
-						id: data?.chat_room,
-						depth: 1,
-					});
-
-					if (!chatRoom) return;
-
-					const requests = chatRoom.guests.map((guest) => {
-						if (typeof guest === "string" || !guest.notifications_token || guest.id === data?.app_user) return;
-						return fetch("https://api.expo.dev/v2/push/send", {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-								Accept: "application/json",
-							},
-							body: JSON.stringify({
-								to: guest.notifications_token,
-								title: "Nouveau message",
-								body: data?.message || "Nouveau message",
-								sound: "default",
-								data: {
-									chatRoomId: chatRoom.id,
-								},
-							}),
+					try {
+						const chatRoom = await payload.findByID({
+							collection: "chat-rooms",
+							id: data?.chat_room,
+							depth: 1,
 						});
-					});
 
-					await Promise.all(requests).catch(console.error);
+						if (!chatRoom) {
+							console.warn(`Chat room ${data?.chat_room} not found in afterOperation hook`);
+							return;
+						}
+
+						const requests = chatRoom.guests.map((guest) => {
+							if (typeof guest === "string" || !guest.notifications_token || guest.id === data?.app_user) return;
+							return fetch("https://api.expo.dev/v2/push/send", {
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json",
+									Accept: "application/json",
+								},
+								body: JSON.stringify({
+									to: guest.notifications_token,
+									title: "Nouveau message",
+									body: data?.message || "Nouveau message",
+									sound: "default",
+									data: {
+										chatRoomId: chatRoom.id,
+									},
+								}),
+							});
+						});
+
+						await Promise.all(requests).catch(console.error);
+					} catch (error) {
+						console.error('Error in afterOperation hook:', error);
+						// Don't throw the error, just log it
+					}
 				}
 			},
 		],
