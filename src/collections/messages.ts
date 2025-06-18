@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { z } from "zod";
 
-import { canAccessApi, generateImageBlurHash, generateVideoBlurHash } from "../utils/helper";
+import { canAccessApi, generateImageBlurHash } from "../utils/helper";
 
 
 export const Messages: CollectionConfig = {
@@ -191,23 +191,29 @@ export const Messages: CollectionConfig = {
 					);
 				}
 
+				console.log(file);
+
 				const uploadedFiles = await Promise.all(
-					file.map(async (file) => {
-						const fileBuffer = Buffer.from(await file.arrayBuffer());
+					file.map(async (currentFile) => {
+						const fileBuffer = Buffer.from(await currentFile.arrayBuffer());
+
+
+						console.log(currentFile);
+
 
 						return req.payload.create({
 							collection: "media",
 							file: {
 								data: fileBuffer,
-								size: file.size,
-								name: file.name,
-								mimetype: file.type,
+								size: currentFile.size,
+								name: currentFile.name,
+								mimetype: currentFile.type,
 							},
 							data: {
-								alt: file.name,
-								blurhash: file.type.startsWith("image/")
+								alt: currentFile.name,
+								blurhash: currentFile.type.startsWith("image/")
 									? await generateImageBlurHash(fileBuffer)
-									: await generateVideoBlurHash(fileBuffer),
+									: undefined,
 							},
 						});
 					})

@@ -188,19 +188,10 @@ export const operationGenerationBlurHash: CollectionBeforeValidateHook = async (
 		}
 	}
 
-	if (req.file?.mimetype.startsWith("video/")) {
-		try {
-			const buffer = req.file.data;
-			const base64 = await generateVideoBlurHash(buffer);
-
-			return {
-				...data,
-				blurhash: base64,
-			};
-		} catch (error) {
-			throw new APIError("Failed to generate blur data url");
-		}
-	}
+	return {
+		...data,
+		blurhash: undefined,
+	};
 };
 
 export const generateImageBlurHash = async (buffer: Buffer) => {
