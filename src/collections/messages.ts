@@ -191,15 +191,9 @@ export const Messages: CollectionConfig = {
 					);
 				}
 
-				console.log(file);
-
 				const uploadedFiles = await Promise.all(
 					file.map(async (currentFile) => {
 						const fileBuffer = Buffer.from(await currentFile.arrayBuffer());
-
-
-						console.log(currentFile);
-
 
 						return req.payload.create({
 							collection: "media",
