@@ -1,3 +1,4 @@
+import { Commission, Media } from "@/payload-types";
 import type { CollectionConfig } from "payload";
 
 import { canAccessApi, validateMedia } from "../utils/helper";
@@ -68,6 +69,9 @@ export const Commissions: CollectionConfig = {
 					})
 				);
 
+				// Organize commissions by month with extra data
+				const { monthlyData, total } = organizeCommissionsByMonth(newCommissions);
+				
 				return Response.json({
 					commissions: {
 						docs: newCommissions,
@@ -78,6 +82,8 @@ export const Commissions: CollectionConfig = {
 						pagingCounter: commissions.pagingCounter,
 						hasPrevPage: commissions.hasPrevPage,
 					},
+					monthlyData,
+					total,
 				});
 			},
 		},
@@ -243,4 +249,105 @@ export const Commissions: CollectionConfig = {
 			],
 		},
 	],
+};
+
+// Type for commission with supplier data
+type CommissionWithSupplier = Omit<Commission, "app_user" | "supplier"> & {
+	supplier: {
+		id: string;
+		name: string;
+		logo_mini?: string | Media | null;
+	};
+};
+
+const organizeCommissionsByMonth = (commissions: CommissionWithSupplier[]) => {
+	const monthlyData: Record<
+		string,
+		{
+			month: string;
+			year: number;
+			commissions: CommissionWithSupplier[];
+			totalAmount: number;
+			groupedData: {
+				encours: number;
+				production: number;
+				structured_product: number;
+				total: number;
+			};
+			comparison?: {
+				difference: number;
+				percentageChange: number;
+				previousMonthTotal: number;
+			};
+		}
+	> = {};
+
+	let overallTotal = 0;
+
+	// Group commissions by month
+	commissions.forEach((commission) => {
+		if (!commission.informations?.date) return;
+
+		const date = new Date(commission.informations.date);
+		const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+		const monthName = date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+
+		if (!monthlyData[monthKey]) {
+			monthlyData[monthKey] = {
+				month: monthName,
+				year: date.getFullYear(),
+				commissions: [],
+				totalAmount: 0,
+				groupedData: {
+					encours: 0,
+					production: 0,
+					structured_product: 0,
+					total: 0,
+				},
+			};
+		}
+
+		monthlyData[monthKey].commissions.push(commission);
+
+		// Calculate amounts
+		const encours = commission.informations.encours || 0;
+		const production = commission.informations.production || 0;
+		const upFront = commission.informations.up_front || 0;
+		const total = encours + production + upFront;
+
+		monthlyData[monthKey].totalAmount += total;
+		monthlyData[monthKey].groupedData.encours += encours;
+		monthlyData[monthKey].groupedData.production += production;
+		monthlyData[monthKey].groupedData.structured_product += upFront;
+		monthlyData[monthKey].groupedData.total += total;
+		
+		// Add to overall total
+		overallTotal += total;
+	});
+
+	// Sort months chronologically and add comparison data
+	const sortedMonths = Object.keys(monthlyData).sort().reverse();
+
+	sortedMonths.forEach((monthKey, index) => {
+		const currentMonth = monthlyData[monthKey];
+		const previousMonthKey = sortedMonths[index + 1];
+
+		if (previousMonthKey) {
+			const previousMonth = monthlyData[previousMonthKey];
+			const difference = currentMonth.totalAmount - previousMonth.totalAmount;
+			const percentageChange =
+				previousMonth.totalAmount > 0 ? (difference / previousMonth.totalAmount) * 100 : 0;
+
+			currentMonth.comparison = {
+				difference,
+				percentageChange,
+				previousMonthTotal: previousMonth.totalAmount,
+			};
+		}
+	});
+
+	return {
+		monthlyData: Object.values(monthlyData),
+		total: overallTotal
+	};
 };
