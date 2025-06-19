@@ -51,26 +51,11 @@ export const Commissions: CollectionConfig = {
 					},
 				});
 
-				const newCommissions = await Promise.all(
-					commissions.docs.map(async (commission) => {
-						const supplier = await req.payload.findByID({
-							collection: "suppliers",
-							select: {
-								logo_mini: true,
-								name: true,
-							},
-							id: commission.supplier as string,
-						});
-
-						return {
-							...commission,
-							supplier,
-						};
-					})
+				// Organize commissions by month directly while fetching suppliers
+				const { monthlyData, total } = await organizeCommissionsByMonthWithSuppliers(
+					commissions.docs,
+					req.payload
 				);
-
-				// Organize commissions by month with extra data
-				const { monthlyData, total } = organizeCommissionsByMonth(newCommissions);
 				
 				return Response.json({
 					monthlyData,
@@ -242,22 +227,13 @@ export const Commissions: CollectionConfig = {
 	],
 };
 
-// Type for commission with supplier data
-type CommissionWithSupplier = Omit<Commission, "app_user" | "supplier"> & {
-	supplier: {
-		id: string;
-		name: string;
-		logo_mini?: string | Media | null;
-	};
-};
-
-const organizeCommissionsByMonth = (commissions: CommissionWithSupplier[]) => {
+const organizeCommissionsByMonthWithSuppliers = async (commissions: Omit<Commission, 'app_user'>[], payload: any) => {
 	const monthlyData: Record<
 		string,
 		{
 			month: string;
 			year: number;
-			commissions: CommissionWithSupplier[];
+			commissions: (Omit<Commission, 'app_user'> & { supplier: any })[];
 			totalAmount: number;
 			groupedData: {
 				encours: number;
@@ -275,46 +251,63 @@ const organizeCommissionsByMonth = (commissions: CommissionWithSupplier[]) => {
 
 	let overallTotal = 0;
 
-	// Group commissions by month
-	commissions.forEach((commission) => {
-		if (!commission.informations?.date) return;
+	// Process commissions and fetch suppliers in parallel
+	await Promise.all(
+		commissions.map(async (commission) => {
+			if (!commission.informations?.date) return;
 
-		const date = new Date(commission.informations.date);
-		const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-		const monthName = date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
-
-		if (!monthlyData[monthKey]) {
-			monthlyData[monthKey] = {
-				month: monthName,
-				year: date.getFullYear(),
-				commissions: [],
-				totalAmount: 0,
-				groupedData: {
-					encours: 0,
-					production: 0,
-					structured_product: 0,
-					total: 0,
+			// Fetch supplier data
+			const supplier = await payload.findByID({
+				collection: "suppliers",
+				select: {
+					logo_mini: true,
+					name: true,
 				},
+				id: commission.supplier as string,
+			});
+
+			const commissionWithSupplier = {
+				...commission,
+				supplier,
 			};
-		}
 
-		monthlyData[monthKey].commissions.push(commission);
+			const date = new Date(commission.informations.date);
+			const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+			const monthName = date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
-		// Calculate amounts
-		const encours = commission.informations.encours || 0;
-		const production = commission.informations.production || 0;
-		const upFront = commission.informations.up_front || 0;
-		const total = encours + production + upFront;
+			if (!monthlyData[monthKey]) {
+				monthlyData[monthKey] = {
+					month: monthName,
+					year: date.getFullYear(),
+					commissions: [],
+					totalAmount: 0,
+					groupedData: {
+						encours: 0,
+						production: 0,
+						structured_product: 0,
+						total: 0,
+					},
+				};
+			}
 
-		monthlyData[monthKey].totalAmount += total;
-		monthlyData[monthKey].groupedData.encours += encours;
-		monthlyData[monthKey].groupedData.production += production;
-		monthlyData[monthKey].groupedData.structured_product += upFront;
-		monthlyData[monthKey].groupedData.total += total;
-		
-		// Add to overall total
-		overallTotal += total;
-	});
+			monthlyData[monthKey].commissions.push(commissionWithSupplier);
+
+			// Calculate amounts
+			const encours = commission.informations.encours || 0;
+			const production = commission.informations.production || 0;
+			const upFront = commission.informations.up_front || 0;
+			const total = encours + production + upFront;
+
+			monthlyData[monthKey].totalAmount += total;
+			monthlyData[monthKey].groupedData.encours += encours;
+			monthlyData[monthKey].groupedData.production += production;
+			monthlyData[monthKey].groupedData.structured_product += upFront;
+			monthlyData[monthKey].groupedData.total += total;
+			
+			// Add to overall total
+			overallTotal += total;
+		})
+	);
 
 	// Sort months chronologically and add comparison data
 	const sortedMonths = Object.keys(monthlyData).sort().reverse();
