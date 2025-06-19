@@ -73,17 +73,8 @@ export const Commissions: CollectionConfig = {
 				const { monthlyData, total } = organizeCommissionsByMonth(newCommissions);
 				
 				return Response.json({
-					commissions: {
-						docs: newCommissions,
-						totalDocs: commissions.totalDocs,
-						limit: commissions.limit,
-						totalPages: commissions.totalPages,
-						page: commissions.page,
-						pagingCounter: commissions.pagingCounter,
-						hasPrevPage: commissions.hasPrevPage,
-					},
 					monthlyData,
-					total,
+					totalAmount: total,
 				});
 			},
 		},
