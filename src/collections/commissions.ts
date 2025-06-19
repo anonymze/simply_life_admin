@@ -17,6 +17,66 @@ export const Commissions: CollectionConfig = {
 			fr: "Commissions",
 		},
 	},
+	endpoints: [
+		{
+			method: "get",
+			path: "/extra/:userId",
+			handler: async (req) => {
+				const { userId } = req.routeParams as { userId: string };
+
+				if (!userId) {
+					return Response.json(
+						{
+							message: "KO",
+						},
+						{
+							status: 500,
+						}
+					);
+				}
+
+				const commissions = await req.payload.find({
+					collection: "commissions",
+					sort: "-informations.date",
+					depth: 0,
+					limit: 0,
+					where: {
+						app_user: {
+							equals: userId,
+						},
+					},
+				});
+
+				const newCommissions = await Promise.all(commissions.docs.map(async (commission) => {
+					const supplier = await req.payload.findByID({
+						collection: "suppliers",
+						select: {
+							logo_mini: true,
+							name: true,
+						},
+						id: commission.supplier as string,
+					});
+
+					return {
+						...commission,
+						supplier,
+					}
+				}));
+
+				return Response.json({
+					commissions: {
+						docs: newCommissions,
+						totalDocs: commissions.totalDocs,
+						limit: commissions.limit,
+						totalPages: commissions.totalPages,
+						page: commissions.page,
+						pagingCounter: commissions.pagingCounter,
+						hasPrevPage: commissions.hasPrevPage,
+					}
+				});
+			},
+		},
+	],
 	fields: [
 		{
 			name: "app_user",
@@ -70,7 +130,7 @@ export const Commissions: CollectionConfig = {
 						date: {
 							displayFormat: "MM/yyyy",
 							pickerAppearance: "monthOnly",
-						},	
+						},
 					},
 					label: {
 						en: "Date of commission",
@@ -134,8 +194,7 @@ export const Commissions: CollectionConfig = {
 					type: "text",
 					admin: {
 						condition: (data) => {
-
-							console.log(data)
+							console.log(data);
 							return data.structured_product;
 						},
 					},
@@ -160,7 +219,8 @@ export const Commissions: CollectionConfig = {
 						fr: "Montant (up-front)",
 					},
 					required: false,
-				},				{
+				},
+				{
 					name: "broqueur",
 					type: "text",
 
@@ -174,7 +234,7 @@ export const Commissions: CollectionConfig = {
 						fr: "Broqueur",
 					},
 					required: false,
-				}
+				},
 			],
 		},
 	],
