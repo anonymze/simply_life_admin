@@ -38,6 +38,9 @@ export const Commissions: CollectionConfig = {
 				const commissions = await req.payload.find({
 					collection: "commissions",
 					sort: "-informations.date",
+					select: {
+						app_user: false,
+					},
 					depth: 0,
 					limit: 0,
 					where: {
@@ -47,21 +50,23 @@ export const Commissions: CollectionConfig = {
 					},
 				});
 
-				const newCommissions = await Promise.all(commissions.docs.map(async (commission) => {
-					const supplier = await req.payload.findByID({
-						collection: "suppliers",
-						select: {
-							logo_mini: true,
-							name: true,
-						},
-						id: commission.supplier as string,
-					});
+				const newCommissions = await Promise.all(
+					commissions.docs.map(async (commission) => {
+						const supplier = await req.payload.findByID({
+							collection: "suppliers",
+							select: {
+								logo_mini: true,
+								name: true,
+							},
+							id: commission.supplier as string,
+						});
 
-					return {
-						...commission,
-						supplier,
-					}
-				}));
+						return {
+							...commission,
+							supplier,
+						};
+					})
+				);
 
 				return Response.json({
 					commissions: {
@@ -72,7 +77,7 @@ export const Commissions: CollectionConfig = {
 						page: commissions.page,
 						pagingCounter: commissions.pagingCounter,
 						hasPrevPage: commissions.hasPrevPage,
-					}
+					},
 				});
 			},
 		},
