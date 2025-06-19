@@ -229,7 +229,6 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		string,
 		{
 			month: string;
-			year: number;
 			commissions: Omit<Commission, "app_user">[];
 			totalAmount: number;
 			groupedData: {
@@ -259,7 +258,6 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		if (!monthlyData[monthKey]) {
 			monthlyData[monthKey] = {
 				month: monthName,
-				year: date.getFullYear(),
 				commissions: [],
 				totalAmount: 0,
 				groupedData: {
