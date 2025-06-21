@@ -24,6 +24,11 @@ import {
 } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
 import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
 export const enum__locales = pgEnum("enum__locales", ["fr", "en"]);
+export const enum_reservations_desk = pgEnum("enum_reservations_desk", [
+  "1",
+  "2",
+  "3",
+]);
 export const enum_app_users_role = pgEnum("enum_app_users_role", [
   "associate",
   "employee",
@@ -554,6 +559,12 @@ export const reservations = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     title: varchar("title").notNull(),
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    desk: enum_reservations_desk("desk").notNull(),
     day_reservation: timestamp("day_reservation", {
       mode: "string",
       withTimezone: true,
@@ -585,6 +596,9 @@ export const reservations = pgTable(
       .notNull(),
   },
   (columns) => ({
+    reservations_app_user_idx: index("reservations_app_user_idx").on(
+      columns.app_user,
+    ),
     reservations_updated_at_idx: index("reservations_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -754,6 +768,7 @@ export const agency_life = pgTable(
       withTimezone: true,
       precision: 3,
     }).notNull(),
+    address: varchar("address"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -1431,11 +1446,19 @@ export const relations_reservations_invitations = relations(
     }),
   }),
 );
-export const relations_reservations = relations(reservations, ({ many }) => ({
-  invitations: many(reservations_invitations, {
-    relationName: "invitations",
+export const relations_reservations = relations(
+  reservations,
+  ({ one, many }) => ({
+    app_user: one(app_users, {
+      fields: [reservations.app_user],
+      references: [app_users.id],
+      relationName: "app_user",
+    }),
+    invitations: many(reservations_invitations, {
+      relationName: "invitations",
+    }),
   }),
-}));
+);
 export const relations_supplier_products_rels = relations(
   supplier_products_rels,
   ({ one }) => ({
@@ -1672,6 +1695,7 @@ export const relations_payload_migrations = relations(
 
 type DatabaseSchema = {
   enum__locales: typeof enum__locales;
+  enum_reservations_desk: typeof enum_reservations_desk;
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
   admins: typeof admins;

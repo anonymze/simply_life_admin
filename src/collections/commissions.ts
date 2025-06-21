@@ -178,7 +178,6 @@ export const Commissions: CollectionConfig = {
 					type: "text",
 					admin: {
 						condition: (data) => {
-							console.log(data);
 							return data.structured_product;
 						},
 					},
@@ -221,6 +220,19 @@ export const Commissions: CollectionConfig = {
 				},
 			],
 		},
+		{
+			name: "sidebar_actions",
+			type: "ui",
+			admin: {
+				condition: (data) => {
+					return !!data?.id;
+				},
+				position: "sidebar",
+				components: {
+					Field: "/components/commission-sidebar.tsx",
+				},
+			},
+		},
 	],
 };
 
@@ -228,6 +240,7 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 	const monthlyData: Record<
 		string,
 		{
+			id: string;
 			month: string;
 			commissions: Omit<Commission, "app_user">[];
 			totalAmount: number;
@@ -257,6 +270,7 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 
 		if (!monthlyData[monthKey]) {
 			monthlyData[monthKey] = {
+				id: crypto.randomUUID(),
 				month: monthName,
 				commissions: [],
 				totalAmount: 0,
