@@ -499,7 +499,7 @@ export const media = pgTable(
   "media",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    alt: varchar("alt").notNull(),
+    alt: varchar("alt"),
     blurhash: varchar("blurhash"),
     prefix: varchar("prefix").default("media-simply-life"),
     updatedAt: timestamp("updated_at", {
@@ -748,6 +748,69 @@ export const app_users = pgTable(
       columns.createdAt,
     ),
     app_users_email_idx: uniqueIndex("app_users_email_idx").on(columns.email),
+  }),
+);
+
+export const app_users_commissions_code_code = pgTable(
+  "app_users_commissions_code_code",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    code: varchar("code").notNull(),
+  },
+  (columns) => ({
+    _orderIdx: index("app_users_commissions_code_code_order_idx").on(
+      columns._order,
+    ),
+    _parentIDIdx: index("app_users_commissions_code_code_parent_id_idx").on(
+      columns._parentID,
+    ),
+    app_users_commissions_code_code_code_idx: uniqueIndex(
+      "app_users_commissions_code_code_code_idx",
+    ).on(columns.code),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [app_users_commissions_code.id],
+      name: "app_users_commissions_code_code_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
+export const app_users_commissions_code = pgTable(
+  "app_users_commissions_code",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    app_users_commissions_code_app_user_idx: uniqueIndex(
+      "app_users_commissions_code_app_user_idx",
+    ).on(columns.app_user),
+    app_users_commissions_code_updated_at_idx: index(
+      "app_users_commissions_code_updated_at_idx",
+    ).on(columns.updatedAt),
+    app_users_commissions_code_created_at_idx: index(
+      "app_users_commissions_code_created_at_idx",
+    ).on(columns.createdAt),
   }),
 );
 
@@ -1038,6 +1101,7 @@ export const payload_locked_documents_rels = pgTable(
     "supplier-productsID": uuid("supplier_products_id"),
     "contact-categoriesID": uuid("contact_categories_id"),
     "app-usersID": uuid("app_users_id"),
+    "app-users-commissions-codeID": uuid("app_users_commissions_code_id"),
     "agency-lifeID": uuid("agency_life_id"),
     "chat-roomsID": uuid("chat_rooms_id"),
     messagesID: uuid("messages_id"),
@@ -1089,6 +1153,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_app_users_id_idx: index(
       "payload_locked_documents_rels_app_users_id_idx",
     ).on(columns["app-usersID"]),
+    payload_locked_documents_rels_app_users_commissions_code_id_idx: index(
+      "payload_locked_documents_rels_app_users_commissions_code_id_idx",
+    ).on(columns["app-users-commissions-codeID"]),
     payload_locked_documents_rels_agency_life_id_idx: index(
       "payload_locked_documents_rels_agency_life_id_idx",
     ).on(columns["agency-lifeID"]),
@@ -1173,6 +1240,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["app-usersID"]],
       foreignColumns: [app_users.id],
       name: "payload_locked_documents_rels_app_users_fk",
+    }).onDelete("cascade"),
+    "app-users-commissions-codeIdFk": foreignKey({
+      columns: [columns["app-users-commissions-codeID"]],
+      foreignColumns: [app_users_commissions_code.id],
+      name: "payload_locked_documents_rels_app_users_commissions_code_fk",
     }).onDelete("cascade"),
     "agency-lifeIdFk": foreignKey({
       columns: [columns["agency-lifeID"]],
@@ -1493,6 +1565,29 @@ export const relations_app_users = relations(app_users, ({ one }) => ({
     relationName: "photo",
   }),
 }));
+export const relations_app_users_commissions_code_code = relations(
+  app_users_commissions_code_code,
+  ({ one }) => ({
+    _parentID: one(app_users_commissions_code, {
+      fields: [app_users_commissions_code_code._parentID],
+      references: [app_users_commissions_code.id],
+      relationName: "code",
+    }),
+  }),
+);
+export const relations_app_users_commissions_code = relations(
+  app_users_commissions_code,
+  ({ one, many }) => ({
+    app_user: one(app_users, {
+      fields: [app_users_commissions_code.app_user],
+      references: [app_users.id],
+      relationName: "app_user",
+    }),
+    code: many(app_users_commissions_code_code, {
+      relationName: "code",
+    }),
+  }),
+);
 export const relations_agency_life = relations(agency_life, () => ({}));
 export const relations_chat_rooms_rels = relations(
   chat_rooms_rels,
@@ -1625,6 +1720,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [app_users.id],
       relationName: "app-users",
     }),
+    "app-users-commissions-codeID": one(app_users_commissions_code, {
+      fields: [payload_locked_documents_rels["app-users-commissions-codeID"]],
+      references: [app_users_commissions_code.id],
+      relationName: "app-users-commissions-code",
+    }),
     "agency-lifeID": one(agency_life, {
       fields: [payload_locked_documents_rels["agency-lifeID"]],
       references: [agency_life.id],
@@ -1716,6 +1816,8 @@ type DatabaseSchema = {
   supplier_products_rels: typeof supplier_products_rels;
   contact_categories: typeof contact_categories;
   app_users: typeof app_users;
+  app_users_commissions_code_code: typeof app_users_commissions_code_code;
+  app_users_commissions_code: typeof app_users_commissions_code;
   agency_life: typeof agency_life;
   chat_rooms: typeof chat_rooms;
   chat_rooms_rels: typeof chat_rooms_rels;
@@ -1745,6 +1847,8 @@ type DatabaseSchema = {
   relations_supplier_products: typeof relations_supplier_products;
   relations_contact_categories: typeof relations_contact_categories;
   relations_app_users: typeof relations_app_users;
+  relations_app_users_commissions_code_code: typeof relations_app_users_commissions_code_code;
+  relations_app_users_commissions_code: typeof relations_app_users_commissions_code;
   relations_agency_life: typeof relations_agency_life;
   relations_chat_rooms_rels: typeof relations_chat_rooms_rels;
   relations_chat_rooms: typeof relations_chat_rooms;

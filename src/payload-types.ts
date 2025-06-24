@@ -81,6 +81,7 @@ export interface Config {
     'supplier-products': SupplierProduct;
     'contact-categories': ContactCategory;
     'app-users': AppUser;
+    'app-users-commissions-code': AppUsersCommissionsCode;
     'agency-life': AgencyLife;
     'chat-rooms': ChatRoom;
     messages: Message;
@@ -105,6 +106,7 @@ export interface Config {
     'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
     'contact-categories': ContactCategoriesSelect<false> | ContactCategoriesSelect<true>;
     'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
+    'app-users-commissions-code': AppUsersCommissionsCodeSelect<false> | AppUsersCommissionsCodeSelect<true>;
     'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
@@ -282,7 +284,7 @@ export interface Supplier {
  */
 export interface Media {
   id: string;
-  alt: string;
+  alt?: string | null;
   blurhash?: string | null;
   prefix?: string | null;
   updatedAt: string;
@@ -446,6 +448,20 @@ export interface Reservation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "app-users-commissions-code".
+ */
+export interface AppUsersCommissionsCode {
+  id: string;
+  app_user: string | AppUser;
+  code: {
+    code: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "agency-life".
  */
 export interface AgencyLife {
@@ -566,6 +582,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'app-users';
         value: string | AppUser;
+      } | null)
+    | ({
+        relationTo: 'app-users-commissions-code';
+        value: string | AppUsersCommissionsCode;
       } | null)
     | ({
         relationTo: 'agency-life';
@@ -868,6 +888,21 @@ export interface AppUsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "app-users-commissions-code_select".
+ */
+export interface AppUsersCommissionsCodeSelect<T extends boolean = true> {
+  app_user?: T;
+  code?:
+    | T
+    | {
+        code?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

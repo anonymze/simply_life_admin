@@ -1,3 +1,4 @@
+import { CommissionImport } from "@/payload-types";
 import type { CollectionConfig } from "payload";
 
 import { canAccessApi, validateMedia } from "../utils/helper";
@@ -27,6 +28,111 @@ export const CommissionImports: CollectionConfig = {
 			fr: "Commissions",
 		},
 	},
+	endpoints: [
+		{
+			path: "/:supplierId/:userId",
+			method: "get",
+			handler: async (req) => {
+				try {
+					const { supplierId, userId } = req.routeParams as { supplierId: string; userId: string };
+
+					console.log(supplierId, userId);
+
+					if (!supplierId || !userId) throw new Error();
+
+					// user mila
+					// 00791bac-7de8-46b2-a2dc-294ad80cdd8a
+
+					//  supplier cléquy
+					// 049a54ce-43bf-4ba8-9741-ae67f0e0f407
+
+					const commissionImports = await req.payload.find({
+						collection: "commission-imports",
+						where: {
+							"files.supplier": {
+								equals: supplierId,
+							},
+						},
+						select: {
+							files: {
+								file: true,
+							},
+						},
+					});
+
+					if (!commissionImports.docs.length) throw new Error();
+
+					const user = await req.payload.find({
+						collection: "app-users-commissions-code",
+						where: {
+							app_user: {
+								equals: userId,
+							},
+						},
+						select: {
+							code: true,
+						},
+					});
+
+					if (!user.docs.length) throw new Error();
+
+					const codes = user.docs.flatMap((doc) => doc.code).map((codeObj) => codeObj.code);
+					const files = commissionImports.docs.flatMap((doc) => doc.files).map((fileObj) => fileObj?.file);
+
+					let totalEncours = 0,
+						totalProduction = 0,
+						totalStructured = 0;
+
+					files.forEach((file) => {
+						// const sheet = await readXlsxFile(file.url);
+						// console.log(sheet);
+					});
+
+					return Response.json({
+						totalEncours,
+						totalProduction,
+						totalStructured
+					});
+				} catch (error) {
+					console.log(error);
+					return Response.json(
+						{
+							message: "KO",
+						},
+						{
+							status: 500,
+						}
+					);
+				}
+			},
+		},
+	],
+	hooks: {
+		beforeOperation: [
+			async ({ req, operation }) => {
+				if (operation === "create") {
+					const files = req?.data?.files;
+
+					if (!files?.length) return;
+
+					Promise.all(
+						files.map(async (fileEntity: NonNullable<typeof files>[number]) => {
+							if (typeof fileEntity.supplier !== "string" || !fileEntity.supplier) return;
+
+							await req.payload.delete({
+								collection: "commission-imports",
+								where: {
+									"files.supplier": {
+										equals: fileEntity.supplier,
+									},
+								},
+							});
+						})
+					);
+				}
+			},
+		],
+	},
 	fields: [
 		{
 			name: "files",
@@ -48,6 +154,13 @@ export const CommissionImports: CollectionConfig = {
 					en: "files",
 					fr: "fichiers",
 				},
+			},
+			validate: (data) => {
+				const suppliers = data?.map((file: any) => file.supplier);
+				const uniqueSuppliers = [...new Set(suppliers)];
+				if (uniqueSuppliers.length !== suppliers?.length)
+					return "Vous avez mis plusieurs fois le même fournisseur.";
+				return true;
 			},
 			fields: [
 				{

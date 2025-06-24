@@ -1,5 +1,6 @@
 import { default as default_2bc7622a64d91d9d562e111bfe92c8e8 } from '../../../components/description-below-password.tsx'
 import { default as default_967dcca636410303df7004b060fd1710 } from '../../../components/google-adress.tsx'
+import { default as default_6889cc490a90c301fb9f649e89e30e0d } from '../../../components/commission-auto-fill.tsx'
 import { default as default_b29861a9110bbdfd77bfaa2a67b18473 } from '../../../components/commission-sidebar.tsx'
 import { default as default_d8b34f89d762842e2450e61f4d62856f } from '../../../components/app-users/create-view.tsx'
 import { default as default_f5e96839565160adfb24258880c52be7 } from '../../../components/settings.tsx'
@@ -11,6 +12,7 @@ import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e
 export const importMap = {
   "/components/description-below-password.tsx#default": default_2bc7622a64d91d9d562e111bfe92c8e8,
   "/components/google-adress.tsx#default": default_967dcca636410303df7004b060fd1710,
+  "/components/commission-auto-fill.tsx#default": default_6889cc490a90c301fb9f649e89e30e0d,
   "/components/commission-sidebar.tsx#default": default_b29861a9110bbdfd77bfaa2a67b18473,
   "/components/app-users/create-view.tsx#default": default_d8b34f89d762842e2450e61f4d62856f,
   "/components/settings.tsx#default": default_f5e96839565160adfb24258880c52be7,

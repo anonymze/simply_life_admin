@@ -98,7 +98,7 @@ export const Commissions: CollectionConfig = {
 			type: "group",
 			admin: {
 				condition: (data) => {
-					return !!data?.supplier;
+					return !!data?.supplier && !!data?.app_user;
 				},
 			},
 			label: {
@@ -106,6 +106,19 @@ export const Commissions: CollectionConfig = {
 				fr: "Informations de commission",
 			},
 			fields: [
+				{
+					name: "auto_fill_button",
+					type: "ui",
+					admin: {
+						components: {
+							Field: "/components/commission-auto-fill.tsx",
+						},
+					},
+					label: {
+						en: "Auto-fill from Excel",
+						fr: "Auto-remplir depuis Excel",
+					},
+				},
 				{
 					name: "date",
 					type: "date",
@@ -125,14 +138,12 @@ export const Commissions: CollectionConfig = {
 				{
 					name: "encours",
 					type: "number",
-
 					admin: {
 						step: 0.01,
 						condition: (data) => {
 							return !data.structured_product;
 						},
 					},
-
 					label: {
 						en: "Encours",
 						fr: "Encours",
