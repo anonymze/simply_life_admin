@@ -1,0 +1,180 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Structure Overview
+
+This is a Next.js application with Payload CMS integration for the Simply Life Admin project.
+
+## Root Directory Structure
+
+```
+simply_life_admin/
+├── .cursor/rules/           # Cursor rules and documentation
+├── .git/                    # Git version control
+├── .next/                   # Next.js build output
+├── node_modules/            # Dependencies
+├── public/                  # Static assets
+├── src/                     # Source code
+├── supabase/                # Supabase configuration
+├── x/                       # Database dumps, SQL files and random things
+├── components.json          # Shadcn/ui components configuration
+├── next.config.mjs          # Next.js configuration
+├── package.json             # Project dependencies and scripts
+├── pnpm-lock.yaml          # PNPM lock file
+├── postcss.config.js        # PostCSS configuration
+├── tailwind.config.js       # Tailwind CSS configuration
+├── tsconfig.json           # TypeScript configuration
+└── README.md               # Project documentation
+```
+
+## Source Code Structure (`src/`)
+
+### Core Application Files
+- `payload.config.ts` - Main Payload CMS configuration
+- `payload-types.ts` - Generated TypeScript types for Payload
+- `payload-generated-schema.ts` - Generated GraphQL schema
+- `middleware.ts` - Next.js middleware for request handling
+
+### App Directory (`src/app/`)
+```
+src/app/
+├── (frontend)/              # Frontend routes (grouped)
+│   ├── app-users/           # App users management
+│   │   └── create/
+│   │       └── [id]/
+│   │           ├── form.tsx
+│   │           └── page.tsx
+│   └── layout.tsx           # Frontend layout
+├── (payload)/               # Payload CMS routes (grouped)
+│   ├── admin/               # Payload admin interface
+│   │   └── [[...segments]]/
+│   │       ├── not-found.tsx
+│   │       └── page.tsx
+│   ├── api/                 # Payload API routes
+│   │   ├── [...slug]/       # Dynamic API routes
+│   │   ├── graphql/         # GraphQL endpoint
+│   │   └── graphql-playground/ # GraphQL playground
+│   ├── custom.scss          # Custom admin styles
+│   └── layout.tsx           # Payload layout
+└── api/                     # Custom API routes
+    └── signature/
+        └── pdf/
+            └── _route.ts    # PDF signature route
+```
+
+### Collections (`src/collections/`)
+Payload CMS data models and schemas:
+- `admins.ts` - Admin users collection
+- `agency-life.ts` - Agency life data
+- `app-users.ts` - Application users
+- `chat-rooms.ts` - Chat room management
+- `commission-imports.ts` - Commission import data
+- `commissions.ts` - Commission management
+- `contact-categories.ts` - Contact categorization
+- `contacts.tsx` - Contact management
+- `fidnet.ts` - Fidnet integration
+- `fundesys.ts` - Fundesys integration
+- `media.ts` - Media file management
+- `messages.ts` - Message system
+- `reservations.ts` - Reservation system
+- `signatures.ts` - Digital signatures
+- `supplier-categories.ts` - Supplier categorization
+- `supplier-products.ts` - Supplier products
+- `suppliers.ts` - Supplier management
+- `temporary-app-users.ts` - Temporary user accounts
+
+### Components (`src/components/`)
+```
+src/components/
+├── app-users/               # App user specific components
+│   ├── _fields-edit.tsx     # Edit fields component
+│   ├── _fields.tsx          # Form fields component
+│   └── create-view.tsx      # Create view component
+├── ui/                      # Reusable UI components (Shadcn/ui)
+│   ├── button.tsx
+│   ├── card.tsx
+│   ├── form.tsx
+│   ├── input.tsx
+│   └── label.tsx
+├── action-button.tsx        # Action button component
+├── actions.ts               # Action utilities
+├── before-login.tsx         # Pre-login component
+├── commission-sidebar.tsx   # Commission sidebar
+├── custom-client-field.tsx  # Custom client-side field
+├── custom-server-field.tsx  # Custom server-side field
+├── description-below-password.tsx # Password description
+├── google-adress.tsx        # Google address component
+├── input.tsx                # Input component (empty)
+├── logo.tsx                 # Logo component
+├── logout.tsx               # Logout component
+└── settings.tsx             # Settings component
+```
+
+### Utilities (`src/utils/`)
+```
+src/utils/
+├── request/                 # Request handling utilities
+│   ├── _parser.ts           # Request parsing
+│   └── validation.ts        # Request validation
+├── response/                # Response handling utilities
+│   ├── header.ts            # Response headers
+│   └── json.ts              # JSON response utilities
+├── custom-translations.ts   # Internationalization
+├── helper.ts                # General helper functions
+└── xlsx.ts                  # Excel file handling (empty)
+```
+
+### Other Important Directories
+- `src/assets/` - Static assets (images, etc.)
+- `src/emails/` - Email templates and configuration
+  - `templates/en/` - English email templates
+  - `templates/fr/` - French email templates
+- `src/lib/` - Library utilities
+- `src/migrations/` - Database migrations
+- `src/plugins/` - Payload plugins (websocket-server.ts)
+- `src/styles/` - Global styles (app.css)
+
+## Public Assets (`public/`)
+- `favicon.ico` - Site favicon
+- `images/` - Public images
+
+## Database and External Files (`x/`)
+- `postgres.dump` - Database dump file
+- `suppliers.sql` - Supplier data SQL file
+
+## Key Configuration Files
+
+### Package Management
+- `package.json` - Dependencies and scripts
+- `pnpm-lock.yaml` - PNPM lock file
+
+### Build and Development
+- `next.config.mjs` - Next.js configuration
+- `tsconfig.json` - TypeScript configuration
+- `tailwind.config.js` - Tailwind CSS configuration
+- `postcss.config.js` - PostCSS configuration
+- `components.json` - Shadcn/ui components configuration
+
+## Development Guidelines
+
+### File Naming Conventions
+- Use kebab-case for file and directory names
+- Use PascalCase for React components
+- Use camelCase for utility functions
+- Use .tsx extension for React components
+- Use .ts extension for TypeScript utilities
+
+### Directory Organization
+- Group related functionality in subdirectories
+- Keep components close to where they're used
+- Separate UI components from business logic
+- Use route groups (parentheses) for logical organization
+
+### Important Patterns
+- Payload collections define data models
+- Components are organized by feature/domain
+- Utilities are separated by purpose (request/response)
+- Email templates support multiple languages
+- Database migrations are versioned and timestamped

@@ -1,0 +1,198 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Technology Stack & Dependencies
+
+This document outlines the complete technology stack and dependency versions for the Simply Life Admin project.
+
+## Core Framework
+
+### Next.js
+- **Version**: 15.1.5
+- **Type**: React framework with App Router
+- **Features**: Server-side rendering, API routes, middleware support
+- **Configuration**: `next.config.mjs`
+
+### React
+- **Version**: 19.0.0
+- **Type**: UI library
+- **Features**: Latest React with concurrent features
+- **Companion**: `react-dom@19.0.0`
+
+## Content Management System
+
+### Payload CMS
+
+- **Version**: 3.41.0
+- **Type**: Headless CMS built on Node.js
+- **Integration**: `@payloadcms/next@3.41.0`
+- **Features**: 
+  - GraphQL API (`graphql@16.11.0`)
+  - Rich text editor (`@payloadcms/richtext-lexical@3.41.0`)
+  - Admin UI (`@payloadcms/ui@3.41.0`)
+  - Cloud hosting (`@payloadcms/payload-cloud@3.41.0`)
+  - Translations (`@payloadcms/translations@3.41.0`)
+
+### Database
+
+- **Primary**: PostgreSQL via `@payloadcms/db-postgres@3.41.0`
+- **Vercel**: `@payloadcms/db-vercel-postgres@3.41.0`
+- **Cloudflare**: `pg-cloudflare@1.1.1` (peer dependency)
+
+### Storage
+
+- **Vercel Blob**: `@payloadcms/storage-vercel-blob@3.41.0`
+- **Image Processing**: `sharp@0.32.6`
+- **Placeholder**: `plaiceholder@3.0.0`
+
+## Email System
+
+### Nodemailer
+
+- **Version**: 6.10.1
+- **Integration**: `@payloadcms/email-nodemailer@3.41.0`
+- **Types**: `@types/nodemailer@6.4.17`
+
+## UI & Styling
+
+### Tailwind CSS
+
+- **Version**: 3.4.17
+- **Configuration**: `tailwind.config.js`
+- **Utilities**: 
+  - `tailwind-merge@3.3.0`
+  - `tailwindcss-animate@1.0.7`
+- **PostCSS**: `postcss@8.5.4`, `autoprefixer@10.4.21`
+
+### Shadcn/ui Components
+
+- **Base**: Radix UI primitives
+  - `@radix-ui/react-label@2.1.7`
+  - `@radix-ui/react-slot@1.2.3`
+- **Utilities**: 
+  - `class-variance-authority@0.7.1`
+  - `clsx@2.1.1`
+- **Icons**: `lucide-react@0.475.0`
+
+## Form Handling & Validation
+
+### React Hook Form
+- **Version**: 7.57.0
+- **Resolvers**: `@hookform/resolvers@5.0.1`
+- **Validation**: `zod@3.25.51`
+
+## External Integrations
+
+### Google Services
+- **Autocomplete**: `react-google-autocomplete@2.7.5`
+
+### Real-time Communication
+- **WebSocket**: `ws@8.18.2`
+- **Types**: `@types/ws@8.18.1`
+
+### File Processing
+- **Excel**: `xlsx@0.18.5`
+- **API Documentation**: `payload-oapi@0.2.3`
+
+## Development Tools
+
+### TypeScript
+- **Version**: 5.7.3
+- **Configuration**: `tsconfig.json`
+
+### Package Management
+- **Manager**: PNPM 9.15.3
+- **Cross-platform**: `cross-env@7.0.3`
+- **Node Version**: ^18.20.2 || >=20.9.0
+
+### Code Quality
+- **Formatting**: `prettier@3.5.3`
+
+## Development Dependencies
+
+### Type Definitions
+- `@types/node@22.15.29`
+- `@types/react@19.0.7`
+- `@types/react-dom@19.0.3`
+
+## Build & Deployment
+
+### Environment
+- **Node.js**: ^18.20.2 || >=20.9.0
+- **PNPM**: ^9
+- **Module Type**: ES modules (`"type": "module"`)
+
+### Build Configuration
+- **Sharp**: Only built dependency for image processing
+- **NODE_OPTIONS**: `--no-deprecation` for all scripts
+
+## Scripts Overview
+
+```json
+{
+  "payload": "Generate Payload files",
+  "generate": "Generate types, schema, and import map",
+  "migrate": "Run database migrations",
+  "migrate:create": "Create new migration",
+  "dev": "Development server",
+  "build": "Production build",
+  "start": "Production server"
+}
+```
+
+## Architecture Patterns
+
+### Frontend
+- **App Router**: Next.js 13+ file-based routing
+- **Route Groups**: Logical separation with parentheses
+- **Server Components**: Default React 19 server components
+- **Client Components**: Marked with "use client"
+
+### Backend
+- **API Routes**: Next.js API routes for custom endpoints
+- **GraphQL**: Payload-generated GraphQL schema
+- **REST API**: Payload REST endpoints
+- **Middleware**: Next.js middleware for request handling
+
+### Database
+- **Migrations**: Versioned database schema changes
+- **ORM**: Payload's built-in ORM
+- **Relationships**: Payload collection relationships
+
+### Real-time Features
+- **WebSocket Server**: Custom plugin for real-time communication
+- **Chat System**: Built-in messaging capabilities
+
+## Security & Performance
+
+### Security
+- **Type Safety**: Full TypeScript coverage
+- **Validation**: Zod schema validation
+- **Authentication**: Payload built-in auth system
+
+### Performance
+- **Image Optimization**: Sharp for image processing
+- **Bundle Optimization**: PNPM for efficient dependency management
+- **Caching**: Next.js built-in caching strategies
+
+## Development Workflow
+
+### Local Development
+1. `pnpm dev` - Start development server
+2. `pnpm generate` - Generate Payload types and schema
+3. `pnpm migrate` - Run database migrations
+
+### Production Deployment
+1. `pnpm build` - Build for production
+2. `pnpm start` - Start production server
+3. Vercel/Cloudflare deployment with PostgreSQL
+
+## Version Compatibility Notes
+
+- **React 19**: Latest version with concurrent features
+- **Next.js 15**: Latest stable with App Router
+- **Payload 3.41**: Latest stable CMS version
+- **TypeScript 5.7**: Latest stable with full React 19 support
+- **Node.js**: Requires 18.20.2+ or 20.9.0+ for optimal performance
