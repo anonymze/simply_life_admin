@@ -41,10 +41,10 @@ export default buildConfig({
 		process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.NEXT_PUBLIC_SERVER_URL,
 	cors: ["*"],
 	// cors: {
-		// Add your allowed origin here
-		// origins: ["http://192.168.1.230:8081"],
-		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		// headers: ["Content-Type", "Authorization", "Accept"],
+	// Add your allowed origin here
+	// origins: ["http://192.168.1.230:8081"],
+	// methods: ['GET', 'POST', 'PUT', 'DELETE'],
+	// headers: ["Content-Type", "Authorization", "Accept"],
 	// },
 	csrf: [
 		// Add your allowed origins here for CSRF protection
@@ -55,7 +55,7 @@ export default buildConfig({
 		locales: ["fr", "en"],
 		defaultLocale: "fr",
 	},
-	admin: {				
+	admin: {
 		// you can change the binded routes in admin
 		// routes: {
 		// },
@@ -84,7 +84,7 @@ export default buildConfig({
 				Icon: "/components/logo.tsx",
 			},
 		},
-		
+
 		meta: {
 			title: "Simply Life Administration",
 			description: "Administration pour l'application mobile Simply Life",
@@ -128,9 +128,7 @@ export default buildConfig({
 		Signatures,
 		TemporaryAppUsers,
 	],
-	globals: [
-		CommissionImports,
-	],
+	globals: [CommissionImports],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
@@ -158,11 +156,38 @@ export default buildConfig({
 		// 		}
 		// 	},
 		// ],
-		
+
 		idType: "uuid",
 		pool: {
-			connectionString: process.env.DATABASE_URI || ""
+			connectionString: process.env.DATABASE_URI || "",
 		},
+		// Add hooks after schema initialization
+		afterSchemaInit: [
+			async ({ schema, adapter }) => {
+				const messagesTable = schema.tables["messages"];
+				console.log('Schema initialized with messages table');
+
+				try {
+					// Execute raw SQL to add cascade delete constraint
+					await adapter.payload.db.drizzle.execute(`
+						ALTER TABLE messages 
+						DROP CONSTRAINT IF EXISTS messages_chat_room_id_fkey;
+						
+						ALTER TABLE messages 
+						ADD CONSTRAINT messages_chat_room_id_fkey 
+						FOREIGN KEY (chat_room_id) 
+						REFERENCES chat_rooms(id) 
+						ON DELETE CASCADE;
+					`);
+					
+				} catch (error) {
+					console.error('❌ Error adding cascade delete:', error);
+				}
+				
+				// Return the schema (required by the hook)
+				return schema;
+			},
+		],
 	}),
 	sharp,
 	email: nodemailerAdapter({

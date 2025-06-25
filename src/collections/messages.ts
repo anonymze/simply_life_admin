@@ -89,6 +89,8 @@ export const Messages: CollectionConfig = {
 
 						const requests = chatRoom.guests.map((guest) => {
 							if (typeof guest === "string" || !guest.notifications_token || guest.id === data?.app_user) return;
+							console.log(guest.id)
+							console.log(data?.app_user)
 							return fetch("https://api.expo.dev/v2/push/send", {
 								method: "POST",
 								headers: {
