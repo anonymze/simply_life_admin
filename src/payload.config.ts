@@ -14,10 +14,10 @@ import { AppUsersCommissionsCode } from "./collections/app-users-commissions-cod
 import { SupplierCategories } from "./collections/supplier-categories";
 import { TemporaryAppUsers } from "./collections/temporary-app-users";
 import { ContactCategories } from "./collections/contact-categories";
-import { CommissionImports } from "./collections/commission-imports";
 import { websocketServerPlugin } from "./plugins/websocket-server";
 import { SupplierProducts } from "./collections/supplier-products";
 import { customTranslations } from "./utils/custom-translations";
+import { CommissionImports } from "./globals/commission-imports";
 import { Reservations } from "./collections/reservations";
 import { Commissions } from "./collections/commissions";
 import { AgencyLife } from "./collections/agency-life";
@@ -116,7 +116,6 @@ export default buildConfig({
 		Suppliers,
 		Fundesys,
 		Commissions,
-		CommissionImports,
 		Media,
 		Reservations,
 		SupplierProducts,
@@ -128,6 +127,9 @@ export default buildConfig({
 		Messages,
 		Signatures,
 		TemporaryAppUsers,
+	],
+	globals: [
+		CommissionImports,
 	],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",

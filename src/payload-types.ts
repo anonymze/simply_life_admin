@@ -75,7 +75,6 @@ export interface Config {
     suppliers: Supplier;
     fundesys: Fundesy;
     commissions: Commission;
-    'commission-imports': CommissionImport;
     media: Media;
     reservations: Reservation;
     'supplier-products': SupplierProduct;
@@ -100,7 +99,6 @@ export interface Config {
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
     commissions: CommissionsSelect<false> | CommissionsSelect<true>;
-    'commission-imports': CommissionImportsSelect<false> | CommissionImportsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
@@ -119,8 +117,12 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'commission-imports': CommissionImport;
+  };
+  globalsSelect: {
+    'commission-imports': CommissionImportsSelect<false> | CommissionImportsSelect<true>;
+  };
   locale: 'fr' | 'en';
   user:
     | (Admin & {
@@ -405,28 +407,6 @@ export interface AppUser {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "commission-imports".
- */
-export interface CommissionImport {
-  id: string;
-  /**
-   * Quand un fichier est importé pour un fournisseur, il écrase le précédent fichier importé pour celui-ci. Ensuite les données de ce fichier rempliront les commissions futures des employés concernés.
-   */
-  files?:
-    | {
-        supplier: string | Supplier;
-        /**
-         * Le fichier doit être au format Excel ou CSV.
-         */
-        file: string | Media;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reservations".
  */
 export interface Reservation {
@@ -558,10 +538,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'commissions';
         value: string | Commission;
-      } | null)
-    | ({
-        relationTo: 'commission-imports';
-        value: string | CommissionImport;
       } | null)
     | ({
         relationTo: 'media';
@@ -796,21 +772,6 @@ export interface CommissionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "commission-imports_select".
- */
-export interface CommissionImportsSelect<T extends boolean = true> {
-  files?:
-    | T
-    | {
-        supplier?: T;
-        file?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -994,6 +955,44 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-imports".
+ */
+export interface CommissionImport {
+  id: string;
+  /**
+   * Un fichier par fournisseur. Quand un fichier est importé pour un fournisseur, il écrase le précédent fichier importé pour celui-ci.
+   */
+  files?:
+    | {
+        supplier: string | Supplier;
+        /**
+         * Le fichier doit être au format Excel ou CSV.
+         */
+        file: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-imports_select".
+ */
+export interface CommissionImportsSelect<T extends boolean = true> {
+  files?:
+    | T
+    | {
+        supplier?: T;
+        file?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
