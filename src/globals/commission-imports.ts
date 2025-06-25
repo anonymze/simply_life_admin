@@ -17,6 +17,16 @@ export const CommissionImports: GlobalConfig = {
 			fr: "Commissions",
 		},
 	},
+	labels: {
+		singular: {
+			en: "Commission Import",
+			fr: "Import de commission",
+		},
+		plural: {
+			en: "Commission Imports",
+			fr: "Importations des commissions",
+		},
+	},
 	endpoints: [
 		{
 			path: "/:supplierId/:userId",
