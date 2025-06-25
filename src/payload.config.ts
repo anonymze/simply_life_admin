@@ -163,29 +163,24 @@ export default buildConfig({
 		},
 		// Add hooks after schema initialization
 		afterSchemaInit: [
-			async ({ schema, adapter }) => {
-				const messagesTable = schema.tables["messages"];
-				console.log('Schema initialized with messages table');
+			async ({ schema }) => {
+				const relations = ['relations_messages'];
 
-				try {
-					// Execute raw SQL to add cascade delete constraint
-					await adapter.payload.db.drizzle.execute(`
-						ALTER TABLE messages 
-						DROP CONSTRAINT IF EXISTS messages_chat_room_id_fkey;
-						
-						ALTER TABLE messages 
-						ADD CONSTRAINT messages_chat_room_id_fkey 
-						FOREIGN KEY (chat_room_id) 
-						REFERENCES chat_rooms(id) 
-						ON DELETE CASCADE;
-					`);
-					
-				} catch (error) {
-					console.error('❌ Error adding cascade delete:', error);
-				}
-				
-				// Return the schema (required by the hook)
-				return schema;
+				console.log(schema.relations);
+
+        relations.forEach((relation) => {
+          const index = Symbol.for(`drizzle:PgInlineForeignKeys`)
+						console.log(index);
+          //@ts-expect-error workaround
+          const fkeys = schema.relations[relation].table[index]
+          // Loop through the foreign keys and modify them
+          //@ts-expect-error workaround
+          fkeys.forEach((foreignKey) => {
+            foreignKey.onDelete = 'CASCADE'
+            foreignKey.onUpdate = 'CASCADE'
+          })
+        })
+        return schema
 			},
 		],
 	}),
