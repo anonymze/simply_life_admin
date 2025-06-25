@@ -58,7 +58,8 @@ export const Commissions: CollectionConfig = {
 				return Response.json({
 					monthlyData,
 					yearlyData,
-					totalAmount: total,
+					totalAmountMonth: total,
+					totalAmountYear: yearlyTotal,
 				});
 			},
 		},
@@ -350,7 +351,6 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 		{
 			id: string;
 			year: string;
-			commissions: Omit<Commission, "app_user">[];
 			totalAmount: number;
 			groupedData: {
 				encours: number;
@@ -380,7 +380,6 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 			yearlyData[yearKey] = {
 				id: crypto.randomUUID(),
 				year: yearName,
-				commissions: [],
 				totalAmount: 0,
 				groupedData: {
 					encours: 0,
@@ -390,8 +389,6 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 				},
 			};
 		}
-
-		yearlyData[yearKey].commissions.push(commission);
 
 		// Calculate amounts
 		const encours = commission.informations.encours || 0;
