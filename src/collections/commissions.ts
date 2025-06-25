@@ -258,7 +258,7 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		string,
 		{
 			id: string;
-			month: string;
+			labelDate: string;
 			commissions: Omit<Commission, "app_user">[];
 			totalAmount: number;
 			groupedData: {
@@ -288,7 +288,7 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		if (!monthlyData[monthKey]) {
 			monthlyData[monthKey] = {
 				id: crypto.randomUUID(),
-				month: monthName,
+				labelDate: monthName,
 				commissions: [],
 				totalAmount: 0,
 				groupedData: {
@@ -350,7 +350,7 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 		string,
 		{
 			id: string;
-			year: string;
+			labelDate: string;
 			totalAmount: number;
 			groupedData: {
 				encours: number;
@@ -379,7 +379,7 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 		if (!yearlyData[yearKey]) {
 			yearlyData[yearKey] = {
 				id: crypto.randomUUID(),
-				year: yearName,
+				labelDate: yearName,
 				totalAmount: 0,
 				groupedData: {
 					encours: 0,
