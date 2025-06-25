@@ -75,7 +75,7 @@ export const CommissionImports: GlobalConfig = {
 						const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
 						// Search for codes in column A (index 0)
-						data.forEach((row: any, rowIndex: number) => {
+						data.forEach((row: any) => {
 							const codeInColumnA = row[0]; // Column A
 							const typeInColumnD = row[3]; // Column D
 							const amountInColumnR = row[17]; // Column R
