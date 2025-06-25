@@ -366,7 +366,7 @@ export interface Commission {
   supplier: string | Supplier;
   structured_product?: boolean | null;
   informations?: {
-    date?: string | null;
+    date: string;
     encours?: number | null;
     production?: number | null;
     pdf?: (string | null) | Media;

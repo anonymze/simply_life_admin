@@ -1,5 +1,6 @@
-import { CommissionImport } from "@/payload-types";
+import { CommissionImport, Media } from "@/payload-types";
 import type { CollectionConfig } from "payload";
+import * as XLSX from "xlsx";
 
 import { canAccessApi, validateMedia } from "../utils/helper";
 
@@ -83,15 +84,55 @@ export const CommissionImports: CollectionConfig = {
 						totalProduction = 0,
 						totalStructured = 0;
 
-					files.forEach((file) => {
-						// const sheet = await readXlsxFile(file.url);
-						// console.log(sheet);
-					});
+					// Use Promise.all to wait for all async operations
+					await Promise.all(
+						files.map(async (file) => {
+							try {
+								// Download and parse the Excel file directly
+								const response = await fetch((file as Media).url!);
+								const buffer = await response.arrayBuffer();
+								const workbook = XLSX.read(buffer, { type: "buffer" });
+								const sheetName = workbook.SheetNames[0];
+								const worksheet = workbook.Sheets[sheetName];
+
+								// Convert worksheet to JSON for easier processing
+								const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+								// Search for codes in column A (index 0)
+								data.forEach((row: any, rowIndex: number) => {
+									const codeInColumnA = row[0]; // Column A
+									const typeInColumnD = row[3]; // Column D
+									const amountInColumnR = row[17]; // Column R
+
+									if (!codeInColumnA || !typeInColumnD || !amountInColumnR) return;
+
+									const codeString = codeInColumnA.toString();
+									if (!codes.includes(codeString)) return;
+
+									// Check the type in column E
+									const typeString = typeInColumnD.toString().toLowerCase();
+									const amount = parseFloat(amountInColumnR) || 0;
+
+									if (typeString.includes("chiffre") || typeString.includes("arbitrage")) {
+										totalProduction += amount;
+									} else if (typeString.includes("encours")) {
+										totalEncours += amount;
+									} else if (typeString.includes("structured product")) {
+										totalStructured += amount;
+									}
+								});
+							} catch (error) {
+								console.error(`Error reading file ${file}:`, error);
+							}
+						})
+					);
+
+					console.log(totalEncours, totalProduction, totalStructured);
 
 					return Response.json({
 						totalEncours,
 						totalProduction,
-						totalStructured
+						totalStructured,
 					});
 				} catch (error) {
 					console.log(error);

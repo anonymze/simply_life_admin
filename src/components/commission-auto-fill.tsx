@@ -6,8 +6,7 @@ import React from "react";
 import { FullscreenLoader } from "./fullscreen-loader";
 
 export default function CommissionAutoFill(props: UIFieldClientProps) {
-	const [loading, setLoading] = React.useState(false);
-	const [loadingMessage, setLoadingMessage] = React.useState("Chargement...");
+	const [loading, setLoading] = React.useState(true);
 
 	const { value: valueEncours, setValue: setValueEncours } = useField<number>({
 		path: "informations.encours",
@@ -22,10 +21,25 @@ export default function CommissionAutoFill(props: UIFieldClientProps) {
 	const { value: supplierValue } = useField<string>({ path: "supplier" });
 	const { value: appUserValue } = useField<string>({ path: "app_user" });
 
-  React.useEffect(() => {
-    
-  }, []);
+	React.useEffect(() => {
+		async function fetchAsync() {
+			try {
+				const response = await fetch(`/api/commission-imports/${supplierValue}/${appUserValue}`);
+				const data = (await response.json()) as {
+					totalEncours: number;
+					totalProduction: number;
+					totalStructuredProduct: number;
+				};
+				setValueEncours(data.totalEncours);
+				setValueProduction(data.totalProduction);
+				setValueStructuredProduct(data.totalStructuredProduct);
+				setLoading(false);
+			} catch {
+				setLoading(false);
+			}
+		}
+		fetchAsync();
+	}, []);
 
-	// return <FullscreenLoader isVisible={loading} message={"Récupération des données..."} />;
-	return null;
+	return <FullscreenLoader isVisible={loading} message={"Récupération des données..."} />;
 }
