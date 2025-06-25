@@ -53,9 +53,11 @@ export const Commissions: CollectionConfig = {
 
 				// Organize commissions by month with already populated suppliers
 				const { monthlyData, total } = organizeCommissionsByMonth(commissions.docs);
+				const { yearlyData, total: yearlyTotal } = organizeCommissionsByYear(commissions.docs);
 
 				return Response.json({
 					monthlyData,
+					yearlyData,
 					totalAmount: total,
 				});
 			},
@@ -338,6 +340,98 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 
 	return {
 		monthlyData: Object.values(monthlyData),
+		total: overallTotal,
+	};
+};
+
+const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) => {
+	const yearlyData: Record<
+		string,
+		{
+			id: string;
+			year: string;
+			commissions: Omit<Commission, "app_user">[];
+			totalAmount: number;
+			groupedData: {
+				encours: number;
+				production: number;
+				structured_product: number;
+				total: number;
+			};
+			comparison?: {
+				difference: number;
+				percentageChange: number;
+				previousYearTotal: number;
+			};
+		}
+	> = {};
+
+	let overallTotal = 0;
+
+	// Process commissions (suppliers are already populated)
+	commissions.forEach((commission) => {
+		if (!commission.informations?.date) return;
+
+		const date = new Date(commission.informations.date);
+		const yearKey = date.getFullYear().toString();
+		const yearName = date.toLocaleDateString("fr-FR", { year: "numeric" });
+
+		if (!yearlyData[yearKey]) {
+			yearlyData[yearKey] = {
+				id: crypto.randomUUID(),
+				year: yearName,
+				commissions: [],
+				totalAmount: 0,
+				groupedData: {
+					encours: 0,
+					production: 0,
+					structured_product: 0,
+					total: 0,
+				},
+			};
+		}
+
+		yearlyData[yearKey].commissions.push(commission);
+
+		// Calculate amounts
+		const encours = commission.informations.encours || 0;
+		const production = commission.informations.production || 0;
+		const upFront = commission.informations.up_front || 0;
+		const total = encours + production + upFront;
+
+		yearlyData[yearKey].totalAmount += total;
+		yearlyData[yearKey].groupedData.encours += encours;
+		yearlyData[yearKey].groupedData.production += production;
+		yearlyData[yearKey].groupedData.structured_product += upFront;
+		yearlyData[yearKey].groupedData.total += total;
+
+		// Add to overall total
+		overallTotal += total;
+	});
+
+	// Sort years chronologically and add comparison data
+	const sortedYears = Object.keys(yearlyData);
+
+	sortedYears.forEach((yearKey, index) => {
+		const currentYear = yearlyData[yearKey];
+		const previousYearKey = sortedYears[index + 1];
+
+		if (previousYearKey) {
+			const previousYear = yearlyData[previousYearKey];
+			const difference = currentYear.totalAmount - previousYear.totalAmount;
+			const percentageChange =
+				previousYear.totalAmount > 0 ? (difference / previousYear.totalAmount) * 100 : 0;
+
+			currentYear.comparison = {
+				difference,
+				percentageChange,
+				previousYearTotal: previousYear.totalAmount,
+			};
+		}
+	});
+
+	return {
+		yearlyData: Object.values(yearlyData),
 		total: overallTotal,
 	};
 };
