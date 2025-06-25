@@ -24,7 +24,7 @@ export const CommissionImports: GlobalConfig = {
 		},
 		plural: {
 			en: "Commission Imports",
-			fr: "Importations des commissions",
+			fr: "Importation des commissions",
 		},
 	},
 	endpoints: [
