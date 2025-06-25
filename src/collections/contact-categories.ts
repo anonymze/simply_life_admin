@@ -33,6 +33,7 @@ export const ContactCategories: CollectionConfig = {
 			name: "name",
 			type: "text",
 			required: true,
+			unique: true,
 			label: {
 				en: "Category name",
 				fr: "Nom de la catégorie",
