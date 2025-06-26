@@ -306,6 +306,7 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		const upFront = commission.informations.up_front || 0;
 		const total = encours + production + upFront;
 
+		monthlyData[monthKey].totalAmount += total;
 		monthlyData[monthKey].groupedData.encours += encours;
 		monthlyData[monthKey].groupedData.production += production;
 		monthlyData[monthKey].groupedData.structured_product += upFront;
