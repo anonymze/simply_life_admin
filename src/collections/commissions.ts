@@ -265,7 +265,6 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 				encours: number;
 				production: number;
 				structured_product: number;
-				total: number;
 			};
 			comparison?: {
 				difference: number;
@@ -295,7 +294,6 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 					encours: 0,
 					production: 0,
 					structured_product: 0,
-					total: 0,
 				},
 			};
 		}
@@ -308,11 +306,9 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		const upFront = commission.informations.up_front || 0;
 		const total = encours + production + upFront;
 
-		monthlyData[monthKey].totalAmount += total;
 		monthlyData[monthKey].groupedData.encours += encours;
 		monthlyData[monthKey].groupedData.production += production;
 		monthlyData[monthKey].groupedData.structured_product += upFront;
-		monthlyData[monthKey].groupedData.total += total;
 
 		// Add to overall total
 		overallTotal += total;
@@ -357,7 +353,6 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 				encours: number;
 				production: number;
 				structured_product: number;
-				total: number;
 			};
 			comparison?: {
 				difference: number;
@@ -386,7 +381,6 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 					encours: 0,
 					production: 0,
 					structured_product: 0,
-					total: 0,
 				},
 			};
 		}
@@ -401,7 +395,6 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 		yearlyData[yearKey].groupedData.encours += encours;
 		yearlyData[yearKey].groupedData.production += production;
 		yearlyData[yearKey].groupedData.structured_product += upFront;
-		yearlyData[yearKey].groupedData.total += total;
 
 		// Add to overall total
 		overallTotal += total;
