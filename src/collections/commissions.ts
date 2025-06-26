@@ -261,6 +261,8 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 			labelDate: string;
 			commissions: Omit<Commission, "app_user">[];
 			totalAmount: number;
+			minAmount: number;
+			maxAmount: number;
 			groupedData: {
 				encours: number;
 				production: number;
@@ -291,6 +293,8 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 				labelDate: monthName,
 				commissions: [],
 				totalAmount: 0,
+				minAmount: Infinity,
+				maxAmount: -Infinity,
 				groupedData: {
 					encours: 0,
 					production: 0,
@@ -314,15 +318,24 @@ const organizeCommissionsByMonth = (commissions: Omit<Commission, "app_user">[])
 		monthlyData[monthKey].groupedData.structured_product += upFront;
 		monthlyData[monthKey].groupedData.total += total;
 
+		// Update min and max amounts
+		monthlyData[monthKey].minAmount = Math.min(monthlyData[monthKey].minAmount, total);
+		monthlyData[monthKey].maxAmount = Math.max(monthlyData[monthKey].maxAmount, total);
+
 		// Add to overall total
 		overallTotal += total;
 	});
 
-	// Sort months chronologically and add comparison data
+	// Clean up Infinity values for months with no commissions and sort months chronologically
 	const sortedMonths = Object.keys(monthlyData);
 
 	sortedMonths.forEach((monthKey, index) => {
 		const currentMonth = monthlyData[monthKey];
+		
+		// Handle edge case where no valid commissions exist
+		if (currentMonth.minAmount === Infinity) currentMonth.minAmount = 0;
+		if (currentMonth.maxAmount === -Infinity) currentMonth.maxAmount = 0;
+		
 		const previousMonthKey = sortedMonths[index + 1];
 
 		if (previousMonthKey) {
@@ -352,6 +365,8 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 			id: string;
 			labelDate: string;
 			totalAmount: number;
+			minAmount: number;
+			maxAmount: number;
 			groupedData: {
 				encours: number;
 				production: number;
@@ -381,6 +396,8 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 				id: crypto.randomUUID(),
 				labelDate: yearName,
 				totalAmount: 0,
+				minAmount: Infinity,
+				maxAmount: -Infinity,
 				groupedData: {
 					encours: 0,
 					production: 0,
@@ -402,15 +419,24 @@ const organizeCommissionsByYear = (commissions: Omit<Commission, "app_user">[]) 
 		yearlyData[yearKey].groupedData.structured_product += upFront;
 		yearlyData[yearKey].groupedData.total += total;
 
+		// Update min and max amounts
+		yearlyData[yearKey].minAmount = Math.min(yearlyData[yearKey].minAmount, total);
+		yearlyData[yearKey].maxAmount = Math.max(yearlyData[yearKey].maxAmount, total);
+
 		// Add to overall total
 		overallTotal += total;
 	});
 
-	// Sort years chronologically and add comparison data
+	// Clean up Infinity values for years with no commissions and sort years chronologically
 	const sortedYears = Object.keys(yearlyData);
 
 	sortedYears.forEach((yearKey, index) => {
 		const currentYear = yearlyData[yearKey];
+		
+		// Handle edge case where no valid commissions exist
+		if (currentYear.minAmount === Infinity) currentYear.minAmount = 0;
+		if (currentYear.maxAmount === -Infinity) currentYear.maxAmount = 0;
+		
 		const previousYearKey = sortedYears[index + 1];
 
 		if (previousYearKey) {
