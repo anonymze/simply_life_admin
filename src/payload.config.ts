@@ -32,194 +32,215 @@ import { Fidnet } from "./collections/fidnet";
 import { Admins } from "./collections/admins";
 import { Media } from "./collections/media";
 
-
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
-	serverURL:
-		process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.NEXT_PUBLIC_SERVER_URL,
-	cors: ["*"],
-	// cors: {
-	// Add your allowed origin here
-	// origins: ["http://192.168.1.230:8081"],
-	// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-	// headers: ["Content-Type", "Authorization", "Accept"],
-	// },
-	csrf: [
-		// Add your allowed origins here for CSRF protection
-		// "simply-life-app://mobile",
-		// "http://localhost:3000",
-	],
-	localization: {
-		locales: ["fr", "en"],
-		defaultLocale: "fr",
-	},
-	admin: {
-		// you can change the binded routes in admin
-		// routes: {
-		// },
-		autoLogin:
-			process.env.NODE_ENV === "development"
-				? {
-						email: "anodevfr@gmail.com",
-						password: "..............",
-						prefillOnly: true,
-					}
-				: false,
-		avatar: {
-			Component: "/components/settings.tsx",
-		},
-		user: Admins.slug,
-		importMap: {
-			baseDir: path.resolve(dirname),
-		},
-		components: {
-			beforeLogin: ["/components/before-login.tsx"],
-			logout: {
-				Button: "/components/logout.tsx",
-			},
-			graphics: {
-				Logo: "/components/logo.tsx",
-				Icon: "/components/logo.tsx",
-			},
-		},
+  upload: {
+    limits: {
+      fileSize: 40000000, // 40MB, written in bytes
+    },
+  },
+  serverURL:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : process.env.NEXT_PUBLIC_SERVER_URL,
+  cors: ["*"],
+  // cors: {
+  // Add your allowed origin here
+  // origins: ["http://192.168.1.230:8081"],
+  // methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  // headers: ["Content-Type", "Authorization", "Accept"],
+  // },
+  csrf: [
+    // Add your allowed origins here for CSRF protection
+    // "simply-life-app://mobile",
+    // "http://localhost:3000",
+  ],
+  localization: {
+    locales: ["fr", "en"],
+    defaultLocale: "fr",
+  },
+  admin: {
+    // you can change the binded routes in admin
+    // routes: {
+    // },
+    autoLogin:
+      process.env.NODE_ENV === "development"
+        ? {
+            email: "anodevfr@gmail.com",
+            password: "..............",
+            prefillOnly: true,
+          }
+        : false,
+    avatar: {
+      Component: "/components/settings.tsx",
+    },
+    user: Admins.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
+    components: {
+      beforeLogin: ["/components/before-login.tsx"],
+      logout: {
+        Button: "/components/logout.tsx",
+      },
+      graphics: {
+        Logo: "/components/logo.tsx",
+        Icon: "/components/logo.tsx",
+      },
+    },
 
-		meta: {
-			title: "Simply Life Administration",
-			description: "Administration pour l'application mobile Simply Life",
-			icons: [
-				{
-					rel: "icon",
-					type: "image/png",
-					url: "/favicon.ico",
-				},
-				{
-					rel: "apple-touch-icon",
-					type: "image/png",
-					url: "/favicon.ico",
-				},
-			],
-		},
-	},
-	// binded routes from dashboard and api
-	routes: {
-		admin: "/admin",
-		api: "/api",
-	},
-	i18n: customTranslations,
-	collections: [
-		Admins,
-		SupplierCategories,
-		Contacts,
-		Fidnet,
-		Suppliers,
-		Fundesys,
-		Commissions,
-		Media,
-		Reservations,
-		SupplierProducts,
-		ContactCategories,
-		AppUsers,
-		AppUsersCommissionsCode,
-		AgencyLife,
-		ChatRooms,
-		Messages,
-		Signatures,
-		TemporaryAppUsers,
-	],
-	globals: [CommissionImports],
-	editor: lexicalEditor(),
-	secret: process.env.PAYLOAD_SECRET || "",
-	typescript: {
-		outputFile: path.resolve(dirname, "payload-types.ts"),
-	},
-	// db: postgresAdapter({
-	// 	idType: "uuid",
-	// 	pool: {
-	// 		connectionString: process.env.DATABASE_URI || "",
-	// 	},
-	// }),
-	db: vercelPostgresAdapter({
-		// create table for database that is not handled by payload
-		// beforeSchemaInit: [
-		// 	({ schema, adapter }) => {
-		// 		return {
-		// 			...schema,
-		// 			tables: {
-		// 				...schema.tables,
-		// 				addedTable: pgTable('added_table', {
-		// 					// id: serial('id').notNull(),
-		// 					id: uuid('id').defaultRandom().primaryKey(),
-		// 				}),
-		// 			},
-		// 		}
-		// 	},
-		// ],
+    meta: {
+      title: "Simply Life Administration",
+      description: "Administration pour l'application mobile Simply Life",
+      icons: [
+        {
+          rel: "icon",
+          type: "image/png",
+          url: "/favicon.ico",
+        },
+        {
+          rel: "apple-touch-icon",
+          type: "image/png",
+          url: "/favicon.ico",
+        },
+      ],
+    },
+  },
+  // binded routes from dashboard and api
+  routes: {
+    admin: "/admin",
+    api: "/api",
+  },
+  i18n: customTranslations,
+  collections: [
+    Admins,
+    SupplierCategories,
+    Contacts,
+    Fidnet,
+    Suppliers,
+    Fundesys,
+    Commissions,
+    Media,
+    Reservations,
+    SupplierProducts,
+    ContactCategories,
+    AppUsers,
+    AppUsersCommissionsCode,
+    AgencyLife,
+    ChatRooms,
+    Messages,
+    Signatures,
+    TemporaryAppUsers,
+  ],
+  globals: [CommissionImports],
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET || "",
+  typescript: {
+    outputFile: path.resolve(dirname, "payload-types.ts"),
+  },
+  // db: postgresAdapter({
+  // 	idType: "uuid",
+  // 	pool: {
+  // 		connectionString: process.env.DATABASE_URI || "",
+  // 	},
+  // }),
+  db: vercelPostgresAdapter({
+    // create table for database that is not handled by payload
+    // beforeSchemaInit: [
+    // 	({ schema, adapter }) => {
+    // 		return {
+    // 			...schema,
+    // 			tables: {
+    // 				...schema.tables,
+    // 				addedTable: pgTable('added_table', {
+    // 					// id: serial('id').notNull(),
+    // 					id: uuid('id').defaultRandom().primaryKey(),
+    // 				}),
+    // 			},
+    // 		}
+    // 	},
+    // ],
 
-		idType: "uuid",
-		pool: {
-			connectionString: process.env.DATABASE_URI || "",
-		},
-		// Add hooks after schema initialization
-		afterSchemaInit: [
-			async ({ schema }) => {
-				const relations = ['relations_messages'];
+    idType: "uuid",
+    pool: {
+      connectionString: process.env.DATABASE_URI || "",
+    },
+    // Add hooks after schema initialization
+    afterSchemaInit: [
+      async ({ schema }) => {
+        const relations = ["relations_messages"];
 
-				console.log(schema.relations);
+        console.log(schema.relations);
 
         relations.forEach((relation) => {
-          const index = Symbol.for(`drizzle:PgInlineForeignKeys`)
-						console.log(index);
+          const index = Symbol.for(`drizzle:PgInlineForeignKeys`);
+          console.log(index);
           //@ts-expect-error workaround
-          const fkeys = schema.relations[relation].table[index]
+          const fkeys = schema.relations[relation].table[index];
           // Loop through the foreign keys and modify them
           //@ts-expect-error workaround
           fkeys.forEach((foreignKey) => {
-            foreignKey.onDelete = 'CASCADE'
-            foreignKey.onUpdate = 'CASCADE'
-          })
-        })
-        return schema
-			},
-		],
-	}),
-	sharp,
-	email: nodemailerAdapter({
-		defaultFromAddress: "info@simply-life.fr",
-		defaultFromName: "Simply Life",
-		transport: nodemailer.createTransport({
-			host: process.env.NODE_ENV === "production" ? process.env.SMTP_HOST : "127.0.0.1",
-			port: process.env.NODE_ENV === "production" ? Number(process.env.SMTP_PORT) : 1025,
-			ignoreTLS: false, // for 587 port and localhost
-			auth: {
-				user: process.env.NODE_ENV === "production" ? process.env.SMTP_USER : "user",
-				pass: process.env.NODE_ENV === "production" ? process.env.SMTP_PASS : "pass",
-			},
-		}),
-	}),
-	plugins: [
-		websocketServerPlugin({
-			collections: ["messages"],
-		}),
-		payloadCloudPlugin({
-			// storage: false,
-			// email: false,
-			// uploadCaching: false,
-		}),
-		openapi({ openapiVersion: "3.0", metadata: { title: "SIMPLY LIFE API", version: "1.0.0" } }),
-		swaggerUI({}),
-		vercelBlobStorage({
-			enabled: true, // Optional, defaults to true
-			// Specify which collections should use Vercel Blob
-			collections: {
-				media: {
-					disableLocalStorage: true,
-					prefix: "media-simply-life",
-				},
-			},
-			// Token provided by Vercel once Blob storage is added to your Vercel project
-			token: process.env.BLOB_READ_WRITE_TOKEN,
-		}),
-	],
+            foreignKey.onDelete = "CASCADE";
+            foreignKey.onUpdate = "CASCADE";
+          });
+        });
+        return schema;
+      },
+    ],
+  }),
+  sharp,
+  email: nodemailerAdapter({
+    defaultFromAddress: "info@simply-life.fr",
+    defaultFromName: "Simply Life",
+    transport: nodemailer.createTransport({
+      host:
+        process.env.NODE_ENV === "production"
+          ? process.env.SMTP_HOST
+          : "127.0.0.1",
+      port:
+        process.env.NODE_ENV === "production"
+          ? Number(process.env.SMTP_PORT)
+          : 1025,
+      ignoreTLS: false, // for 587 port and localhost
+      auth: {
+        user:
+          process.env.NODE_ENV === "production"
+            ? process.env.SMTP_USER
+            : "user",
+        pass:
+          process.env.NODE_ENV === "production"
+            ? process.env.SMTP_PASS
+            : "pass",
+      },
+    }),
+  }),
+  plugins: [
+    websocketServerPlugin({
+      collections: ["messages"],
+    }),
+    payloadCloudPlugin({
+      // storage: false,
+      // email: false,
+      // uploadCaching: false,
+    }),
+    openapi({
+      openapiVersion: "3.0",
+      metadata: { title: "SIMPLY LIFE API", version: "1.0.0" },
+    }),
+    swaggerUI({}),
+    vercelBlobStorage({
+      enabled: true, // Optional, defaults to true
+      // Specify which collections should use Vercel Blob
+      collections: {
+        media: {
+          disableLocalStorage: true,
+          prefix: "media-simply-life",
+        },
+      },
+      // Token provided by Vercel once Blob storage is added to your Vercel project
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+  ],
 });
