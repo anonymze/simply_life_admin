@@ -22,6 +22,13 @@ export const Structured: CollectionConfig = {
   slug: "structured",
   fields: [
     {
+      name: "supplier",
+      type: "relationship",
+      relationTo: "suppliers",
+      unique: false,
+      required: true,
+    },
+    {
       name: "max",
       type: "number",
       label: {
@@ -40,9 +47,39 @@ export const Structured: CollectionConfig = {
       required: true,
     },
     {
-      name: "supplier",
-      type: "relationship",
-      relationTo: "suppliers",
+      name: "coupon",
+      type: "number",
+      label: {
+        en: "Coupn",
+        fr: "Coupon annuel",
+      },
+      required: true,
+    },
+    {
+      name: "barrier",
+      type: "number",
+      label: {
+        en: "Barrier",
+        fr: "Barriere de regressivité",
+      },
+      required: true,
+    },
+    {
+      name: "constatation",
+      type: "date",
+      label: {
+        en: "Constatation",
+        fr: "Date de constatation",
+      },
+      required: true,
+    },
+    {
+      name: "insurer",
+      type: "text",
+      label: {
+        en: "Insurer",
+        fr: "Assureur",
+      },
       required: true,
     },
   ],

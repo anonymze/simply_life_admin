@@ -492,9 +492,13 @@ export interface Message {
  */
 export interface Structured {
   id: string;
+  supplier: string | Supplier;
   max: number;
   current: number;
-  supplier: string | Supplier;
+  coupon: number;
+  barrier: number;
+  constatation: string;
+  insurer: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -948,9 +952,13 @@ export interface MessagesSelect<T extends boolean = true> {
  * via the `definition` "structured_select".
  */
 export interface StructuredSelect<T extends boolean = true> {
+  supplier?: T;
   max?: T;
   current?: T;
-  supplier?: T;
+  coupon?: T;
+  barrier?: T;
+  constatation?: T;
+  insurer?: T;
   updatedAt?: T;
   createdAt?: T;
 }
