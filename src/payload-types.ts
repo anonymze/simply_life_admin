@@ -84,6 +84,8 @@ export interface Config {
     'agency-life': AgencyLife;
     'chat-rooms': ChatRoom;
     messages: Message;
+    structured: Structured;
+    sports: Sport;
     signatures: Signature;
     'temporary-app-users': TemporaryAppUser;
     'payload-locked-documents': PayloadLockedDocument;
@@ -108,6 +110,8 @@ export interface Config {
     'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
+    structured: StructuredSelect<false> | StructuredSelect<true>;
+    sports: SportsSelect<false> | SportsSelect<true>;
     signatures: SignaturesSelect<false> | SignaturesSelect<true>;
     'temporary-app-users': TemporaryAppUsersSelect<false> | TemporaryAppUsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -484,6 +488,33 @@ export interface Message {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "structured".
+ */
+export interface Structured {
+  id: string;
+  max: number;
+  current: number;
+  supplier: string | Supplier;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sports".
+ */
+export interface Sport {
+  id: string;
+  lastname: string;
+  first_name: string;
+  email?: string | null;
+  phone?: string | null;
+  type?: string | null;
+  category: 'international' | 'fiscal';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "signatures".
  */
 export interface Signature {
@@ -574,6 +605,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'messages';
         value: string | Message;
+      } | null)
+    | ({
+        relationTo: 'structured';
+        value: string | Structured;
+      } | null)
+    | ({
+        relationTo: 'sports';
+        value: string | Sport;
       } | null)
     | ({
         relationTo: 'signatures';
@@ -901,6 +940,31 @@ export interface MessagesSelect<T extends boolean = true> {
   chat_room?: T;
   message?: T;
   file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "structured_select".
+ */
+export interface StructuredSelect<T extends boolean = true> {
+  max?: T;
+  current?: T;
+  supplier?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sports_select".
+ */
+export interface SportsSelect<T extends boolean = true> {
+  lastname?: T;
+  first_name?: T;
+  email?: T;
+  phone?: T;
+  type?: T;
+  category?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -1,36 +1,38 @@
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
-import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { openapi, swaggerUI } from "payload-oapi";
-import { buildConfig } from "payload";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import nodemailer from "nodemailer";
-import { fileURLToPath } from "url";
-import sharp from "sharp";
 import path from "path";
+import { buildConfig } from "payload";
+import { openapi, swaggerUI } from "payload-oapi";
+import sharp from "sharp";
+import { fileURLToPath } from "url";
 
-import { AppUsersCommissionsCode } from "./collections/app-users-commissions-code";
-import { SupplierCategories } from "./collections/supplier-categories";
-import { TemporaryAppUsers } from "./collections/temporary-app-users";
-import { ContactCategories } from "./collections/contact-categories";
-import { websocketServerPlugin } from "./plugins/websocket-server";
-import { SupplierProducts } from "./collections/supplier-products";
-import { customTranslations } from "./utils/custom-translations";
-import { CommissionImports } from "./globals/commission-imports";
-import { Reservations } from "./collections/reservations";
-import { Commissions } from "./collections/commissions";
+import { Admins } from "./collections/admins";
 import { AgencyLife } from "./collections/agency-life";
-import { Signatures } from "./collections/signatures";
-import { ChatRooms } from "./collections/chat-rooms";
-import { Suppliers } from "./collections/suppliers";
 import { AppUsers } from "./collections/app-users";
-import { Messages } from "./collections/messages";
-import { Fundesys } from "./collections/fundesys";
+import { AppUsersCommissionsCode } from "./collections/app-users-commissions-code";
+import { ChatRooms } from "./collections/chat-rooms";
+import { Commissions } from "./collections/commissions";
+import { ContactCategories } from "./collections/contact-categories";
 import { Contacts } from "./collections/contacts";
 import { Fidnet } from "./collections/fidnet";
-import { Admins } from "./collections/admins";
+import { Fundesys } from "./collections/fundesys";
 import { Media } from "./collections/media";
+import { Messages } from "./collections/messages";
+import { Reservations } from "./collections/reservations";
+import { Signatures } from "./collections/signatures";
+import { Sports } from "./collections/sports";
+import { Structured } from "./collections/structured";
+import { SupplierCategories } from "./collections/supplier-categories";
+import { SupplierProducts } from "./collections/supplier-products";
+import { Suppliers } from "./collections/suppliers";
+import { TemporaryAppUsers } from "./collections/temporary-app-users";
+import { CommissionImports } from "./globals/commission-imports";
+import { websocketServerPlugin } from "./plugins/websocket-server";
+import { customTranslations } from "./utils/custom-translations";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -131,6 +133,8 @@ export default buildConfig({
     AgencyLife,
     ChatRooms,
     Messages,
+    Structured,
+    Sports,
     Signatures,
     TemporaryAppUsers,
   ],
@@ -172,11 +176,11 @@ export default buildConfig({
       async ({ schema }) => {
         const relations = ["relations_messages"];
 
-        console.log(schema.relations);
+        // console.log(schema.relations);
 
         relations.forEach((relation) => {
           const index = Symbol.for(`drizzle:PgInlineForeignKeys`);
-          console.log(index);
+          // console.log(index);
           //@ts-expect-error workaround
           const fkeys = schema.relations[relation].table[index];
           // Loop through the foreign keys and modify them
