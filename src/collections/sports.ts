@@ -40,33 +40,6 @@ export const Sports: CollectionConfig = {
       required: true,
     },
     {
-      name: "email",
-      type: "email",
-      label: {
-        en: "Email",
-        fr: "Email",
-      },
-      required: false,
-    },
-    {
-      name: "phone",
-      type: "text",
-      label: {
-        en: "Phone",
-        fr: "Téléphone",
-      },
-      required: false,
-    },
-    {
-      name: "type",
-      type: "text",
-      label: {
-        en: "Type",
-        fr: "Spécificité",
-      },
-      required: false,
-    },
-    {
       name: "category",
       type: "select",
       label: {
@@ -90,6 +63,33 @@ export const Sports: CollectionConfig = {
         },
       ],
       required: true,
+    },
+    {
+      name: "type",
+      type: "text",
+      label: {
+        en: "Type",
+        fr: "Spécificité",
+      },
+      required: true,
+    },
+    {
+      name: "email",
+      type: "email",
+      label: {
+        en: "Email",
+        fr: "Email",
+      },
+      required: false,
+    },
+    {
+      name: "phone",
+      type: "text",
+      label: {
+        en: "Phone",
+        fr: "Téléphone",
+      },
+      required: false,
     },
   ],
 };
