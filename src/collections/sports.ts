@@ -31,7 +31,7 @@ export const Sports: CollectionConfig = {
       required: true,
     },
     {
-      name: "first_name",
+      name: "firstname",
       type: "text",
       label: {
         en: "First Name",
