@@ -509,11 +509,11 @@ export interface Structured {
 export interface Sport {
   id: string;
   lastname: string;
-  first_name: string;
+  firstname: string;
+  category: 'international' | 'fiscal';
+  type: string;
   email?: string | null;
   phone?: string | null;
-  type?: string | null;
-  category: 'international' | 'fiscal';
   updatedAt: string;
   createdAt: string;
 }
@@ -968,11 +968,11 @@ export interface StructuredSelect<T extends boolean = true> {
  */
 export interface SportsSelect<T extends boolean = true> {
   lastname?: T;
-  first_name?: T;
+  firstname?: T;
+  category?: T;
+  type?: T;
   email?: T;
   phone?: T;
-  type?: T;
-  category?: T;
   updatedAt?: T;
   createdAt?: T;
 }
