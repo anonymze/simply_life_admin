@@ -203,13 +203,13 @@ export default buildConfig({
     transport: nodemailer.createTransport({
       host:
         process.env.NODE_ENV === "production"
-          ? process.env.SMTP_HOST
+          ? "ssl0.ovh.net" // OVH SMTP server
           : "127.0.0.1",
       port:
         process.env.NODE_ENV === "production"
-          ? Number(process.env.SMTP_PORT)
+          ? 587 // OVH SMTP port
           : 1025,
-      ignoreTLS: false, // for 587 port and localhost
+      secure: false, // false for 587 (STARTTLS)
       auth: {
         user:
           process.env.NODE_ENV === "production"
