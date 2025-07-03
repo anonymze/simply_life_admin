@@ -37,6 +37,14 @@ export const enum_app_users_role = pgEnum("enum_app_users_role", [
 ]);
 export const enum_agency_life_type = pgEnum("enum_agency_life_type", [
   "general",
+  "sport",
+  "seminaire",
+  "food",
+  "birthday  ",
+]);
+export const enum_sports_category = pgEnum("enum_sports_category", [
+  "international",
+  "fiscal",
 ]);
 
 export const admins = pgTable(
@@ -377,11 +385,9 @@ export const commissions = pgTable(
       .references(() => app_users.id, {
         onDelete: "set null",
       }),
-    supplier: uuid("supplier_id")
-      .notNull()
-      .references(() => suppliers.id, {
-        onDelete: "set null",
-      }),
+    pdf: uuid("pdf_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
     structured_product: boolean("structured_product"),
     informations_date: timestamp("informations_date", {
       mode: "string",
@@ -390,9 +396,6 @@ export const commissions = pgTable(
     }),
     informations_encours: numeric("informations_encours"),
     informations_production: numeric("informations_production"),
-    informations_pdf: uuid("informations_pdf_id").references(() => media.id, {
-      onDelete: "set null",
-    }),
     informations_title: varchar("informations_title"),
     informations_up_front: numeric("informations_up_front"),
     informations_broqueur: varchar("informations_broqueur"),
@@ -415,12 +418,7 @@ export const commissions = pgTable(
     commissions_app_user_idx: index("commissions_app_user_idx").on(
       columns.app_user,
     ),
-    commissions_supplier_idx: index("commissions_supplier_idx").on(
-      columns.supplier,
-    ),
-    commissions_informations_informations_pdf_idx: index(
-      "commissions_informations_informations_pdf_idx",
-    ).on(columns.informations_pdf),
+    commissions_pdf_idx: index("commissions_pdf_idx").on(columns.pdf),
     commissions_updated_at_idx: index("commissions_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -430,68 +428,32 @@ export const commissions = pgTable(
   }),
 );
 
-export const commission_imports_files = pgTable(
-  "commission_imports_files",
+export const commissions_rels = pgTable(
+  "commissions_rels",
   {
-    _order: integer("_order").notNull(),
-    _parentID: uuid("_parent_id").notNull(),
-    id: varchar("id").primaryKey(),
-    supplier: uuid("supplier_id")
-      .notNull()
-      .references(() => suppliers.id, {
-        onDelete: "set null",
-      }),
-    file: uuid("file_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: uuid("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    suppliersID: uuid("suppliers_id"),
   },
   (columns) => ({
-    _orderIdx: index("commission_imports_files_order_idx").on(columns._order),
-    _parentIDIdx: index("commission_imports_files_parent_id_idx").on(
-      columns._parentID,
-    ),
-    commission_imports_files_supplier_idx: index(
-      "commission_imports_files_supplier_idx",
-    ).on(columns.supplier),
-    commission_imports_files_file_idx: index(
-      "commission_imports_files_file_idx",
-    ).on(columns.file),
-    _parentIDFk: foreignKey({
-      columns: [columns["_parentID"]],
-      foreignColumns: [commission_imports.id],
-      name: "commission_imports_files_parent_id_fk",
+    order: index("commissions_rels_order_idx").on(columns.order),
+    parentIdx: index("commissions_rels_parent_idx").on(columns.parent),
+    pathIdx: index("commissions_rels_path_idx").on(columns.path),
+    commissions_rels_suppliers_id_idx: index(
+      "commissions_rels_suppliers_id_idx",
+    ).on(columns.suppliersID),
+    parentFk: foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [commissions.id],
+      name: "commissions_rels_parent_fk",
     }).onDelete("cascade"),
-  }),
-);
-
-export const commission_imports = pgTable(
-  "commission_imports",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    updatedAt: timestamp("updated_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp("created_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  (columns) => ({
-    commission_imports_updated_at_idx: index(
-      "commission_imports_updated_at_idx",
-    ).on(columns.updatedAt),
-    commission_imports_created_at_idx: index(
-      "commission_imports_created_at_idx",
-    ).on(columns.createdAt),
+    suppliersIdFk: foreignKey({
+      columns: [columns["suppliersID"]],
+      foreignColumns: [suppliers.id],
+      name: "commissions_rels_suppliers_fk",
+    }).onDelete("cascade"),
   }),
 );
 
@@ -814,6 +776,46 @@ export const app_users_commissions_code = pgTable(
   }),
 );
 
+export const suppliers_commissions_column = pgTable(
+  "suppliers_commissions_column",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    supplier: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, {
+        onDelete: "set null",
+      }),
+    code_column_letter: varchar("code_column_letter").notNull(),
+    type_column_letter: varchar("type_column_letter").notNull(),
+    amount_column_letter: varchar("amount_column_letter").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    suppliers_commissions_column_supplier_idx: uniqueIndex(
+      "suppliers_commissions_column_supplier_idx",
+    ).on(columns.supplier),
+    suppliers_commissions_column_updated_at_idx: index(
+      "suppliers_commissions_column_updated_at_idx",
+    ).on(columns.updatedAt),
+    suppliers_commissions_column_created_at_idx: index(
+      "suppliers_commissions_column_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
 export const agency_life = pgTable(
   "agency_life",
   {
@@ -974,6 +976,84 @@ export const messages = pgTable(
   }),
 );
 
+export const structured = pgTable(
+  "structured",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    supplier: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, {
+        onDelete: "set null",
+      }),
+    max: numeric("max").notNull(),
+    current: numeric("current").notNull(),
+    coupon: numeric("coupon").notNull(),
+    barrier: numeric("barrier").notNull(),
+    constatation: timestamp("constatation", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    insurer: varchar("insurer").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    structured_supplier_idx: index("structured_supplier_idx").on(
+      columns.supplier,
+    ),
+    structured_updated_at_idx: index("structured_updated_at_idx").on(
+      columns.updatedAt,
+    ),
+    structured_created_at_idx: index("structured_created_at_idx").on(
+      columns.createdAt,
+    ),
+  }),
+);
+
+export const sports = pgTable(
+  "sports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    lastname: varchar("lastname").notNull(),
+    firstname: varchar("firstname").notNull(),
+    category: enum_sports_category("category").notNull(),
+    type: varchar("type").notNull(),
+    email: varchar("email"),
+    phone: varchar("phone"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    sports_updated_at_idx: index("sports_updated_at_idx").on(columns.updatedAt),
+    sports_created_at_idx: index("sports_created_at_idx").on(columns.createdAt),
+  }),
+);
+
 export const signatures = pgTable(
   "signatures",
   {
@@ -1095,16 +1175,18 @@ export const payload_locked_documents_rels = pgTable(
     suppliersID: uuid("suppliers_id"),
     fundesysID: uuid("fundesys_id"),
     commissionsID: uuid("commissions_id"),
-    "commission-importsID": uuid("commission_imports_id"),
     mediaID: uuid("media_id"),
     reservationsID: uuid("reservations_id"),
     "supplier-productsID": uuid("supplier_products_id"),
     "contact-categoriesID": uuid("contact_categories_id"),
     "app-usersID": uuid("app_users_id"),
     "app-users-commissions-codeID": uuid("app_users_commissions_code_id"),
+    "suppliers-commissions-columnID": uuid("suppliers_commissions_column_id"),
     "agency-lifeID": uuid("agency_life_id"),
     "chat-roomsID": uuid("chat_rooms_id"),
     messagesID: uuid("messages_id"),
+    structuredID: uuid("structured_id"),
+    sportsID: uuid("sports_id"),
     signaturesID: uuid("signatures_id"),
     "temporary-app-usersID": uuid("temporary_app_users_id"),
   },
@@ -1135,9 +1217,6 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_commissions_id_idx: index(
       "payload_locked_documents_rels_commissions_id_idx",
     ).on(columns.commissionsID),
-    payload_locked_documents_rels_commission_imports_id_idx: index(
-      "payload_locked_documents_rels_commission_imports_id_idx",
-    ).on(columns["commission-importsID"]),
     payload_locked_documents_rels_media_id_idx: index(
       "payload_locked_documents_rels_media_id_idx",
     ).on(columns.mediaID),
@@ -1156,6 +1235,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_app_users_commissions_code_id_idx: index(
       "payload_locked_documents_rels_app_users_commissions_code_id_idx",
     ).on(columns["app-users-commissions-codeID"]),
+    payload_locked_documents_rels_suppliers_commissions_column_id_idx: index(
+      "payload_locked_documents_rels_suppliers_commissions_column_id_idx",
+    ).on(columns["suppliers-commissions-columnID"]),
     payload_locked_documents_rels_agency_life_id_idx: index(
       "payload_locked_documents_rels_agency_life_id_idx",
     ).on(columns["agency-lifeID"]),
@@ -1165,6 +1247,12 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_messages_id_idx: index(
       "payload_locked_documents_rels_messages_id_idx",
     ).on(columns.messagesID),
+    payload_locked_documents_rels_structured_id_idx: index(
+      "payload_locked_documents_rels_structured_id_idx",
+    ).on(columns.structuredID),
+    payload_locked_documents_rels_sports_id_idx: index(
+      "payload_locked_documents_rels_sports_id_idx",
+    ).on(columns.sportsID),
     payload_locked_documents_rels_signatures_id_idx: index(
       "payload_locked_documents_rels_signatures_id_idx",
     ).on(columns.signaturesID),
@@ -1211,11 +1299,6 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [commissions.id],
       name: "payload_locked_documents_rels_commissions_fk",
     }).onDelete("cascade"),
-    "commission-importsIdFk": foreignKey({
-      columns: [columns["commission-importsID"]],
-      foreignColumns: [commission_imports.id],
-      name: "payload_locked_documents_rels_commission_imports_fk",
-    }).onDelete("cascade"),
     mediaIdFk: foreignKey({
       columns: [columns["mediaID"]],
       foreignColumns: [media.id],
@@ -1246,6 +1329,11 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [app_users_commissions_code.id],
       name: "payload_locked_documents_rels_app_users_commissions_code_fk",
     }).onDelete("cascade"),
+    "suppliers-commissions-columnIdFk": foreignKey({
+      columns: [columns["suppliers-commissions-columnID"]],
+      foreignColumns: [suppliers_commissions_column.id],
+      name: "payload_locked_documents_rels_suppliers_commissions_column_fk",
+    }).onDelete("cascade"),
     "agency-lifeIdFk": foreignKey({
       columns: [columns["agency-lifeID"]],
       foreignColumns: [agency_life.id],
@@ -1260,6 +1348,16 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["messagesID"]],
       foreignColumns: [messages.id],
       name: "payload_locked_documents_rels_messages_fk",
+    }).onDelete("cascade"),
+    structuredIdFk: foreignKey({
+      columns: [columns["structuredID"]],
+      foreignColumns: [structured.id],
+      name: "payload_locked_documents_rels_structured_fk",
+    }).onDelete("cascade"),
+    sportsIdFk: foreignKey({
+      columns: [columns["sportsID"]],
+      foreignColumns: [sports.id],
+      name: "payload_locked_documents_rels_sports_fk",
     }).onDelete("cascade"),
     signaturesIdFk: foreignKey({
       columns: [columns["signaturesID"]],
@@ -1377,6 +1475,56 @@ export const payload_migrations = pgTable(
   }),
 );
 
+export const commission_imports_files = pgTable(
+  "commission_imports_files",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    supplier: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, {
+        onDelete: "set null",
+      }),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+  },
+  (columns) => ({
+    _orderIdx: index("commission_imports_files_order_idx").on(columns._order),
+    _parentIDIdx: index("commission_imports_files_parent_id_idx").on(
+      columns._parentID,
+    ),
+    commission_imports_files_supplier_idx: index(
+      "commission_imports_files_supplier_idx",
+    ).on(columns.supplier),
+    commission_imports_files_file_idx: index(
+      "commission_imports_files_file_idx",
+    ).on(columns.file),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [commission_imports.id],
+      name: "commission_imports_files_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
+export const commission_imports = pgTable("commission_imports", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  updatedAt: timestamp("updated_at", {
+    mode: "string",
+    withTimezone: true,
+    precision: 3,
+  }),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+    precision: 3,
+  }),
+});
+
 export const relations_admins = relations(admins, () => ({}));
 export const relations_supplier_categories_offers = relations(
   supplier_categories_offers,
@@ -1462,48 +1610,36 @@ export const relations_fundesys = relations(fundesys, ({ one }) => ({
     relationName: "video",
   }),
 }));
-export const relations_commissions = relations(commissions, ({ one }) => ({
-  app_user: one(app_users, {
-    fields: [commissions.app_user],
-    references: [app_users.id],
-    relationName: "app_user",
-  }),
-  supplier: one(suppliers, {
-    fields: [commissions.supplier],
-    references: [suppliers.id],
-    relationName: "supplier",
-  }),
-  informations_pdf: one(media, {
-    fields: [commissions.informations_pdf],
-    references: [media.id],
-    relationName: "informations_pdf",
-  }),
-}));
-export const relations_commission_imports_files = relations(
-  commission_imports_files,
+export const relations_commissions_rels = relations(
+  commissions_rels,
   ({ one }) => ({
-    _parentID: one(commission_imports, {
-      fields: [commission_imports_files._parentID],
-      references: [commission_imports.id],
-      relationName: "files",
+    parent: one(commissions, {
+      fields: [commissions_rels.parent],
+      references: [commissions.id],
+      relationName: "_rels",
     }),
-    supplier: one(suppliers, {
-      fields: [commission_imports_files.supplier],
+    suppliersID: one(suppliers, {
+      fields: [commissions_rels.suppliersID],
       references: [suppliers.id],
-      relationName: "supplier",
-    }),
-    file: one(media, {
-      fields: [commission_imports_files.file],
-      references: [media.id],
-      relationName: "file",
+      relationName: "suppliers",
     }),
   }),
 );
-export const relations_commission_imports = relations(
-  commission_imports,
-  ({ many }) => ({
-    files: many(commission_imports_files, {
-      relationName: "files",
+export const relations_commissions = relations(
+  commissions,
+  ({ one, many }) => ({
+    app_user: one(app_users, {
+      fields: [commissions.app_user],
+      references: [app_users.id],
+      relationName: "app_user",
+    }),
+    pdf: one(media, {
+      fields: [commissions.pdf],
+      references: [media.id],
+      relationName: "pdf",
+    }),
+    _rels: many(commissions_rels, {
+      relationName: "_rels",
     }),
   }),
 );
@@ -1588,6 +1724,16 @@ export const relations_app_users_commissions_code = relations(
     }),
   }),
 );
+export const relations_suppliers_commissions_column = relations(
+  suppliers_commissions_column,
+  ({ one }) => ({
+    supplier: one(suppliers, {
+      fields: [suppliers_commissions_column.supplier],
+      references: [suppliers.id],
+      relationName: "supplier",
+    }),
+  }),
+);
 export const relations_agency_life = relations(agency_life, () => ({}));
 export const relations_chat_rooms_rels = relations(
   chat_rooms_rels,
@@ -1631,6 +1777,14 @@ export const relations_messages = relations(messages, ({ one }) => ({
     relationName: "file",
   }),
 }));
+export const relations_structured = relations(structured, ({ one }) => ({
+  supplier: one(suppliers, {
+    fields: [structured.supplier],
+    references: [suppliers.id],
+    relationName: "supplier",
+  }),
+}));
+export const relations_sports = relations(sports, () => ({}));
 export const relations_signatures = relations(signatures, ({ one }) => ({
   app_user: one(app_users, {
     fields: [signatures.app_user],
@@ -1690,11 +1844,6 @@ export const relations_payload_locked_documents_rels = relations(
       references: [commissions.id],
       relationName: "commissions",
     }),
-    "commission-importsID": one(commission_imports, {
-      fields: [payload_locked_documents_rels["commission-importsID"]],
-      references: [commission_imports.id],
-      relationName: "commission-imports",
-    }),
     mediaID: one(media, {
       fields: [payload_locked_documents_rels.mediaID],
       references: [media.id],
@@ -1725,6 +1874,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [app_users_commissions_code.id],
       relationName: "app-users-commissions-code",
     }),
+    "suppliers-commissions-columnID": one(suppliers_commissions_column, {
+      fields: [payload_locked_documents_rels["suppliers-commissions-columnID"]],
+      references: [suppliers_commissions_column.id],
+      relationName: "suppliers-commissions-column",
+    }),
     "agency-lifeID": one(agency_life, {
       fields: [payload_locked_documents_rels["agency-lifeID"]],
       references: [agency_life.id],
@@ -1739,6 +1893,16 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.messagesID],
       references: [messages.id],
       relationName: "messages",
+    }),
+    structuredID: one(structured, {
+      fields: [payload_locked_documents_rels.structuredID],
+      references: [structured.id],
+      relationName: "structured",
+    }),
+    sportsID: one(sports, {
+      fields: [payload_locked_documents_rels.sportsID],
+      references: [sports.id],
+      relationName: "sports",
     }),
     signaturesID: one(signatures, {
       fields: [payload_locked_documents_rels.signaturesID],
@@ -1792,12 +1956,41 @@ export const relations_payload_migrations = relations(
   payload_migrations,
   () => ({}),
 );
+export const relations_commission_imports_files = relations(
+  commission_imports_files,
+  ({ one }) => ({
+    _parentID: one(commission_imports, {
+      fields: [commission_imports_files._parentID],
+      references: [commission_imports.id],
+      relationName: "files",
+    }),
+    supplier: one(suppliers, {
+      fields: [commission_imports_files.supplier],
+      references: [suppliers.id],
+      relationName: "supplier",
+    }),
+    file: one(media, {
+      fields: [commission_imports_files.file],
+      references: [media.id],
+      relationName: "file",
+    }),
+  }),
+);
+export const relations_commission_imports = relations(
+  commission_imports,
+  ({ many }) => ({
+    files: many(commission_imports_files, {
+      relationName: "files",
+    }),
+  }),
+);
 
 type DatabaseSchema = {
   enum__locales: typeof enum__locales;
   enum_reservations_desk: typeof enum_reservations_desk;
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
+  enum_sports_category: typeof enum_sports_category;
   admins: typeof admins;
   supplier_categories_offers: typeof supplier_categories_offers;
   supplier_categories: typeof supplier_categories;
@@ -1807,8 +2000,7 @@ type DatabaseSchema = {
   suppliers: typeof suppliers;
   fundesys: typeof fundesys;
   commissions: typeof commissions;
-  commission_imports_files: typeof commission_imports_files;
-  commission_imports: typeof commission_imports;
+  commissions_rels: typeof commissions_rels;
   media: typeof media;
   reservations_invitations: typeof reservations_invitations;
   reservations: typeof reservations;
@@ -1818,10 +2010,13 @@ type DatabaseSchema = {
   app_users: typeof app_users;
   app_users_commissions_code_code: typeof app_users_commissions_code_code;
   app_users_commissions_code: typeof app_users_commissions_code;
+  suppliers_commissions_column: typeof suppliers_commissions_column;
   agency_life: typeof agency_life;
   chat_rooms: typeof chat_rooms;
   chat_rooms_rels: typeof chat_rooms_rels;
   messages: typeof messages;
+  structured: typeof structured;
+  sports: typeof sports;
   signatures: typeof signatures;
   temporary_app_users: typeof temporary_app_users;
   payload_locked_documents: typeof payload_locked_documents;
@@ -1829,6 +2024,8 @@ type DatabaseSchema = {
   payload_preferences: typeof payload_preferences;
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
+  commission_imports_files: typeof commission_imports_files;
+  commission_imports: typeof commission_imports;
   relations_admins: typeof relations_admins;
   relations_supplier_categories_offers: typeof relations_supplier_categories_offers;
   relations_supplier_categories_rels: typeof relations_supplier_categories_rels;
@@ -1837,9 +2034,8 @@ type DatabaseSchema = {
   relations_fidnet: typeof relations_fidnet;
   relations_suppliers: typeof relations_suppliers;
   relations_fundesys: typeof relations_fundesys;
+  relations_commissions_rels: typeof relations_commissions_rels;
   relations_commissions: typeof relations_commissions;
-  relations_commission_imports_files: typeof relations_commission_imports_files;
-  relations_commission_imports: typeof relations_commission_imports;
   relations_media: typeof relations_media;
   relations_reservations_invitations: typeof relations_reservations_invitations;
   relations_reservations: typeof relations_reservations;
@@ -1849,10 +2045,13 @@ type DatabaseSchema = {
   relations_app_users: typeof relations_app_users;
   relations_app_users_commissions_code_code: typeof relations_app_users_commissions_code_code;
   relations_app_users_commissions_code: typeof relations_app_users_commissions_code;
+  relations_suppliers_commissions_column: typeof relations_suppliers_commissions_column;
   relations_agency_life: typeof relations_agency_life;
   relations_chat_rooms_rels: typeof relations_chat_rooms_rels;
   relations_chat_rooms: typeof relations_chat_rooms;
   relations_messages: typeof relations_messages;
+  relations_structured: typeof relations_structured;
+  relations_sports: typeof relations_sports;
   relations_signatures: typeof relations_signatures;
   relations_temporary_app_users: typeof relations_temporary_app_users;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
@@ -1860,6 +2059,8 @@ type DatabaseSchema = {
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;
   relations_payload_preferences: typeof relations_payload_preferences;
   relations_payload_migrations: typeof relations_payload_migrations;
+  relations_commission_imports_files: typeof relations_commission_imports_files;
+  relations_commission_imports: typeof relations_commission_imports;
 };
 
 declare module "@payloadcms/db-vercel-postgres" {

@@ -33,3 +33,11 @@ Analyze all major dependencies and create a cursor rule outlining the stack of t
 I want to generate a Cursor Rule for the attached file. Please analyze carefully and outline all of the convention founds. Output as a one rule file only.
 
 MAIL PROD + DATABSE CASCADE + FORGOT PASSWORD LENGTH
+
+MAIL modifié introduction
+
+alerte du mois -> commissions -> newlsetter ??
+
+
+
+CGP (indépendant) ->  envoyer facture à client (final), dédié une page hors admin

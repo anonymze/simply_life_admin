@@ -15,8 +15,8 @@ export const Sports: CollectionConfig = {
       fr: "Sport et patrimoine",
     },
     plural: {
-      en: "Sports and patrimoines",
-      fr: "Sports et patrimoines",
+      en: "Sport and patrimoine",
+      fr: "Sport et patrimoine",
     },
   },
   slug: "sports",

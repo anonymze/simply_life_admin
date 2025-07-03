@@ -81,6 +81,7 @@ export interface Config {
     'contact-categories': ContactCategory;
     'app-users': AppUser;
     'app-users-commissions-code': AppUsersCommissionsCode;
+    'suppliers-commissions-column': SuppliersCommissionsColumn;
     'agency-life': AgencyLife;
     'chat-rooms': ChatRoom;
     messages: Message;
@@ -107,6 +108,7 @@ export interface Config {
     'contact-categories': ContactCategoriesSelect<false> | ContactCategoriesSelect<true>;
     'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
     'app-users-commissions-code': AppUsersCommissionsCodeSelect<false> | AppUsersCommissionsCodeSelect<true>;
+    'suppliers-commissions-column': SuppliersCommissionsColumnSelect<false> | SuppliersCommissionsColumnSelect<true>;
     'agency-life': AgencyLifeSelect<false> | AgencyLifeSelect<true>;
     'chat-rooms': ChatRoomsSelect<false> | ChatRoomsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
@@ -369,13 +371,13 @@ export interface Fundesy {
 export interface Commission {
   id: string;
   app_user: string | AppUser;
-  supplier: string | Supplier;
+  pdf?: (string | null) | Media;
+  suppliers: (string | Supplier)[];
   structured_product?: boolean | null;
   informations?: {
     date: string;
     encours?: number | null;
     production?: number | null;
-    pdf?: (string | null) | Media;
     title?: string | null;
     up_front?: number | null;
     broqueur?: string | null;
@@ -446,13 +448,26 @@ export interface AppUsersCommissionsCode {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliers-commissions-column".
+ */
+export interface SuppliersCommissionsColumn {
+  id: string;
+  supplier: string | Supplier;
+  code_column_letter: string;
+  type_column_letter: string;
+  amount_column_letter: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "agency-life".
  */
 export interface AgencyLife {
   id: string;
   title: string;
   annotation?: string | null;
-  type: 'general';
+  type: 'general' | 'sport' | 'seminaire' | 'food' | 'birthday  ';
   event_start: string;
   event_end: string;
   address?: string | null;
@@ -597,6 +612,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'app-users-commissions-code';
         value: string | AppUsersCommissionsCode;
+      } | null)
+    | ({
+        relationTo: 'suppliers-commissions-column';
+        value: string | SuppliersCommissionsColumn;
       } | null)
     | ({
         relationTo: 'agency-life';
@@ -797,7 +816,8 @@ export interface FundesysSelect<T extends boolean = true> {
  */
 export interface CommissionsSelect<T extends boolean = true> {
   app_user?: T;
-  supplier?: T;
+  pdf?: T;
+  suppliers?: T;
   structured_product?: T;
   informations?:
     | T
@@ -805,7 +825,6 @@ export interface CommissionsSelect<T extends boolean = true> {
         date?: T;
         encours?: T;
         production?: T;
-        pdf?: T;
         title?: T;
         up_front?: T;
         broqueur?: T;
@@ -905,6 +924,18 @@ export interface AppUsersCommissionsCodeSelect<T extends boolean = true> {
         code?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "suppliers-commissions-column_select".
+ */
+export interface SuppliersCommissionsColumnSelect<T extends boolean = true> {
+  supplier?: T;
+  code_column_letter?: T;
+  type_column_letter?: T;
+  amount_column_letter?: T;
   updatedAt?: T;
   createdAt?: T;
 }
