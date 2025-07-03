@@ -34,8 +34,6 @@ I want to generate a Cursor Rule for the attached file. Please analyze carefully
 
 MAIL PROD + DATABSE CASCADE + FORGOT PASSWORD LENGTH
 
-MAIL modifié introduction
-
 alerte du mois -> commissions -> newlsetter ??
 
 
