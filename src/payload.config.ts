@@ -203,7 +203,7 @@ export default buildConfig({
     transport: nodemailer.createTransport({
       host:
         process.env.NODE_ENV === "production"
-          ? "ssl0.ovh.net" // OVH SMTP server
+          ? process.env.SMTP_HOST // OVH SMTP server<
           : "127.0.0.1",
       port:
         process.env.NODE_ENV === "production"
