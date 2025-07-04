@@ -19,6 +19,9 @@ export const Admins: CollectionConfig = {
       fr: "Administrateurs",
     },
   },
+  custom: {
+    lol: "oui"
+  },
   admin: {
     group: {
       en: "Users",
@@ -36,6 +39,8 @@ export const Admins: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [validatePassword],
+
+    },
   },
   fields: [
     {
@@ -56,25 +61,5 @@ export const Admins: CollectionConfig = {
         },
       },
     },
-    // {
-    // 	name: "actions",
-    // 	type: "ui",
-    // 	admin: {
-    // 		position: "sidebar",
-    // 		components: {
-    // 			Field: "/components/custom-client-field.tsx",
-    // 		},
-    // 	},
-    // },
-    // {
-    // 	name: "serverActions",
-    // 	type: "ui",
-    // 	admin: {
-    // 		position: "sidebar",
-    // 		components: {
-    // 			Field: "/components/custom-server-field.tsx",
-    // 		},
-    // 	},
-    // },
   ],
 };
