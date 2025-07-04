@@ -19,9 +19,6 @@ export const Admins: CollectionConfig = {
       fr: "Administrateurs",
     },
   },
-  custom: {
-    lol: "oui"
-  },
   admin: {
     group: {
       en: "Users",
