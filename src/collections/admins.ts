@@ -33,11 +33,6 @@ export const Admins: CollectionConfig = {
     useAPIKey: true,
     maxLoginAttempts: 4,
     tokenExpiration: 60 * 60 * 24 * 30, // 30 days
-    cookies: {
-      secure: true,
-      sameSite: "None",
-      domain: "https://localhost:3000",
-    },
   },
   hooks: {
     beforeValidate: [validatePassword],
