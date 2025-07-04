@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
   // Set CORS headers
-  res.headers.set("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.headers.set("Access-Control-Allow-Origin", "*");
   res.headers.set(
     "Access-Control-Allow-Methods",
     "GET,OPTIONS,PATCH,DELETE,POST,PUT",
