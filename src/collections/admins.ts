@@ -36,8 +36,6 @@ export const Admins: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [validatePassword],
-
-    },
   },
   fields: [
     {
