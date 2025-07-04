@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
 
   // Set CORS headers
   const origin = req.headers.get("origin");
-  console.log("origin", origin);
+  // console.log("origin", origin);
   if (origin && allowedOrigins.includes(origin)) {
     res.headers.set("Access-Control-Allow-Origin", origin);
   }
