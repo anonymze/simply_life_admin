@@ -10,6 +10,7 @@ export function middleware(req: NextRequest) {
     "Access-Control-Allow-Methods",
     "GET,OPTIONS,PATCH,DELETE,POST,PUT",
   );
+  res.headers.set("Access-Control-Allow-Credentials", "true");
   // res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   // Handle preflight request
