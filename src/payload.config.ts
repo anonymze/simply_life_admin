@@ -48,7 +48,7 @@ export default buildConfig({
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
       : process.env.NEXT_PUBLIC_SERVER_URL,
-  cors: ["*"],
+  cors: ["http://localhost:3000"],
   // cors: {
   // Add your allowed origin here
   // origins: ["http://192.168.1.230:8081"],
