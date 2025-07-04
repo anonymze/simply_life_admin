@@ -198,7 +198,7 @@ export default buildConfig({
   }),
   sharp,
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.SMTP_USER || "",
+    defaultFromAddress: "info@simplylife.com",
     defaultFromName: "Simply Life",
     transport: nodemailer.createTransport({
       host:

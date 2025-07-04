@@ -192,6 +192,7 @@ export const AppUsers: CollectionConfig = {
             message: "OK",
           });
         } catch (error) {
+          console.log(error);
           return Response.json(
             {
               message: "KO",
