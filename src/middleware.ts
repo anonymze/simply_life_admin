@@ -4,10 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
-  console.log("Middleware executed");
-  console.log(req.referrer);
-  console.log(req.referrerPolicy);
-  console.log(req.headers);
+  // console.log(req.headers);
 
   // Set CORS headers
   res.headers.set("Access-Control-Allow-Origin", "http://localhost:3000");
