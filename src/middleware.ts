@@ -1,17 +1,19 @@
 // app/api/_middleware.js
-import { NextRequest, NextResponse } from 'next/server';
-
+import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
   // Set CORS headers
-  res.headers.set('Access-Control-Allow-Origin', '*');
-  res.headers.set('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT'); 
+  res.headers.set("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+  );
   // res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   // Handle preflight request
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
       headers: res.headers,

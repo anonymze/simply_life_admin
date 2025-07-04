@@ -58,7 +58,7 @@ export default buildConfig({
   csrf: [
     // Add your allowed origins here for CSRF protection
     // "simply-life-app://mobile",
-    // "http://localhost:3000",
+    "http://localhost:3000",
   ],
   localization: {
     locales: ["fr", "en"],
