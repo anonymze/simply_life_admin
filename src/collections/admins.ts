@@ -36,6 +36,7 @@ export const Admins: CollectionConfig = {
     cookies: {
       secure: true,
       sameSite: "None",
+      domain: "https://localhost:3000",
     },
   },
   hooks: {
