@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+import { Supplier } from "@/payload-types";
 import { extractData } from "@/utils/xlsx";
 import { canAccessApi, validateMedia } from "../utils/helper";
 
@@ -138,6 +139,88 @@ export const CommissionImports: CollectionConfig = {
             totalGlobalStructured,
             suppliersData,
           });
+        } catch (error) {
+          console.error(error);
+          return Response.json(
+            {
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Une erreur inconnue est survenue, contactez le développeur.",
+            },
+            {
+              status: 400,
+            },
+          );
+        }
+      },
+    },
+    {
+      path: "/custom-create",
+      method: "post",
+      handler: async (req) => {
+        try {
+          const formData = await req.formData?.();
+
+          const file = formData?.get("file") as File;
+          const supplierId = formData?.get("supplier") as Supplier["id"];
+
+          if (!file || !supplierId) throw new Error();
+
+          // Get the global document
+          const supplier = await req.payload.findByID({
+            collection: "suppliers",
+            id: supplierId,
+          });
+
+          if (!supplier) throw new Error();
+
+          const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+          // Check if commission import already exists for this supplier
+          const existingImport = await req.payload.find({
+            collection: "commission-imports",
+            where: {
+              supplier: {
+                equals: supplierId,
+              },
+            },
+          });
+
+          const media = await req.payload.create({
+            collection: "media",
+            file: {
+              data: fileBuffer,
+              size: file.size,
+              name: file.name,
+              mimetype: file.type,
+            },
+            data: {
+              alt: file.name,
+            },
+          });
+
+          if (existingImport.docs.length > 0) {
+            // Update existing commission import
+            await req.payload.update({
+              collection: "commission-imports",
+              id: existingImport.docs[0].id,
+              data: {
+                file: media.id,
+              },
+            });
+          } else {
+            // Create new commission import
+            await req.payload.create({
+              collection: "commission-imports",
+              data: {
+                supplier: supplier.id,
+                file: media.id,
+              },
+            });
+          }
+
+          return Response.json({ success: true });
         } catch (error) {
           console.error(error);
           return Response.json(
