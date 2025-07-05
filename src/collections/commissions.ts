@@ -76,15 +76,6 @@ export const Commissions: CollectionConfig = {
       },
       fields: [
         {
-          name: "auto_fill_button",
-          type: "ui",
-          admin: {
-            components: {
-              Field: "/components/commission-auto-fill.tsx",
-            },
-          },
-        },
-        {
           name: "date",
           type: "date",
           // defaultValue: new Date(),

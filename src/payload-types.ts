@@ -89,6 +89,7 @@ export interface Config {
     sports: Sport;
     signatures: Signature;
     'temporary-app-users': TemporaryAppUser;
+    'commission-imports': CommissionImport;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -116,6 +117,7 @@ export interface Config {
     sports: SportsSelect<false> | SportsSelect<true>;
     signatures: SignaturesSelect<false> | SignaturesSelect<true>;
     'temporary-app-users': TemporaryAppUsersSelect<false> | TemporaryAppUsersSelect<true>;
+    'commission-imports': CommissionImportsSelect<false> | CommissionImportsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -123,12 +125,8 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {
-    'commission-imports': CommissionImport;
-  };
-  globalsSelect: {
-    'commission-imports': CommissionImportsSelect<false> | CommissionImportsSelect<true>;
-  };
+  globals: {};
+  globalsSelect: {};
   locale: 'fr' | 'en';
   user:
     | (Admin & {
@@ -556,6 +554,20 @@ export interface TemporaryAppUser {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-imports".
+ */
+export interface CommissionImport {
+  id: string;
+  supplier: string | Supplier;
+  /**
+   * Le fichier doit être au format Excel ou CSV.
+   */
+  file: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -644,6 +656,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'temporary-app-users';
         value: string | TemporaryAppUser;
+      } | null)
+    | ({
+        relationTo: 'commission-imports';
+        value: string | CommissionImport;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1029,6 +1045,16 @@ export interface TemporaryAppUsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-imports_select".
+ */
+export interface CommissionImportsSelect<T extends boolean = true> {
+  supplier?: T;
+  file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -1058,44 +1084,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "commission-imports".
- */
-export interface CommissionImport {
-  id: string;
-  /**
-   * Un fichier par fournisseur. Quand un fichier est importé pour un fournisseur, il écrase le précédent fichier importé pour celui-ci.
-   */
-  files?:
-    | {
-        supplier: string | Supplier;
-        /**
-         * Le fichier doit être au format Excel ou CSV.
-         */
-        file: string | Media;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "commission-imports_select".
- */
-export interface CommissionImportsSelect<T extends boolean = true> {
-  files?:
-    | T
-    | {
-        supplier?: T;
-        file?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

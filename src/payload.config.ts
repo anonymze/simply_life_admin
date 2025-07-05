@@ -15,6 +15,7 @@ import { AgencyLife } from "./collections/agency-life";
 import { AppUsers } from "./collections/app-users";
 import { AppUsersCommissionsCode } from "./collections/app-users-commissions-code";
 import { ChatRooms } from "./collections/chat-rooms";
+import { CommissionImports } from "./collections/commission-imports";
 import { Commissions } from "./collections/commissions";
 import { ContactCategories } from "./collections/contact-categories";
 import { Contacts } from "./collections/contacts";
@@ -31,7 +32,6 @@ import { SupplierProducts } from "./collections/supplier-products";
 import { Suppliers } from "./collections/suppliers";
 import { SupplierCommissionsColumn } from "./collections/suppliers-commissions-column";
 import { TemporaryAppUsers } from "./collections/temporary-app-users";
-import { CommissionImports } from "./globals/commission-imports";
 import { websocketServerPlugin } from "./plugins/websocket-server";
 import { customTranslations } from "./utils/custom-translations";
 
@@ -140,8 +140,9 @@ export default buildConfig({
     Sports,
     Signatures,
     TemporaryAppUsers,
+    CommissionImports,
   ],
-  globals: [CommissionImports],
+  // globals: [CommissionImports],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

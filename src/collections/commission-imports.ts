@@ -1,13 +1,16 @@
-import type { GlobalConfig } from "payload";
+import type { CollectionConfig } from "payload";
 
 import { extractData } from "@/utils/xlsx";
 import { canAccessApi, validateMedia } from "../utils/helper";
 
-export const CommissionImports: GlobalConfig = {
+export const CommissionImports: CollectionConfig = {
   slug: "commission-imports",
   access: {
-    read: ({ req }) => canAccessApi(req, []),
+    read: ({ req }) =>
+      canAccessApi(req, ["associate", "employee", "independent", "visitor"]),
     update: ({ req }) => canAccessApi(req, []),
+    delete: ({ req }) => canAccessApi(req, []),
+    create: ({ req }) => canAccessApi(req, []),
   },
   admin: {
     group: {
@@ -36,11 +39,11 @@ export const CommissionImports: GlobalConfig = {
           if (!userId) throw new Error();
 
           // Get the global document
-          const commissionImports = await req.payload.findGlobal({
-            slug: "commission-imports",
+          const commissionImports = await req.payload.find({
+            collection: "commission-imports",
           });
 
-          if (!commissionImports?.files?.length) throw new Error();
+          if (!commissionImports?.docs?.length) throw new Error();
 
           const userCommissions = await req.payload.find({
             collection: "app-users-commissions-code",
@@ -76,10 +79,10 @@ export const CommissionImports: GlobalConfig = {
           } = {};
 
           await Promise.all(
-            commissionImports.files.map(async (supplierFile) => {
+            commissionImports.docs.map(async (supplierFile) => {
               if (
-                typeof supplierFile.file === "string" ||
-                typeof supplierFile.supplier === "string"
+                typeof supplierFile.supplier === "string" ||
+                typeof supplierFile.file === "string"
               )
                 return;
 
@@ -154,63 +157,33 @@ export const CommissionImports: GlobalConfig = {
   ],
   fields: [
     {
-      name: "files",
-      type: "array",
+      name: "supplier",
+      type: "relationship",
+      relationTo: "suppliers",
+      hasMany: false,
       label: {
-        en: "Commission Files",
-        fr: "Fichiers de commission",
+        en: "Supplier",
+        fr: "Fournisseur",
+      },
+      required: true,
+      unique: true,
+    },
+    {
+      name: "file",
+      type: "upload",
+      relationTo: "media",
+      // @ts-expect-error
+      validate: (data) => {
+        return validateMedia(data, "sheet");
+      },
+      label: {
+        en: "Commission file",
+        fr: "Fichier de commission",
       },
       admin: {
-        description:
-          "Un fichier par fournisseur. Quand un fichier est importé pour un fournisseur, il écrase le précédent fichier importé pour celui-ci.",
+        description: "Le fichier doit être au format Excel ou CSV.",
       },
-      labels: {
-        singular: {
-          en: "file",
-          fr: "fichier",
-        },
-        plural: {
-          en: "files",
-          fr: "fichiers",
-        },
-      },
-      validate: (data) => {
-        const suppliers = data?.map((file: any) => file.supplier);
-        const uniqueSuppliers = [...new Set(suppliers)];
-        if (uniqueSuppliers.length !== suppliers?.length)
-          return "Vous avez mis plusieurs fois le même fournisseur.";
-        return true;
-      },
-      fields: [
-        {
-          name: "supplier",
-          type: "relationship",
-          relationTo: "suppliers",
-          hasMany: false,
-          label: {
-            en: "Supplier",
-            fr: "Fournisseur",
-          },
-          required: true,
-        },
-        {
-          name: "file",
-          type: "upload",
-          relationTo: "media",
-          // @ts-expect-error
-          validate: (data) => {
-            return validateMedia(data, "sheet");
-          },
-          label: {
-            en: "Commission file",
-            fr: "Fichier de commission",
-          },
-          admin: {
-            description: "Le fichier doit être au format Excel ou CSV.",
-          },
-          required: true,
-        },
-      ],
+      required: true,
     },
   ],
 };

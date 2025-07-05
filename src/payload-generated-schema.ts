@@ -1128,6 +1128,51 @@ export const temporary_app_users = pgTable(
   }),
 );
 
+export const commission_imports = pgTable(
+  "commission_imports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    supplier: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, {
+        onDelete: "set null",
+      }),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    commission_imports_supplier_idx: uniqueIndex(
+      "commission_imports_supplier_idx",
+    ).on(columns.supplier),
+    commission_imports_file_idx: index("commission_imports_file_idx").on(
+      columns.file,
+    ),
+    commission_imports_updated_at_idx: index(
+      "commission_imports_updated_at_idx",
+    ).on(columns.updatedAt),
+    commission_imports_created_at_idx: index(
+      "commission_imports_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -1189,6 +1234,7 @@ export const payload_locked_documents_rels = pgTable(
     sportsID: uuid("sports_id"),
     signaturesID: uuid("signatures_id"),
     "temporary-app-usersID": uuid("temporary_app_users_id"),
+    "commission-importsID": uuid("commission_imports_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -1259,6 +1305,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_temporary_app_users_id_idx: index(
       "payload_locked_documents_rels_temporary_app_users_id_idx",
     ).on(columns["temporary-app-usersID"]),
+    payload_locked_documents_rels_commission_imports_id_idx: index(
+      "payload_locked_documents_rels_commission_imports_id_idx",
+    ).on(columns["commission-importsID"]),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -1369,6 +1418,11 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [temporary_app_users.id],
       name: "payload_locked_documents_rels_temporary_app_users_fk",
     }).onDelete("cascade"),
+    "commission-importsIdFk": foreignKey({
+      columns: [columns["commission-importsID"]],
+      foreignColumns: [commission_imports.id],
+      name: "payload_locked_documents_rels_commission_imports_fk",
+    }).onDelete("cascade"),
   }),
 );
 
@@ -1474,56 +1528,6 @@ export const payload_migrations = pgTable(
     ).on(columns.createdAt),
   }),
 );
-
-export const commission_imports_files = pgTable(
-  "commission_imports_files",
-  {
-    _order: integer("_order").notNull(),
-    _parentID: uuid("_parent_id").notNull(),
-    id: varchar("id").primaryKey(),
-    supplier: uuid("supplier_id")
-      .notNull()
-      .references(() => suppliers.id, {
-        onDelete: "set null",
-      }),
-    file: uuid("file_id")
-      .notNull()
-      .references(() => media.id, {
-        onDelete: "set null",
-      }),
-  },
-  (columns) => ({
-    _orderIdx: index("commission_imports_files_order_idx").on(columns._order),
-    _parentIDIdx: index("commission_imports_files_parent_id_idx").on(
-      columns._parentID,
-    ),
-    commission_imports_files_supplier_idx: index(
-      "commission_imports_files_supplier_idx",
-    ).on(columns.supplier),
-    commission_imports_files_file_idx: index(
-      "commission_imports_files_file_idx",
-    ).on(columns.file),
-    _parentIDFk: foreignKey({
-      columns: [columns["_parentID"]],
-      foreignColumns: [commission_imports.id],
-      name: "commission_imports_files_parent_id_fk",
-    }).onDelete("cascade"),
-  }),
-);
-
-export const commission_imports = pgTable("commission_imports", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  updatedAt: timestamp("updated_at", {
-    mode: "string",
-    withTimezone: true,
-    precision: 3,
-  }),
-  createdAt: timestamp("created_at", {
-    mode: "string",
-    withTimezone: true,
-    precision: 3,
-  }),
-});
 
 export const relations_admins = relations(admins, () => ({}));
 export const relations_supplier_categories_offers = relations(
@@ -1801,6 +1805,21 @@ export const relations_temporary_app_users = relations(
   temporary_app_users,
   () => ({}),
 );
+export const relations_commission_imports = relations(
+  commission_imports,
+  ({ one }) => ({
+    supplier: one(suppliers, {
+      fields: [commission_imports.supplier],
+      references: [suppliers.id],
+      relationName: "supplier",
+    }),
+    file: one(media, {
+      fields: [commission_imports.file],
+      references: [media.id],
+      relationName: "file",
+    }),
+  }),
+);
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -1914,6 +1933,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [temporary_app_users.id],
       relationName: "temporary-app-users",
     }),
+    "commission-importsID": one(commission_imports, {
+      fields: [payload_locked_documents_rels["commission-importsID"]],
+      references: [commission_imports.id],
+      relationName: "commission-imports",
+    }),
   }),
 );
 export const relations_payload_locked_documents = relations(
@@ -1956,34 +1980,6 @@ export const relations_payload_migrations = relations(
   payload_migrations,
   () => ({}),
 );
-export const relations_commission_imports_files = relations(
-  commission_imports_files,
-  ({ one }) => ({
-    _parentID: one(commission_imports, {
-      fields: [commission_imports_files._parentID],
-      references: [commission_imports.id],
-      relationName: "files",
-    }),
-    supplier: one(suppliers, {
-      fields: [commission_imports_files.supplier],
-      references: [suppliers.id],
-      relationName: "supplier",
-    }),
-    file: one(media, {
-      fields: [commission_imports_files.file],
-      references: [media.id],
-      relationName: "file",
-    }),
-  }),
-);
-export const relations_commission_imports = relations(
-  commission_imports,
-  ({ many }) => ({
-    files: many(commission_imports_files, {
-      relationName: "files",
-    }),
-  }),
-);
 
 type DatabaseSchema = {
   enum__locales: typeof enum__locales;
@@ -2019,13 +2015,12 @@ type DatabaseSchema = {
   sports: typeof sports;
   signatures: typeof signatures;
   temporary_app_users: typeof temporary_app_users;
+  commission_imports: typeof commission_imports;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
-  commission_imports_files: typeof commission_imports_files;
-  commission_imports: typeof commission_imports;
   relations_admins: typeof relations_admins;
   relations_supplier_categories_offers: typeof relations_supplier_categories_offers;
   relations_supplier_categories_rels: typeof relations_supplier_categories_rels;
@@ -2054,13 +2049,12 @@ type DatabaseSchema = {
   relations_sports: typeof relations_sports;
   relations_signatures: typeof relations_signatures;
   relations_temporary_app_users: typeof relations_temporary_app_users;
+  relations_commission_imports: typeof relations_commission_imports;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;
   relations_payload_preferences: typeof relations_payload_preferences;
   relations_payload_migrations: typeof relations_payload_migrations;
-  relations_commission_imports_files: typeof relations_commission_imports_files;
-  relations_commission_imports: typeof relations_commission_imports;
 };
 
 declare module "@payloadcms/db-vercel-postgres" {
