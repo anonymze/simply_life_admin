@@ -219,8 +219,9 @@ export const CommissionImports: CollectionConfig = {
               },
             });
           }
-
-          return Response.json({ success: true });
+          return Response.json({ success: true , {
+            status: 201
+          });
         } catch (error) {
           console.error(error);
           return Response.json(
