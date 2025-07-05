@@ -3,8 +3,9 @@ import * as XLSX from "xlsx";
 
 const letterToNumber = (letter: string): number => {
   let result = 0;
-  for (let i = 0; i < letter.length; i++) {
-    result = result * 26 + (letter.charCodeAt(i) - 64);
+  const upperLetter = letter.toUpperCase(); // Convert to uppercase first
+  for (let i = 0; i < upperLetter.length; i++) {
+    result = result * 26 + (upperLetter.charCodeAt(i) - 64);
   }
   return result - 1; // Convert to 0-based index
 };
