@@ -72,6 +72,8 @@ const endpointsCommission = {
         );
       }
 
+      console.log(commissionId);
+
       const commission = await req.payload.findByID({
         collection: "commissions",
         id: commissionId,
@@ -88,6 +90,8 @@ const endpointsCommission = {
           },
         );
       }
+
+      console.log(commission);
 
       // Create Excel workbook
       const workbook = XLSX.utils.book_new();
