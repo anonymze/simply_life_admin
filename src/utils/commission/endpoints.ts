@@ -3,6 +3,7 @@ import {
   organizeCommissionsByMonth,
   organizeCommissionsByYear,
 } from "./commission";
+import * as XLSX from "xlsx";
 
 const endpointsCommission = {
   formatedData: {
@@ -53,6 +54,87 @@ const endpointsCommission = {
       });
     },
   },
+  export: {
+    method: "get" as const,
+    path: "/export/:commissionId",
+    handler: async (req: PayloadRequest) => {
+      const { commissionId } = req.routeParams as { commissionId: string };
+      const email = req.searchParams.get("email");
+
+      if (!commissionId) {
+        return Response.json(
+          {
+            message: "KO",
+          },
+          {
+            status: 500,
+          },
+        );
+      }
+
+      const commission = await req.payload.findByID({
+        collection: "commissions",
+        id: commissionId,
+        depth: 2,
+      });
+
+      if (!commission) {
+        return Response.json(
+          {
+            message: "Commission not found",
+          },
+          {
+            status: 404,
+          },
+        );
+      }
+
+      // Create Excel workbook
+      const workbook = XLSX.utils.book_new();
+      
+      // Prepare data for Excel
+      const excelData = [];
+      let totalEncours = 0;
+      let totalProduction = 0;
+      
+      // Headers
+      excelData.push(["Fournisseur", "Encours", "Production"]);
+      
+      // Process commission suppliers
+      if (commission.commission_suppliers && commission.commission_suppliers.length > 0) {
+        commission.commission_suppliers.forEach((cs: any) => {
+          const supplier = typeof cs.supplier === 'string' ? cs.supplier : cs.supplier?.name || 'Unknown';
+          const encours = cs.encours || 0;
+          const production = cs.production || 0;
+          
+          excelData.push([supplier, encours, production]);
+          totalEncours += encours;
+          totalProduction += production;
+        });
+      }
+      
+      // Add totals row
+      excelData.push([]);
+      excelData.push(["Total", totalEncours, totalProduction]);
+      
+      // Create worksheet
+      const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+      
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Commission Data");
+      
+      // Generate Excel buffer
+      const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+      
+      // Return Excel file
+      return new Response(buffer, {
+        headers: {
+          "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "Content-Disposition": `attachment; filename="commission_${commissionId}.xlsx"`,
+        },
+      });
+    },
+  },
   createCommissionWithCommissionSuppliers: {
     method: "post" as const,
     path: "/commission-suppliers",
@@ -69,7 +151,12 @@ const endpointsCommission = {
         ];
       } | null;
 
-      if (!data) {
+      if (
+        !data ||
+        !data.commission_suppliers.length ||
+        !data.app_user ||
+        !data.date
+      ) {
         return Response.json(
           {
             message: "KO",
@@ -104,7 +191,12 @@ const endpointsCommission = {
         },
       });
 
-      return Response.json({});
+      return Response.json(
+        { success: true },
+        {
+          status: 201,
+        },
+      );
     },
   },
 };
