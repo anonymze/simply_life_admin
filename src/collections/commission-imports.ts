@@ -73,6 +73,7 @@ export const CommissionImports: CollectionConfig = {
 
           const suppliersData: {
             [key: string]: {
+              supplierName: string;
               encours: number;
               production: number;
               structured: number;
@@ -126,6 +127,7 @@ export const CommissionImports: CollectionConfig = {
               totalGlobalProduction += data.totalProduction;
               totalGlobalStructured += data.totalStructured;
               suppliersData[supplierFile.supplier.id] = {
+                supplierName: supplierFile.supplier.name,
                 encours: data.totalEncours,
                 production: data.totalProduction,
                 structured: data.totalStructured,
