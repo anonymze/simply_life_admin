@@ -82,7 +82,7 @@ const endpointsCommission = {
 
       const commissionSuppliers = await Promise.all(
         data.commission_suppliers.map(async (commissionSupplier) => {
-          await req.payload.create({
+          return await req.payload.create({
             collection: "commission-suppliers",
             data: {
               encours: commissionSupplier.encours,
@@ -93,7 +93,16 @@ const endpointsCommission = {
         }),
       );
 
-      console.log(commissionSuppliers);
+      await req.payload.create({
+        collection: "commissions",
+        data: {
+          app_user: data.app_user,
+          date: data.date,
+          commission_suppliers: commissionSuppliers.map(
+            (supplier) => supplier.id,
+          ),
+        },
+      });
 
       return Response.json({});
     },
