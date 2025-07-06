@@ -61,6 +61,8 @@ const endpointsCommission = {
       const { commissionId } = req.routeParams as { commissionId: string };
       const email = req.searchParams.get("email");
 
+      console.log(email);
+
       if (!commissionId) {
         return Response.json(
           {
@@ -71,8 +73,6 @@ const endpointsCommission = {
           },
         );
       }
-
-      console.log(commissionId);
 
       const commission = await req.payload.findByID({
         collection: "commissions",
@@ -90,8 +90,6 @@ const endpointsCommission = {
           },
         );
       }
-
-      console.log(commission);
 
       // Create Excel workbook
       const workbook = XLSX.utils.book_new();
