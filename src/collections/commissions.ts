@@ -32,6 +32,29 @@ export const Commissions: CollectionConfig = {
       hasMany: false,
     },
     {
+      name: "commission_suppliers",
+      type: "relationship",
+      relationTo: "commission-suppliers",
+      required: true,
+      hasMany: true,
+    },
+    {
+      name: "date",
+      type: "date",
+      // defaultValue: new Date(),
+      admin: {
+        date: {
+          displayFormat: "MM/yyyy",
+          pickerAppearance: "monthOnly",
+        },
+      },
+      label: {
+        en: "Date of commission",
+        fr: "Date de commission",
+      },
+      required: true,
+    },
+    {
       name: "pdf",
       type: "upload",
       relationTo: "media",
@@ -46,14 +69,6 @@ export const Commissions: CollectionConfig = {
       required: false,
     },
     {
-      name: "suppliers",
-      type: "relationship",
-      relationTo: "suppliers",
-      hidden: true,
-      required: true,
-      hasMany: true,
-    },
-    {
       name: "structured_product",
       type: "checkbox",
       label: {
@@ -63,117 +78,49 @@ export const Commissions: CollectionConfig = {
       required: false,
     },
     {
-      name: "informations",
-      type: "group",
+      name: "title",
+      type: "text",
       admin: {
         condition: (data) => {
-          return !!data?.app_user;
+          return data.structured_product;
         },
       },
       label: {
-        en: "Commission Details",
-        fr: "Informations de commission",
+        en: "Title",
+        fr: "Titre",
       },
-      fields: [
-        {
-          name: "date",
-          type: "date",
-          // defaultValue: new Date(),
-          admin: {
-            date: {
-              displayFormat: "MM/yyyy",
-              pickerAppearance: "monthOnly",
-            },
-          },
-          label: {
-            en: "Date of commission",
-            fr: "Date de commission",
-          },
-          required: true,
-        },
-        {
-          name: "encours",
-          type: "number",
-          admin: {
-            step: 0.01,
-          },
-          label: {
-            en: "Encours",
-            fr: "Encours",
-          },
-          required: false,
-        },
-        {
-          name: "production",
-          type: "number",
-          admin: {
-            step: 0.01,
-          },
-          label: {
-            en: "Production",
-            fr: "Production",
-          },
-          required: false,
-        },
-        {
-          name: "title",
-          type: "text",
-          admin: {
-            condition: (data) => {
-              return data.structured_product;
-            },
-          },
-          label: {
-            en: "Title",
-            fr: "Titre",
-          },
-          required: false,
-        },
-        {
-          name: "up_front",
-          type: "number",
-
-          admin: {
-            step: 0.01,
-            condition: (data) => {
-              return data.structured_product;
-            },
-          },
-          label: {
-            en: "Amount (up-front)",
-            fr: "Montant (up-front)",
-          },
-          required: false,
-        },
-        {
-          name: "broqueur",
-          type: "text",
-
-          admin: {
-            condition: (data) => {
-              return data.structured_product;
-            },
-          },
-          label: {
-            en: "Broqueur",
-            fr: "Broqueur",
-          },
-          required: false,
-        },
-      ],
+      required: false,
     },
     {
-      name: "sidebar_actions",
-      type: "ui",
+      name: "up_front",
+      type: "number",
+
       admin: {
+        step: 0.01,
         condition: (data) => {
-          return !!data?.id;
-        },
-        position: "sidebar",
-        components: {
-          Field: "/components/commission-sidebar.tsx",
+          return data.structured_product;
         },
       },
+      label: {
+        en: "Amount (up-front)",
+        fr: "Montant (up-front)",
+      },
+      required: false,
+    },
+    {
+      name: "broqueur",
+      type: "text",
+
+      admin: {
+        condition: (data) => {
+          return data.structured_product;
+        },
+      },
+      label: {
+        en: "Broqueur",
+        fr: "Broqueur",
+      },
+      required: false,
     },
   ],
 };

@@ -16,6 +16,7 @@ import { AppUsers } from "./collections/app-users";
 import { AppUsersCommissionsCode } from "./collections/app-users-commissions-code";
 import { ChatRooms } from "./collections/chat-rooms";
 import { CommissionImports } from "./collections/commission-imports";
+import { CommissionSuppliers } from "./collections/commission-suppliers";
 import { Commissions } from "./collections/commissions";
 import { ContactCategories } from "./collections/contact-categories";
 import { Contacts } from "./collections/contacts";
@@ -126,6 +127,7 @@ export default buildConfig({
     Suppliers,
     Fundesys,
     Commissions,
+    CommissionSuppliers,
     Media,
     Reservations,
     SupplierProducts,

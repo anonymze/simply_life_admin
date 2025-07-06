@@ -75,6 +75,7 @@ export interface Config {
     suppliers: Supplier;
     fundesys: Fundesy;
     commissions: Commission;
+    'commission-suppliers': CommissionSupplier;
     media: Media;
     reservations: Reservation;
     'supplier-products': SupplierProduct;
@@ -103,6 +104,7 @@ export interface Config {
     suppliers: SuppliersSelect<false> | SuppliersSelect<true>;
     fundesys: FundesysSelect<false> | FundesysSelect<true>;
     commissions: CommissionsSelect<false> | CommissionsSelect<true>;
+    'commission-suppliers': CommissionSuppliersSelect<false> | CommissionSuppliersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     'supplier-products': SupplierProductsSelect<false> | SupplierProductsSelect<true>;
@@ -369,17 +371,13 @@ export interface Fundesy {
 export interface Commission {
   id: string;
   app_user: string | AppUser;
+  commission_suppliers: (string | CommissionSupplier)[];
+  date: string;
   pdf?: (string | null) | Media;
-  suppliers: (string | Supplier)[];
   structured_product?: boolean | null;
-  informations?: {
-    date: string;
-    encours?: number | null;
-    production?: number | null;
-    title?: string | null;
-    up_front?: number | null;
-    broqueur?: string | null;
-  };
+  title?: string | null;
+  up_front?: number | null;
+  broqueur?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -408,6 +406,18 @@ export interface AppUser {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-suppliers".
+ */
+export interface CommissionSupplier {
+  id: string;
+  supplier: string | Supplier;
+  encours: number;
+  production: number;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -600,6 +610,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'commissions';
         value: string | Commission;
+      } | null)
+    | ({
+        relationTo: 'commission-suppliers';
+        value: string | CommissionSupplier;
       } | null)
     | ({
         relationTo: 'media';
@@ -832,19 +846,24 @@ export interface FundesysSelect<T extends boolean = true> {
  */
 export interface CommissionsSelect<T extends boolean = true> {
   app_user?: T;
+  commission_suppliers?: T;
+  date?: T;
   pdf?: T;
-  suppliers?: T;
   structured_product?: T;
-  informations?:
-    | T
-    | {
-        date?: T;
-        encours?: T;
-        production?: T;
-        title?: T;
-        up_front?: T;
-        broqueur?: T;
-      };
+  title?: T;
+  up_front?: T;
+  broqueur?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-suppliers_select".
+ */
+export interface CommissionSuppliersSelect<T extends boolean = true> {
+  supplier?: T;
+  encours?: T;
+  production?: T;
   updatedAt?: T;
   createdAt?: T;
 }
