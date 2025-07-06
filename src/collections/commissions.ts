@@ -21,6 +21,7 @@ export const Commissions: CollectionConfig = {
   endpoints: [
     endpointsCommission.formatedData,
     endpointsCommission.createCommissionWithCommissionSuppliers,
+    endpointsCommission.export,
   ],
   fields: [
     {
