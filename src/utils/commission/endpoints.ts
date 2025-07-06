@@ -1,9 +1,9 @@
 import { PayloadRequest } from "payload";
+import * as XLSX from "xlsx";
 import {
   organizeCommissionsByMonth,
   organizeCommissionsByYear,
 } from "./commission";
-import * as XLSX from "xlsx";
 
 const endpointsCommission = {
   formatedData: {
@@ -91,45 +91,51 @@ const endpointsCommission = {
 
       // Create Excel workbook
       const workbook = XLSX.utils.book_new();
-      
+
       // Prepare data for Excel
       const excelData = [];
       let totalEncours = 0;
       let totalProduction = 0;
-      
+
       // Headers
       excelData.push(["Fournisseur", "Encours", "Production"]);
-      
+
       // Process commission suppliers
-      if (commission.commission_suppliers && commission.commission_suppliers.length > 0) {
-        commission.commission_suppliers.forEach((cs: any) => {
-          const supplier = typeof cs.supplier === 'string' ? cs.supplier : cs.supplier?.name || 'Unknown';
+      if (
+        commission.commission_suppliers &&
+        commission.commission_suppliers.length > 0
+      ) {
+        commission.commission_suppliers.forEach((cs) => {
+          if (typeof cs === "string" || typeof cs.supplier === "string") return;
+
+          const supplier = cs.supplier.name;
           const encours = cs.encours || 0;
           const production = cs.production || 0;
-          
+
           excelData.push([supplier, encours, production]);
           totalEncours += encours;
           totalProduction += production;
         });
       }
-      
+
       // Add totals row
       excelData.push([]);
       excelData.push(["Total", totalEncours, totalProduction]);
-      
+
       // Create worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-      
+
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, "Commission Data");
-      
+
       // Generate Excel buffer
       const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
-      
+
       // Return Excel file
       return new Response(buffer, {
         headers: {
-          "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "Content-Type":
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           "Content-Disposition": `attachment; filename="commission_${commissionId}.xlsx"`,
         },
       });
