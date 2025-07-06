@@ -54,7 +54,7 @@ const endpointsCommission = {
     },
   },
   createCommissionWithCommissionSuppliers: {
-    method: "post",
+    method: "post" as const,
     path: "/commission-suppliers",
     handler: async (req: PayloadRequest) => {
       const data = (await req.json?.()) as {
