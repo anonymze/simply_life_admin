@@ -27,9 +27,9 @@ const organizeCommissionsByMonth = (
 
   // Process commissions (suppliers are already populated)
   commissions.forEach((commission) => {
-    if (!commission.informations?.date) return;
+    if (!commission.date) return;
 
-    const date = new Date(commission.informations.date);
+    const date = new Date(commission.date);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
     const monthName = date.toLocaleDateString("fr-FR", {
       month: "long",
@@ -53,9 +53,9 @@ const organizeCommissionsByMonth = (
     monthlyData[monthKey].commissions.push(commission);
 
     // Calculate amounts
-    const encours = commission.informations.encours || 0;
-    const production = commission.informations.production || 0;
-    const upFront = commission.informations.up_front || 0;
+    const encours = 0;
+    const production = 0;
+    const upFront = 0;
     const total = encours + production + upFront;
 
     monthlyData[monthKey].totalAmount += total;
@@ -123,9 +123,9 @@ const organizeCommissionsByYear = (
 
   // Process commissions (suppliers are already populated)
   commissions.forEach((commission) => {
-    if (!commission.informations?.date) return;
+    if (!commission.date) return;
 
-    const date = new Date(commission.informations.date);
+    const date = new Date(commission.date);
     const yearKey = date.getFullYear().toString();
     const yearName = date.toLocaleDateString("fr-FR", { year: "numeric" });
 
@@ -143,9 +143,9 @@ const organizeCommissionsByYear = (
     }
 
     // Calculate amounts
-    const encours = commission.informations.encours || 0;
-    const production = commission.informations.production || 0;
-    const upFront = commission.informations.up_front || 0;
+    const encours = 0;
+    const production = 0;
+    const upFront = 0;
     const total = encours + production + upFront;
 
     yearlyData[yearKey].totalAmount += total;
