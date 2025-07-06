@@ -54,10 +54,9 @@ const endpointsCommission = {
     },
   },
   createCommissionWithCommissionSuppliers: {
-    method: "post" as const,
-    path: "/commission-suppliers/:userId",
+    method: "post",
+    path: "/commission-suppliers",
     handler: async (req: PayloadRequest) => {
-      const { userId } = req.routeParams as { userId: string };
       const data = (await req.json?.()) as {
         app_user: string;
         date: string;
@@ -70,7 +69,7 @@ const endpointsCommission = {
         ];
       } | null;
 
-      if (!userId || !data) {
+      if (!data) {
         return Response.json(
           {
             message: "KO",
