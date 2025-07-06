@@ -53,6 +53,52 @@ const endpointsCommission = {
       });
     },
   },
+  createCommissionWithCommissionSuppliers: {
+    method: "post" as const,
+    path: "/commission-suppliers/:userId",
+    handler: async (req: PayloadRequest) => {
+      const { userId } = req.routeParams as { userId: string };
+      const data = (await req.json?.()) as {
+        app_user: string;
+        date: string;
+        commission_suppliers: [
+          {
+            supplier: string;
+            encours: number;
+            production: number;
+          },
+        ];
+      } | null;
+
+      if (!userId || !data) {
+        return Response.json(
+          {
+            message: "KO",
+          },
+          {
+            status: 500,
+          },
+        );
+      }
+
+      const commissionSuppliers = await Promise.all(
+        data.commission_suppliers.map(async (commissionSupplier) => {
+          await req.payload.create({
+            collection: "commission-suppliers",
+            data: {
+              encours: commissionSupplier.encours,
+              production: commissionSupplier.production,
+              supplier: commissionSupplier.supplier,
+            },
+          });
+        }),
+      );
+
+      console.log(commissionSuppliers);
+
+      return Response.json({});
+    },
+  },
 };
 
 export { endpointsCommission };
