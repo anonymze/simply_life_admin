@@ -18,7 +18,10 @@ export const Commissions: CollectionConfig = {
       fr: "Commissions",
     },
   },
-  endpoints: [endpointsCommission.formatedData],
+  endpoints: [
+    endpointsCommission.formatedData,
+    endpointsCommission.createCommissionWithCommissionSuppliers,
+  ],
   fields: [
     {
       name: "app_user",
