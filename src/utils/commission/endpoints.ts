@@ -137,17 +137,11 @@ const endpointsCommission = {
         // Send Excel file via email
         await sendEmail({
           to: email,
-          subject: `Export Commission - Groupe Valorem`,
+          subject: `Export Commission - Groupe Valorem - ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
           text: `Veuillez trouver en pièce jointe l'export de commission pour la date du ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
           html: `
             <h2>Export Commission</h2>
-            <p>Veuillez trouver en pièce jointe l'export de commission pour l'ID: <strong>${commissionId}</strong></p>
-            <p>L'export contient:</p>
-            <ul>
-              <li>Tous les fournisseurs avec leurs données respectives</li>
-              <li>Montants d'encours et de production</li>
-              <li>Calculs des totaux</li>
-            </ul>
+            <p>Veuillez trouver en pièce jointe l'export de commission pour la date du ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}</p>
           `,
           attachments: [
             {
