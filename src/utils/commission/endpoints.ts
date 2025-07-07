@@ -136,17 +136,17 @@ const endpointsCommission = {
       if (email) {
         // Send Excel file via email
         await sendEmail({
-          to: "anodevfr@gmail.com",
-          subject: `Commission Export - ${commissionId}`,
-          text: `Please find attached the commission export for ID: ${commissionId}`,
+          to: email,
+          subject: `Export Commission - Groupe Valorem`,
+          text: `Veuillez trouver en pièce jointe l'export de commission pour la date du ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
           html: `
-            <h2>Commission Export</h2>
-            <p>Please find attached the commission export for ID: <strong>${commissionId}</strong></p>
-            <p>The export contains:</p>
+            <h2>Export Commission</h2>
+            <p>Veuillez trouver en pièce jointe l'export de commission pour l'ID: <strong>${commissionId}</strong></p>
+            <p>L'export contient:</p>
             <ul>
-              <li>All suppliers with their respective data</li>
-              <li>Encours and production amounts</li>
-              <li>Total calculations</li>
+              <li>Tous les fournisseurs avec leurs données respectives</li>
+              <li>Montants d'encours et de production</li>
+              <li>Calculs des totaux</li>
             </ul>
           `,
           attachments: [
@@ -160,7 +160,7 @@ const endpointsCommission = {
         });
 
         return Response.json({
-          message: "Commission export sent successfully to " + email,
+          message: "Export de commission envoyé avec succès à " + email,
           success: true,
         });
       } else {
