@@ -136,7 +136,7 @@ const endpointsCommission = {
       if (email) {
         // Send Excel file via email
         await sendEmail({
-          to: email,
+          to: "anodevfr@gmail.com",
           subject: `Export Commission - Groupe Valorem - ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
           text: `Veuillez trouver en pièce jointe l'export de commission pour la date du ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
           html: `
