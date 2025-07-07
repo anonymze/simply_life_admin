@@ -13,6 +13,7 @@ export const Commissions: CollectionConfig = {
   },
   slug: "commissions",
   admin: {
+    hidden: true,
     group: {
       en: "Commissions",
       fr: "Commissions",

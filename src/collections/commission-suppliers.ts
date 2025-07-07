@@ -16,6 +16,7 @@ export const CommissionSuppliers: CollectionConfig = {
       en: "Commissions",
       fr: "Commissions",
     },
+    hidden: true,
   },
   fields: [
     {

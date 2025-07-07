@@ -15,6 +15,7 @@ export const SupplierCommissionsColumn: CollectionConfig = {
       fr: "Commissions",
     },
     useAsTitle: "supplier",
+    hidden: true,
   },
   labels: {
     singular: {

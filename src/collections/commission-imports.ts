@@ -18,6 +18,7 @@ export const CommissionImports: CollectionConfig = {
       en: "Commissions",
       fr: "Commissions",
     },
+    hidden: true,
   },
   labels: {
     singular: {
