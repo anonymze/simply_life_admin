@@ -1,3 +1,4 @@
+import { sendEmail } from "@/emails/email";
 import { PayloadRequest } from "payload";
 import * as XLSX from "xlsx";
 import {
@@ -60,8 +61,6 @@ const endpointsCommission = {
     handler: async (req: PayloadRequest) => {
       const { commissionId } = req.routeParams as { commissionId: string };
       const email = req.searchParams.get("email");
-
-      console.log(email);
 
       if (!commissionId) {
         return Response.json(
@@ -133,14 +132,47 @@ const endpointsCommission = {
       // Generate Excel buffer
       const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
 
-      // Return Excel file
-      return new Response(buffer, {
-        headers: {
-          "Content-Type":
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "Content-Disposition": `attachment; filename="commission_${commissionId}.xlsx"`,
-        },
-      });
+      // Check if email is provided
+      if (email) {
+        // Send Excel file via email
+        await sendEmail({
+          to: "anodevfr@gmail.com",
+          subject: `Commission Export - ${commissionId}`,
+          text: `Please find attached the commission export for ID: ${commissionId}`,
+          html: `
+            <h2>Commission Export</h2>
+            <p>Please find attached the commission export for ID: <strong>${commissionId}</strong></p>
+            <p>The export contains:</p>
+            <ul>
+              <li>All suppliers with their respective data</li>
+              <li>Encours and production amounts</li>
+              <li>Total calculations</li>
+            </ul>
+          `,
+          attachments: [
+            {
+              filename: `commission_${commissionId}.xlsx`,
+              content: buffer,
+              contentType:
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            },
+          ],
+        });
+
+        return Response.json({
+          message: "Commission export sent successfully to " + email,
+          success: true,
+        });
+      } else {
+        // Return Excel file directly
+        return new Response(buffer, {
+          headers: {
+            "Content-Type":
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Content-Disposition": `attachment; filename="commission_${commissionId}.xlsx"`,
+          },
+        });
+      }
     },
   },
   createCommissionWithCommissionSuppliers: {
