@@ -1,8 +1,8 @@
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
-import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
+import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import nodemailer from "nodemailer";
 import path from "path";
 import { buildConfig } from "payload";
@@ -215,9 +215,12 @@ export default buildConfig({
           : 1025,
       secure: false, // false for 587 (STARTTLS)
       requireTLS: process.env.NODE_ENV === "production" ? true : false,
-      tls: process.env.NODE_ENV === "production" ? {
-        rejectUnauthorized: true
-      } : undefined,
+      tls:
+        process.env.NODE_ENV === "production"
+          ? {
+              rejectUnauthorized: true,
+            }
+          : undefined,
       auth: {
         user:
           process.env.NODE_ENV === "production"
