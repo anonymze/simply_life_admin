@@ -214,6 +214,10 @@ export default buildConfig({
           ? Number(process.env.SMTP_PORT) || 587 // OVH SMTP port
           : 1025,
       secure: false, // false for 587 (STARTTLS)
+      requireTLS: process.env.NODE_ENV === "production" ? true : false,
+      tls: process.env.NODE_ENV === "production" ? {
+        rejectUnauthorized: false
+      } : undefined,
       auth: {
         user:
           process.env.NODE_ENV === "production"

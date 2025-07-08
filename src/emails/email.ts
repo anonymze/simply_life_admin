@@ -6,6 +6,10 @@ const transporter = nodemailer.createTransport({
 	host: process.env.NODE_ENV === "production" ? process.env.SMTP_HOST : "127.0.0.1",
 	port: process.env.NODE_ENV === "production" ? Number(process.env.SMTP_PORT) : 1025,
 	secure: false, // true for port 465, false for 587
+	requireTLS: process.env.NODE_ENV === "production" ? true : false,
+	tls: process.env.NODE_ENV === "production" ? {
+		rejectUnauthorized: false
+	} : undefined,
 	auth: {
 		user: process.env.NODE_ENV === "production" ? process.env.SMTP_USER : "user",
 		pass: process.env.NODE_ENV === "production" ? process.env.SMTP_PASS : "pass",
