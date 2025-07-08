@@ -167,7 +167,7 @@ export const AppUsers: CollectionConfig = {
             link,
             fullLink,
             serverURL: req.payload.config.serverURL,
-            subject: req.i18n.t("app-users:emailSubject"),
+            subject: "Création de compte Simply Life",
           });
 
           await sendEmail({
