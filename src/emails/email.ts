@@ -13,8 +13,23 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendEmail(mailOptions: Mail.Options) {
-	await transporter.sendMail({
-		from: `"Simply Life" <${process.env.SMTP_USER}>`,
-		...mailOptions,
-	});
+	try {
+		console.log("Sending email with config:", {
+			host: process.env.SMTP_HOST,
+			port: process.env.SMTP_PORT,
+			user: process.env.SMTP_USER,
+			to: mailOptions.to,
+		});
+		
+		const result = await transporter.sendMail({
+			from: `"Simply Life" <${process.env.SMTP_USER}>`,
+			...mailOptions,
+		});
+		
+		console.log("Email sent successfully:", result.messageId);
+		return result;
+	} catch (error) {
+		console.error("Email sending failed:", error);
+		throw error;
+	}
 }

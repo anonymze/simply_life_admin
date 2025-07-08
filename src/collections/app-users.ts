@@ -158,8 +158,17 @@ export const AppUsers: CollectionConfig = {
           });
 
           const language = req.i18n.language === "fr" ? "fr" : "en";
-
           const link = `/app-users/create/${userTemporary.id}`;
+          const fullLink = req.payload.config.serverURL + link;
+
+          console.log("Registration email debug:", {
+            to: validatedData.email,
+            language,
+            link,
+            fullLink,
+            serverURL: req.payload.config.serverURL,
+            subject: req.i18n.t("app-users:emailSubject"),
+          });
 
           await sendEmail({
             to: validatedData.email,
@@ -171,10 +180,7 @@ export const AppUsers: CollectionConfig = {
                 `src/emails/templates/${language}/subscription-app-user.txt`,
               ),
               "utf-8",
-            ).replace(
-              "{{registrationLink}}",
-              req.payload.config.serverURL + link,
-            ),
+            ).replace("{{registrationLink}}", fullLink),
 
             html: readFileSync(
               join(
@@ -182,10 +188,7 @@ export const AppUsers: CollectionConfig = {
                 `src/emails/templates/${language}/subscription-app-user.html`,
               ),
               "utf-8",
-            ).replace(
-              "{{registrationLink}}",
-              req.payload.config.serverURL + link,
-            ),
+            ).replace("{{registrationLink}}", fullLink),
           });
 
           return Response.json({
