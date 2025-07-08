@@ -211,7 +211,7 @@ export default buildConfig({
           : "127.0.0.1",
       port:
         process.env.NODE_ENV === "production"
-          ? 587 // OVH SMTP port
+          ? Number(process.env.SMTP_PORT) || 587 // OVH SMTP port
           : 1025,
       secure: false, // false for 587 (STARTTLS)
       auth: {
