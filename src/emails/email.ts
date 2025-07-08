@@ -17,12 +17,12 @@ const transporter = nodemailer.createTransport({
 
 export async function sendEmail(mailOptions: Mail.Options) {
   try {
-    console.log("Sending email with config:", {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-      to: mailOptions.to,
-    });
+    // console.log("Sending email with config:", {
+    //   host: process.env.SMTP_HOST,
+    //   port: process.env.SMTP_PORT,
+    //   user: process.env.SMTP_USER,
+    //   to: mailOptions.to,
+    // });
 
     const result = await transporter.sendMail({
       from: process.env.SMTP_USER,
