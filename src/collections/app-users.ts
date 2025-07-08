@@ -172,8 +172,7 @@ export const AppUsers: CollectionConfig = {
 
           await sendEmail({
             to: validatedData.email,
-            //@ts-ignore
-            subject: req.i18n.t("app-users:emailSubject"),
+            subject: "Création de compte Simply Life",
             text: readFileSync(
               join(
                 process.cwd(),
