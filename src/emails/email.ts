@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
 	secure: false, // true for port 465, false for 587
 	requireTLS: process.env.NODE_ENV === "production" ? true : false,
 	tls: process.env.NODE_ENV === "production" ? {
-		rejectUnauthorized: false
+		rejectUnauthorized: true
 	} : undefined,
 	auth: {
 		user: process.env.NODE_ENV === "production" ? process.env.SMTP_USER : "user",

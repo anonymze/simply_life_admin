@@ -216,7 +216,7 @@ export default buildConfig({
       secure: false, // false for 587 (STARTTLS)
       requireTLS: process.env.NODE_ENV === "production" ? true : false,
       tls: process.env.NODE_ENV === "production" ? {
-        rejectUnauthorized: false
+        rejectUnauthorized: true
       } : undefined,
       auth: {
         user:
