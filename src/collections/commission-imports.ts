@@ -127,6 +127,12 @@ export const CommissionImports: CollectionConfig = {
                 codes,
               });
 
+              console.log(`Supplier ${supplierFile.supplier.name} data:`, {
+                encours: data.totalEncours,
+                production: data.totalProduction,
+                structured: data.totalStructured,
+              });
+
               totalGlobalEncours += data.totalEncours;
               totalGlobalProduction += data.totalProduction;
               totalGlobalStructured += data.totalStructured;
