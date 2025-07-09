@@ -119,7 +119,7 @@ const endpointsCommission = {
 
           // Add supplier totals at the top
           supplierData.push(["Total", production, encours]);
-          
+
           // Add empty row after totals
           supplierData.push([]);
 
@@ -146,7 +146,7 @@ const endpointsCommission = {
       // Create a summary sheet with overall totals
       const summaryData = [
         ["", "Production", "Encours"],
-        ["TOTAL GÉNÉRAL", totalProduction, totalEncours]
+        ["TOTAL GÉNÉRAL", totalProduction, totalEncours],
       ];
       const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
       XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Général");
@@ -167,10 +167,10 @@ const endpointsCommission = {
 
         await sendEmail({
           to: email,
-          subject: `Export Commission - Groupe Valorem - ${dateStr}`,
+          subject: `Export commission - Groupe Valorem - ${dateStr}`,
           text: `Veuillez trouver en pièce jointe l'export de commission pour la date du ${dateStr}`,
           html: `
-            <h2>Export Commission</h2>
+            <h2>Export commission - Groupe Valorem</h2>
             <p>Veuillez trouver en pièce jointe l'export de commission pour la date du ${dateStr}</p>
           `,
           attachments: [
