@@ -1,33 +1,6 @@
 import { Media, SuppliersCommissionsColumn } from "@/payload-types";
 import * as XLSX from "xlsx";
 
-// Helper function to apply styling to Excel cells
-export const applyCellStyle = (
-  worksheet: any,
-  cellAddress: string,
-  options: {
-    color?: string;
-    fontSize?: number;
-    bold?: boolean;
-  } = {},
-) => {
-  if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
-  if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
-
-  // Apply font styling
-  if (!worksheet[cellAddress].s.font) worksheet[cellAddress].s.font = {};
-  if (options.fontSize) worksheet[cellAddress].s.font.sz = options.fontSize;
-  if (options.bold) worksheet[cellAddress].s.font.bold = true;
-
-  // Apply background color
-  if (options.color) {
-    if (!worksheet[cellAddress].s.fill) worksheet[cellAddress].s.fill = {};
-    worksheet[cellAddress].s.fill = {
-      fgColor: { rgb: options.color.replace("#", "") },
-      patternType: "solid"
-    };
-  }
-};
 
 const letterToNumber = (letter: string): number => {
   let result = 0;
@@ -54,6 +27,7 @@ export const extractData = async ({
   let totalProduction = 0;
   let totalEncours = 0;
   let totalStructured = 0;
+  const sheetLines: any[] = [];
 
   /** WORKSHEET EXCEL */
   try {
@@ -68,6 +42,11 @@ export const extractData = async ({
       header: 1,
       raw: false,
     });
+
+    // Add header row to sheet_lines
+    if (dataSheet.length > 0 && Array.isArray(dataSheet[0])) {
+      sheetLines.push(dataSheet[0]);
+    }
 
     /** LOOP OVER ALL ROWS  */
     for (const row of dataSheet) {
@@ -97,6 +76,9 @@ export const extractData = async ({
       const typeString = typeInColumn.toString().toLowerCase();
       const amount = parseFloat(amountInColumn.toString()) || 0;
 
+      // Store the complete row data
+      sheetLines.push(row);
+
       /** ACCUMULATE ON CORRECT TYPE */
       if (
         mappingType.production.some((keyword) => typeString.includes(keyword))
@@ -117,6 +99,7 @@ export const extractData = async ({
       totalProduction,
       totalEncours,
       totalStructured,
+      sheetLines,
     };
   } catch (error) {
     console.error(error);

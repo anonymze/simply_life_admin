@@ -466,6 +466,7 @@ export const commission_suppliers = pgTable(
       }),
     encours: numeric("encours").notNull(),
     production: numeric("production").notNull(),
+    sheet_lines: varchar("sheet_lines").notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,

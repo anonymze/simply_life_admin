@@ -84,6 +84,8 @@ export const CommissionImports: CollectionConfig = {
             };
           } = {};
 
+          const commissionSupplierIds: string[] = [];
+
           await Promise.all(
             commissionImports.docs.map(async (supplierFile) => {
               if (
@@ -127,29 +129,47 @@ export const CommissionImports: CollectionConfig = {
                 codes,
               });
 
-              console.log(`Supplier ${supplierFile.supplier.name} data:`, {
-                encours: data.totalEncours,
-                production: data.totalProduction,
-                structured: data.totalStructured,
-              });
+              const formattedTotalEncours = Number(
+                (data.totalEncours || 0).toFixed(2),
+              );
+              const formattedTotalProduction = Number(
+                (data.totalProduction || 0).toFixed(2),
+              );
+              const formattedTotalStructured = Number(
+                (data.totalStructured || 0).toFixed(2),
+              );
 
-              totalGlobalEncours += data.totalEncours;
-              totalGlobalProduction += data.totalProduction;
-              totalGlobalStructured += data.totalStructured;
+              totalGlobalEncours += formattedTotalEncours;
+              totalGlobalProduction += formattedTotalProduction;
+              totalGlobalStructured += formattedTotalStructured;
               suppliersData[supplierFile.supplier.id] = {
                 supplierName: supplierFile.supplier.name,
-                encours: Number(data.totalEncours.toFixed(2)),
-                production: Number(data.totalProduction.toFixed(2)),
-                structured: Number(data.totalStructured.toFixed(2)),
+                encours: formattedTotalEncours,
+                production: formattedTotalProduction,
+                structured: formattedTotalStructured,
               };
+
+              // Create commission-supplier record
+              const commissionSupplier = await req.payload.create({
+                collection: "commission-suppliers",
+                data: {
+                  supplier: supplierFile.supplier.id,
+                  encours: formattedTotalEncours,
+                  production: formattedTotalProduction,
+                  sheet_lines: JSON.stringify(data.sheetLines),
+                },
+              });
+
+              commissionSupplierIds.push(commissionSupplier.id);
             }),
           );
 
           return Response.json({
-            totalGlobalEncours: totalGlobalEncours.toFixed(2),
-            totalGlobalProduction: totalGlobalProduction.toFixed(2),
-            totalGlobalStructured: totalGlobalStructured.toFixed(2),
+            totalGlobalEncours: totalGlobalEncours,
+            totalGlobalProduction: totalGlobalProduction,
+            totalGlobalStructured: totalGlobalStructured,
             suppliersData,
+            commissionSupplierIds,
           });
         } catch (error) {
           console.error(error);

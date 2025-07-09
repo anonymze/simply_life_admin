@@ -51,5 +51,14 @@ export const CommissionSuppliers: CollectionConfig = {
       },
       required: true,
     },
+    {
+      name: "sheet_lines",
+      type: "json",
+      label: {
+        en: "sheet",
+        fr: "sheet",
+      },
+      required: true,
+    },
   ],
 };

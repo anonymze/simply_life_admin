@@ -416,6 +416,7 @@ export interface CommissionSupplier {
   supplier: string | Supplier;
   encours: number;
   production: number;
+  sheet_lines: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -864,6 +865,7 @@ export interface CommissionSuppliersSelect<T extends boolean = true> {
   supplier?: T;
   encours?: T;
   production?: T;
+  sheet_lines?: T;
   updatedAt?: T;
   createdAt?: T;
 }

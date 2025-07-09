@@ -1,7 +1,6 @@
 import { sendEmail } from "@/emails/email";
 import { PayloadRequest } from "payload";
 import * as XLSX from "xlsx";
-import { applyCellStyle } from "../xlsx";
 import {
   organizeCommissionsByMonth,
   organizeCommissionsByYear,
@@ -127,37 +126,6 @@ const endpointsCommission = {
       // Create worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(excelData);
 
-      // Apply styling to headers (row 1)
-      applyCellStyle(worksheet, "A1", { fontSize: 14, bold: true });
-      applyCellStyle(worksheet, "B1", { fontSize: 14, bold: true });
-      applyCellStyle(worksheet, "C1", { fontSize: 14, bold: true });
-
-      // Apply colors to data rows (production and encours columns)
-      const dataRowCount = commission.commission_suppliers?.length || 0;
-      for (let i = 2; i <= dataRowCount + 1; i++) {
-        // Production column (B) - red color
-        applyCellStyle(worksheet, `B${i}`, { color: "#FDA29B" });
-        // Encours column (C) - blue color
-        applyCellStyle(worksheet, `C${i}`, { color: "#6172F3" });
-      }
-
-      // Apply styling to totals row
-      const totalRowIndex = dataRowCount + 3; // +2 for header and empty row, +1 for 1-based indexing
-      applyCellStyle(worksheet, `A${totalRowIndex}`, {
-        fontSize: 16,
-        bold: true,
-      });
-      applyCellStyle(worksheet, `B${totalRowIndex}`, {
-        fontSize: 16,
-        bold: true,
-        color: "#FDA29B",
-      });
-      applyCellStyle(worksheet, `C${totalRowIndex}`, {
-        fontSize: 16,
-        bold: true,
-        color: "#6172F3",
-      });
-
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, "Commission Data");
 
@@ -241,6 +209,7 @@ const endpointsCommission = {
               encours: commissionSupplier.encours,
               production: commissionSupplier.production,
               supplier: commissionSupplier.supplier,
+              sheet_lines: "",
             },
           });
         }),
