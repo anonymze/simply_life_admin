@@ -101,11 +101,6 @@ export const CommissionImports: CollectionConfig = {
                     equals: supplierFile.supplier.id,
                   },
                 },
-                select: {
-                  type_column_letter: true,
-                  code_column_letter: true,
-                  amount_column_letter: true,
-                },
               });
 
               if (!supplierColumns.docs.length)
@@ -117,6 +112,7 @@ export const CommissionImports: CollectionConfig = {
                 type_column_letter,
                 code_column_letter,
                 amount_column_letter,
+                header_row,
               } = supplierColumns.docs[0];
 
               const data = await extractData({
@@ -125,6 +121,7 @@ export const CommissionImports: CollectionConfig = {
                   typeLetter: type_column_letter,
                   codeLetter: code_column_letter,
                   amountLetter: amount_column_letter,
+                  headerRow: header_row,
                 },
                 codes,
               });

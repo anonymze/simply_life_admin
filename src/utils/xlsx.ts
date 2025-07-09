@@ -1,7 +1,6 @@
 import { Media, SuppliersCommissionsColumn } from "@/payload-types";
 import * as XLSX from "xlsx";
 
-
 const letterToNumber = (letter: string): number => {
   let result = 0;
   const upperLetter = letter.toUpperCase(); // Convert to uppercase first
@@ -21,6 +20,7 @@ export const extractData = async ({
     codeLetter: SuppliersCommissionsColumn["code_column_letter"];
     typeLetter: SuppliersCommissionsColumn["type_column_letter"];
     amountLetter: SuppliersCommissionsColumn["amount_column_letter"];
+    headerRow: SuppliersCommissionsColumn["header_row"];
   };
   codes: string[];
 }) => {
@@ -44,12 +44,13 @@ export const extractData = async ({
     });
 
     // Add header row to sheet_lines
-    if (dataSheet.length > 0 && Array.isArray(dataSheet[0])) {
-      sheetLines.push(dataSheet[0]);
+    if (dataSheet.length > 0 && Array.isArray(dataSheet[columns.headerRow - 1])) {
+      sheetLines.push(dataSheet[columns.headerRow - 1]);
     }
 
-    /** LOOP OVER ALL ROWS  */
-    for (const row of dataSheet) {
+    /** LOOP OVER ALL ROWS STARTING FROM HEADER ROW */
+    for (let i = columns.headerRow - 1; i < dataSheet.length; i++) {
+      const row = dataSheet[i];
       if (!Array.isArray(row)) continue;
 
       // console.log(letterToNumber(columns.codeLetter));

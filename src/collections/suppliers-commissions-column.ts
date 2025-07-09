@@ -74,8 +74,8 @@ export const SupplierCommissionsColumn: CollectionConfig = {
       name: "header_row",
       type: "number",
       label: {
-        en: "Column amount",
-        fr: "Lettre de la colonne du montant de la commission",
+        en: "header",
+        fr: "header",
       },
       required: true,
     },
