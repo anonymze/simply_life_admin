@@ -117,7 +117,8 @@ const endpointsCommission = {
           // Create data for this supplier's sheet
           const supplierData = [];
 
-          // Add supplier totals at the top
+          // Add headers and supplier totals at the top
+          supplierData.push(["", "Production", "Encours"]);
           supplierData.push(["Total", production, encours]);
 
           // Add empty row after totals
