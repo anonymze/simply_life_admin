@@ -416,7 +416,15 @@ export interface CommissionSupplier {
   supplier: string | Supplier;
   encours: number;
   production: number;
-  sheet_lines: string;
+  sheet_lines:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -465,6 +473,7 @@ export interface SuppliersCommissionsColumn {
   code_column_letter: string;
   type_column_letter: string;
   amount_column_letter: string;
+  header_row: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -973,6 +982,7 @@ export interface SuppliersCommissionsColumnSelect<T extends boolean = true> {
   code_column_letter?: T;
   type_column_letter?: T;
   amount_column_letter?: T;
+  header_row?: T;
   updatedAt?: T;
   createdAt?: T;
 }
