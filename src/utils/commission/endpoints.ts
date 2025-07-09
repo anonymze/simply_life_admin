@@ -94,11 +94,10 @@ const endpointsCommission = {
       const workbook = XLSX.utils.book_new();
 
       // Prepare data for Excel
-      const excelData = [];
       let totalEncours = 0;
       let totalProduction = 0;
 
-      // Process commission suppliers
+      // Process commission suppliers - create one sheet per supplier
       if (
         commission.commission_suppliers &&
         commission.commission_suppliers.length > 0
@@ -110,41 +109,41 @@ const endpointsCommission = {
           const encours = cs.encours || 0;
           const production = cs.production || 0;
 
-          // Add supplier name header
-          excelData.push([supplier]);
-          excelData.push([]);
+          // Create data for this supplier's sheet
+          const supplierData = [];
 
           // Add sheet_lines data for this supplier
           if (cs.sheet_lines && Array.isArray(cs.sheet_lines)) {
             cs.sheet_lines.forEach((line) => {
               if (Array.isArray(line)) {
-                excelData.push(line);
+                supplierData.push(line);
               }
             });
           }
 
           // Add empty row before supplier totals
-          excelData.push([]);
+          supplierData.push([]);
           
           // Add supplier totals
-          excelData.push(["Total " + supplier, production, encours]);
-          
-          // Add empty row after supplier
-          excelData.push([]);
+          supplierData.push(["Total", production, encours]);
+
+          // Create worksheet for this supplier
+          const worksheet = XLSX.utils.aoa_to_sheet(supplierData);
+
+          // Add worksheet to workbook with supplier name
+          XLSX.utils.book_append_sheet(workbook, worksheet, supplier);
 
           totalEncours += encours;
           totalProduction += production;
         });
       }
 
-      // Add final totals row
-      excelData.push(["TOTAL GÉNÉRAL", totalProduction, totalEncours]);
-
-      // Create worksheet
-      const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-
-      // Add worksheet to workbook
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Commission Data");
+      // Create a summary sheet with overall totals
+      const summaryData = [
+        ["TOTAL GÉNÉRAL", totalProduction, totalEncours]
+      ];
+      const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
+      XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Summary");
 
       // Generate Excel buffer
       const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
@@ -152,17 +151,21 @@ const endpointsCommission = {
       // Check if email is provided
       if (email) {
         // Send Excel file via email
+        const dateStr = new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+        const userName = typeof commission.app_user === "string" ? "user" : (commission.app_user?.name || "user");
+        const filename = `${userName}_${dateStr.replace(/\//g, "-")}_commission.xlsx`;
+        
         await sendEmail({
           to: email,
-          subject: `Export Commission - Groupe Valorem - ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
-          text: `Veuillez trouver en pièce jointe l'export de commission pour la date du ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}`,
+          subject: `Export Commission - Groupe Valorem - ${dateStr}`,
+          text: `Veuillez trouver en pièce jointe l'export de commission pour la date du ${dateStr}`,
           html: `
             <h2>Export Commission</h2>
-            <p>Veuillez trouver en pièce jointe l'export de commission pour la date du ${new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}</p>
+            <p>Veuillez trouver en pièce jointe l'export de commission pour la date du ${dateStr}</p>
           `,
           attachments: [
             {
-              filename: `commission_${commissionId}.xlsx`,
+              filename: filename,
               content: buffer,
               contentType:
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -176,11 +179,15 @@ const endpointsCommission = {
         });
       } else {
         // Return Excel file directly
+        const dateStr = new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+        const userName = typeof commission.app_user === "string" ? "user" : (commission.app_user?.name || "user");
+        const filename = `${userName}_${dateStr.replace(/\//g, "-")}_commission.xlsx`;
+        
         return new Response(buffer, {
           headers: {
             "Content-Type":
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Content-Disposition": `attachment; filename="commission_${commissionId}.xlsx"`,
+            "Content-Disposition": `attachment; filename="${filename}"`,
           },
         });
       }
