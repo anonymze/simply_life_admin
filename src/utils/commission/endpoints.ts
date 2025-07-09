@@ -98,9 +98,6 @@ const endpointsCommission = {
       let totalEncours = 0;
       let totalProduction = 0;
 
-      // Headers
-      excelData.push(["Fournisseur", "Production", "Encours"]);
-
       // Process commission suppliers
       if (
         commission.commission_suppliers &&
@@ -113,15 +110,35 @@ const endpointsCommission = {
           const encours = cs.encours || 0;
           const production = cs.production || 0;
 
-          excelData.push([supplier, encours, production]);
+          // Add supplier name header
+          excelData.push([supplier]);
+          excelData.push([]);
+
+          // Add sheet_lines data for this supplier
+          if (cs.sheet_lines && Array.isArray(cs.sheet_lines)) {
+            cs.sheet_lines.forEach((line) => {
+              if (Array.isArray(line)) {
+                excelData.push(line);
+              }
+            });
+          }
+
+          // Add empty row before supplier totals
+          excelData.push([]);
+          
+          // Add supplier totals
+          excelData.push(["Total " + supplier, production, encours]);
+          
+          // Add empty row after supplier
+          excelData.push([]);
+
           totalEncours += encours;
           totalProduction += production;
         });
       }
 
-      // Add totals row
-      excelData.push([]);
-      excelData.push(["Total", totalProduction, totalEncours]);
+      // Add final totals row
+      excelData.push(["TOTAL GÉNÉRAL", totalProduction, totalEncours]);
 
       // Create worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(excelData);
