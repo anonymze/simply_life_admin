@@ -46,7 +46,7 @@ export const CommissionImports: CollectionConfig = {
           });
 
           if (!commissionImports?.docs?.length)
-            "Vous n'avez aucun fichier d'import global de commission.";
+            "Vous n'avez importé aucun fichier global de commission.";
 
           const userCommissions = await req.payload.find({
             collection: "app-users-commissions-code",
