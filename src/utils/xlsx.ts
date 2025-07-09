@@ -1,6 +1,34 @@
 import { Media, SuppliersCommissionsColumn } from "@/payload-types";
 import * as XLSX from "xlsx";
 
+// Helper function to apply styling to Excel cells
+export const applyCellStyle = (
+  worksheet: any,
+  cellAddress: string,
+  options: {
+    color?: string;
+    fontSize?: number;
+    bold?: boolean;
+  } = {},
+) => {
+  if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
+  if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+
+  // Apply font styling
+  if (!worksheet[cellAddress].s.font) worksheet[cellAddress].s.font = {};
+  if (options.fontSize) worksheet[cellAddress].s.font.sz = options.fontSize;
+  if (options.bold) worksheet[cellAddress].s.font.bold = true;
+
+  // Apply background color
+  if (options.color) {
+    if (!worksheet[cellAddress].s.fill) worksheet[cellAddress].s.fill = {};
+    worksheet[cellAddress].s.fill.fgColor = {
+      rgb: options.color.replace("#", ""),
+    };
+    worksheet[cellAddress].s.fill.patternType = "solid";
+  }
+};
+
 const letterToNumber = (letter: string): number => {
   let result = 0;
   const upperLetter = letter.toUpperCase(); // Convert to uppercase first
