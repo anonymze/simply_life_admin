@@ -117,6 +117,12 @@ const endpointsCommission = {
           // Create data for this supplier's sheet
           const supplierData = [];
 
+          // Add supplier totals at the top
+          supplierData.push(["Total", production, encours]);
+          
+          // Add empty row after totals
+          supplierData.push([]);
+
           // Add sheet_lines data for this supplier
           if (cs.sheet_lines && Array.isArray(cs.sheet_lines)) {
             cs.sheet_lines.forEach((line) => {
@@ -125,12 +131,6 @@ const endpointsCommission = {
               }
             });
           }
-
-          // Add empty row before supplier totals
-          supplierData.push([]);
-
-          // Add supplier totals
-          supplierData.push(["Total", production, encours]);
 
           // Create worksheet for this supplier
           const worksheet = XLSX.utils.aoa_to_sheet(supplierData);
@@ -146,7 +146,7 @@ const endpointsCommission = {
       // Create a summary sheet with overall totals
       const summaryData = [["TOTAL GÉNÉRAL", totalProduction, totalEncours]];
       const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
-      XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Summary");
+      XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Général");
 
       // Generate Excel buffer
       const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
