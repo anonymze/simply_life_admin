@@ -176,18 +176,12 @@ const endpointsCommission = {
       const data = (await req.json?.()) as {
         app_user: string;
         date: string;
-        commission_suppliers: [
-          {
-            supplier: string;
-            encours: number;
-            production: number;
-          },
-        ];
+        commission_supplier_ids: string[];
       } | null;
 
       if (
         !data ||
-        !data.commission_suppliers.length ||
+        !data?.commission_supplier_ids?.length ||
         !data.app_user ||
         !data.date
       ) {
@@ -201,28 +195,12 @@ const endpointsCommission = {
         );
       }
 
-      const commissionSuppliers = await Promise.all(
-        data.commission_suppliers.map(async (commissionSupplier) => {
-          return await req.payload.create({
-            collection: "commission-suppliers",
-            data: {
-              encours: commissionSupplier.encours,
-              production: commissionSupplier.production,
-              supplier: commissionSupplier.supplier,
-              sheet_lines: "",
-            },
-          });
-        }),
-      );
-
       await req.payload.create({
         collection: "commissions",
         data: {
           app_user: data.app_user,
           date: data.date,
-          commission_suppliers: commissionSuppliers.map(
-            (supplier) => supplier.id,
-          ),
+          commission_suppliers: data.commission_supplier_ids,
         },
       });
 
