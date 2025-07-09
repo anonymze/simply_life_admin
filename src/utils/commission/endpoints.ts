@@ -144,7 +144,10 @@ const endpointsCommission = {
       }
 
       // Create a summary sheet with overall totals
-      const summaryData = [["TOTAL GÉNÉRAL", totalProduction, totalEncours]];
+      const summaryData = [
+        ["", "Production", "Encours"],
+        ["TOTAL GÉNÉRAL", totalProduction, totalEncours]
+      ];
       const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
       XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Général");
 
