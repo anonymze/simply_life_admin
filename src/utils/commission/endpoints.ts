@@ -90,6 +90,32 @@ const endpointsCommission = {
         );
       }
 
+      // Helper function to apply styling to Excel cells
+      const applyCellStyle = (
+        worksheet: any,
+        cellAddress: string,
+        options: {
+          color?: string;
+          fontSize?: number;
+          bold?: boolean;
+        } = {}
+      ) => {
+        if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
+        if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+        
+        // Apply font styling
+        if (!worksheet[cellAddress].s.font) worksheet[cellAddress].s.font = {};
+        if (options.fontSize) worksheet[cellAddress].s.font.sz = options.fontSize;
+        if (options.bold) worksheet[cellAddress].s.font.bold = true;
+        
+        // Apply background color
+        if (options.color) {
+          if (!worksheet[cellAddress].s.fill) worksheet[cellAddress].s.fill = {};
+          worksheet[cellAddress].s.fill.fgColor = { rgb: options.color.replace('#', '') };
+          worksheet[cellAddress].s.fill.patternType = 'solid';
+        }
+      };
+
       // Create Excel workbook
       const workbook = XLSX.utils.book_new();
 
@@ -125,6 +151,26 @@ const endpointsCommission = {
 
       // Create worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+
+      // Apply styling to headers (row 1)
+      applyCellStyle(worksheet, 'A1', { fontSize: 14, bold: true });
+      applyCellStyle(worksheet, 'B1', { fontSize: 14, bold: true });
+      applyCellStyle(worksheet, 'C1', { fontSize: 14, bold: true });
+
+      // Apply colors to data rows (encours and production columns)
+      const dataRowCount = commission.commission_suppliers?.length || 0;
+      for (let i = 2; i <= dataRowCount + 1; i++) {
+        // Encours column (B) - blue color
+        applyCellStyle(worksheet, `B${i}`, { color: '#6172F3' });
+        // Production column (C) - red color
+        applyCellStyle(worksheet, `C${i}`, { color: '#FDA29B' });
+      }
+
+      // Apply styling to totals row
+      const totalRowIndex = dataRowCount + 3; // +2 for header and empty row, +1 for 1-based indexing
+      applyCellStyle(worksheet, `A${totalRowIndex}`, { fontSize: 16, bold: true });
+      applyCellStyle(worksheet, `B${totalRowIndex}`, { fontSize: 16, bold: true, color: '#6172F3' });
+      applyCellStyle(worksheet, `C${totalRowIndex}`, { fontSize: 16, bold: true, color: '#FDA29B' });
 
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, "Commission Data");
