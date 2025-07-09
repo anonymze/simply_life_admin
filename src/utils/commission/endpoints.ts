@@ -123,7 +123,7 @@ const endpointsCommission = {
 
           // Add empty row before supplier totals
           supplierData.push([]);
-          
+
           // Add supplier totals
           supplierData.push(["Total", production, encours]);
 
@@ -139,9 +139,7 @@ const endpointsCommission = {
       }
 
       // Create a summary sheet with overall totals
-      const summaryData = [
-        ["TOTAL GÉNÉRAL", totalProduction, totalEncours]
-      ];
+      const summaryData = [["TOTAL GÉNÉRAL", totalProduction, totalEncours]];
       const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
       XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Summary");
 
@@ -151,10 +149,17 @@ const endpointsCommission = {
       // Check if email is provided
       if (email) {
         // Send Excel file via email
-        const dateStr = new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" });
-        const userName = typeof commission.app_user === "string" ? "user" : (commission.app_user?.name || "user");
+        const dateStr = new Date(commission.date).toLocaleDateString("fr-FR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        });
+        const userName =
+          typeof commission.app_user === "string"
+            ? "utilisateur"
+            : commission.app_user?.lastname;
         const filename = `${userName}_${dateStr.replace(/\//g, "-")}_commission.xlsx`;
-        
+
         await sendEmail({
           to: email,
           subject: `Export Commission - Groupe Valorem - ${dateStr}`,
@@ -179,10 +184,17 @@ const endpointsCommission = {
         });
       } else {
         // Return Excel file directly
-        const dateStr = new Date(commission.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" });
-        const userName = typeof commission.app_user === "string" ? "user" : (commission.app_user?.name || "user");
+        const dateStr = new Date(commission.date).toLocaleDateString("fr-FR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        });
+        const userName =
+          typeof commission.app_user === "string"
+            ? "user"
+            : commission.app_user?.name || "user";
         const filename = `${userName}_${dateStr.replace(/\//g, "-")}_commission.xlsx`;
-        
+
         return new Response(buffer, {
           headers: {
             "Content-Type":
