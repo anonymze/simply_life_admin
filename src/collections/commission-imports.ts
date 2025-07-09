@@ -132,17 +132,17 @@ export const CommissionImports: CollectionConfig = {
               totalGlobalStructured += data.totalStructured;
               suppliersData[supplierFile.supplier.id] = {
                 supplierName: supplierFile.supplier.name,
-                encours: data.totalEncours,
-                production: data.totalProduction,
-                structured: data.totalStructured,
+                encours: Number(data.totalEncours.toFixed(2)),
+                production: Number(data.totalProduction.toFixed(2)),
+                structured: Number(data.totalStructured.toFixed(2)),
               };
             }),
           );
 
           return Response.json({
-            totalGlobalEncours,
-            totalGlobalProduction,
-            totalGlobalStructured,
+            totalGlobalEncours: totalGlobalEncours.toFixed(2),
+            totalGlobalProduction: totalGlobalProduction.toFixed(2),
+            totalGlobalStructured: totalGlobalStructured.toFixed(2),
             suppliersData,
           });
         } catch (error) {
