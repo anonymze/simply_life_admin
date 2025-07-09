@@ -99,7 +99,7 @@ export const extractData = async ({
 };
 
 const mappingType = {
-  production: ["chiffre", "arbitrage"],
-  encours: ["encours"],
+  production: ["chiffre", "arbitrage", "versements"],
+  encours: ["encours", "gestion", "support "],
   structured: ["structured product"],
 };
