@@ -100,7 +100,7 @@ const endpointsCommission = {
       let totalProduction = 0;
 
       // Headers
-      excelData.push(["Fournisseur", "Encours", "Production"]);
+      excelData.push(["Fournisseur", "Production", "Encours"]);
 
       // Process commission suppliers
       if (
@@ -122,7 +122,7 @@ const endpointsCommission = {
 
       // Add totals row
       excelData.push([]);
-      excelData.push(["Total", totalEncours, totalProduction]);
+      excelData.push(["Total", totalProduction, totalEncours]);
 
       // Create worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(excelData);
@@ -132,13 +132,13 @@ const endpointsCommission = {
       applyCellStyle(worksheet, "B1", { fontSize: 14, bold: true });
       applyCellStyle(worksheet, "C1", { fontSize: 14, bold: true });
 
-      // Apply colors to data rows (encours and production columns)
+      // Apply colors to data rows (production and encours columns)
       const dataRowCount = commission.commission_suppliers?.length || 0;
       for (let i = 2; i <= dataRowCount + 1; i++) {
-        // Encours column (B) - blue color
-        applyCellStyle(worksheet, `B${i}`, { color: "#6172F3" });
-        // Production column (C) - red color
-        applyCellStyle(worksheet, `C${i}`, { color: "#FDA29B" });
+        // Production column (B) - red color
+        applyCellStyle(worksheet, `B${i}`, { color: "#FDA29B" });
+        // Encours column (C) - blue color
+        applyCellStyle(worksheet, `C${i}`, { color: "#6172F3" });
       }
 
       // Apply styling to totals row
@@ -150,12 +150,12 @@ const endpointsCommission = {
       applyCellStyle(worksheet, `B${totalRowIndex}`, {
         fontSize: 16,
         bold: true,
-        color: "#6172F3",
+        color: "#FDA29B",
       });
       applyCellStyle(worksheet, `C${totalRowIndex}`, {
         fontSize: 16,
         bold: true,
-        color: "#FDA29B",
+        color: "#6172F3",
       });
 
       // Add worksheet to workbook

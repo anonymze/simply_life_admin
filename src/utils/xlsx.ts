@@ -22,10 +22,10 @@ export const applyCellStyle = (
   // Apply background color
   if (options.color) {
     if (!worksheet[cellAddress].s.fill) worksheet[cellAddress].s.fill = {};
-    worksheet[cellAddress].s.fill.fgColor = {
-      rgb: options.color.replace("#", ""),
+    worksheet[cellAddress].s.fill = {
+      fgColor: { rgb: options.color.replace("#", "") },
+      patternType: "solid"
     };
-    worksheet[cellAddress].s.fill.patternType = "solid";
   }
 };
 
