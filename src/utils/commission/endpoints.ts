@@ -97,6 +97,11 @@ const endpointsCommission = {
       let totalEncours = 0;
       let totalProduction = 0;
 
+      const userName =
+        typeof commission.app_user === "string"
+          ? "utilisateur"
+          : commission.app_user?.lastname;
+
       // Process commission suppliers - create one sheet per supplier
       if (
         commission.commission_suppliers &&
@@ -154,10 +159,7 @@ const endpointsCommission = {
           month: "2-digit",
           year: "2-digit",
         });
-        const userName =
-          typeof commission.app_user === "string"
-            ? "utilisateur"
-            : commission.app_user?.lastname;
+
         const filename = `${userName}_${dateStr.replace(/\//g, "-")}_commission.xlsx`;
 
         await sendEmail({
@@ -189,10 +191,7 @@ const endpointsCommission = {
           month: "2-digit",
           year: "2-digit",
         });
-        const userName =
-          typeof commission.app_user === "string"
-            ? "user"
-            : commission.app_user?.name || "user";
+
         const filename = `${userName}_${dateStr.replace(/\//g, "-")}_commission.xlsx`;
 
         return new Response(buffer, {
