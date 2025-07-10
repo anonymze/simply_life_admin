@@ -32,8 +32,9 @@ const finalRegistrationSchema = z.object({
     .refine((password) => /\d/.test(password), {
       message: "Le mot de passe doit contenir au moins un chiffre",
     }),
-  lastName: z.string().min(1, { message: "Le nom est requis" }),
-  firstName: z.string().min(1, { message: "Le prénom est requis" }),
+  lastname: z.string().min(1, { message: "Le nom est requis" }),
+  firstname: z.string().min(1, { message: "Le prénom est requis" }),
+  entry_date: z.string().optional(),
   phone: z
     .string()
     .min(10, {
@@ -263,9 +264,10 @@ export const AppUsers: CollectionConfig = {
               email: validatedData.email,
               password: validatedData.password,
               role: validatedData.role,
-              lastname: validatedData.lastName,
-              firstname: validatedData.firstName,
+              lastname: validatedData.lastname,
+              firstname: validatedData.firstname,
               phone: validatedData.phone,
+              entry_date: validatedData.entry_date,
               photo: image?.id,
             },
           });
@@ -357,6 +359,15 @@ export const AppUsers: CollectionConfig = {
       },
       admin: {
         hidden: true,
+      },
+    },
+    {
+      name: "entry_date",
+      type: "date",
+      required: false,
+      label: {
+        en: "Entry date",
+        fr: "Date d'entrée",
       },
     },
     {

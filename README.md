@@ -37,3 +37,5 @@ FORGOT PASSWORD LENGTH
 alerte du mois -> commissions -> newlsetter ??
 
 CGP (indépendant) ->  envoyer facture à client (final), dédié une page hors admin
+
+pastille nouvel uilisateur
