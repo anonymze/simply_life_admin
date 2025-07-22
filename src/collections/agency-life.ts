@@ -111,7 +111,14 @@ export const AgencyLife: CollectionConfig = {
             en: "Birthday ",
             fr: "Anniversaire",
           },
-          value: "birthday  ",
+          value: "birthday",
+        },
+        {
+          label: {
+            en: "Meeting ",
+            fr: "Réunion",
+          },
+          value: "meeting ",
         },
       ],
       defaultValue: "general",

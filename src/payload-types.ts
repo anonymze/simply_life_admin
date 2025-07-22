@@ -533,8 +533,6 @@ export interface Structured {
   barrier: number;
   constatation: string;
   insurer: string;
-  start_commercial?: string | null;
-  end_commercial?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1041,8 +1039,6 @@ export interface StructuredSelect<T extends boolean = true> {
   barrier?: T;
   constatation?: T;
   insurer?: T;
-  start_commercial?: T;
-  end_commercial?: T;
   updatedAt?: T;
   createdAt?: T;
 }
