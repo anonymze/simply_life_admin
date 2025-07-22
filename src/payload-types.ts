@@ -486,7 +486,7 @@ export interface AgencyLife {
   id: string;
   title: string;
   annotation?: string | null;
-  type: 'general' | 'sport' | 'seminaire' | 'food' | 'birthday' | 'meetings';
+  type: 'general' | 'sport' | 'seminaire' | 'food' | 'birthday' | 'meeting';
   event_start: string;
   event_end: string;
   address?: string | null;
