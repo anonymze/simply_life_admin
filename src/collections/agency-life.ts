@@ -118,7 +118,7 @@ export const AgencyLife: CollectionConfig = {
             en: "Meeting ",
             fr: "Réunion",
           },
-          value: "meeting",
+          value: "meetings",
         },
       ],
       defaultValue: "general",
