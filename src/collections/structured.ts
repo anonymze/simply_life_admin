@@ -82,5 +82,23 @@ export const Structured: CollectionConfig = {
       },
       required: true,
     },
+    {
+      name: "start_commercial",
+      type: "date",
+      label: {
+        en: "Constatation",
+        fr: "Date de constatation",
+      },
+      required: false,
+    },
+    {
+      name: "end_commercial",
+      type: "date",
+      label: {
+        en: "Constatation",
+        fr: "Date de constatation",
+      },
+      required: false,
+    },
   ],
 };
