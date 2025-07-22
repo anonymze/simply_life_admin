@@ -60,7 +60,7 @@ export const Structured: CollectionConfig = {
       type: "number",
       label: {
         en: "Barrier",
-        fr: "Barriere de regressivité",
+        fr: "Barrière dégressivité",
       },
       required: true,
     },
