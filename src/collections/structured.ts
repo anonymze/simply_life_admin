@@ -25,7 +25,43 @@ export const Structured: CollectionConfig = {
       name: "supplier",
       type: "relationship",
       relationTo: "suppliers",
+      label: {
+        en: "Supplier",
+        fr: "Assureur",
+      },
       unique: false,
+      required: true,
+    },
+    {
+      name: "broker",
+      type: "select",
+      label: {
+        en: "Broker",
+        fr: "Broker",
+      },
+      options: [
+        {
+          label: {
+            en: "Kepler Cheuvreux",
+            fr: "Kepler Cheuvreux",
+          },
+          value: "kepler",
+        },
+        {
+          label: {
+            en: "Irbis",
+            fr: "Irbis",
+          },
+          value: "irbis",
+        },
+        {
+          label: {
+            en: "Silex",
+            fr: "Silex",
+          },
+          value: "silex",
+        },
+      ],
       required: true,
     },
     {
@@ -33,7 +69,7 @@ export const Structured: CollectionConfig = {
       type: "number",
       label: {
         en: "Max",
-        fr: "Maximum de l'enveloppe",
+        fr: "Enveloppe globale",
       },
       required: true,
     },
@@ -42,25 +78,25 @@ export const Structured: CollectionConfig = {
       type: "number",
       label: {
         en: "Current",
-        fr: "Montant actuel",
+        fr: "Solde enveloppe",
       },
       required: true,
     },
     {
-      name: "coupon",
-      type: "number",
+      name: "start_comm",
+      type: "date",
       label: {
-        en: "Coupn",
-        fr: "Coupon annuel",
+        en: "start comm",
+        fr: "Début de commercialisation",
       },
       required: true,
     },
     {
-      name: "barrier",
-      type: "number",
+      name: "end_comm",
+      type: "date",
       label: {
-        en: "Barrier",
-        fr: "Barrière dégressivité",
+        en: "end comm",
+        fr: "Fin de commercialisation",
       },
       required: true,
     },
@@ -68,19 +104,66 @@ export const Structured: CollectionConfig = {
       name: "constatation",
       type: "date",
       label: {
-        en: "Constatation",
-        fr: "Date de constatation",
+        en: "date constations",
+        fr: "Date de constations",
       },
       required: true,
     },
     {
-      name: "insurer",
+      name: "sousjacent",
       type: "text",
       label: {
-        en: "Insurer",
-        fr: "Assureur",
+        en: "Sous-jacent",
+        fr: "Sous-jacent",
+      },
+      required: true,
+    },
+    {
+      name: "mature",
+      type: "text",
+      label: {
+        en: "Maturité",
+        fr: "Maturité",
+      },
+      required: true,
+    },
+    {
+      name: "coupon",
+      type: "text",
+      label: {
+        en: "Coupon de remboursement anticipé",
+        fr: "Coupon de remboursement anticipé",
+      },
+      required: true,
+    },
+    {
+      name: "frequency",
+      type: "text",
+      label: {
+        en: "Fréquence de remboursement anticipé",
+        fr: "Fréquence de remboursement anticipé",
+      },
+      required: true,
+    },
+    {
+      name: "refund",
+      type: "text",
+      label: {
+        en: "Seuil de remboursement anticipé",
+        fr: "Seuil de remboursement anticipé :",
+      },
+      required: true,
+    },
+    {
+      name: "capital",
+      type: "text",
+      label: {
+        en: "Seuil de perte en capital à maturité",
+        fr: "Seuil de perte en capital à maturité",
       },
       required: true,
     },
   ],
 };
+
+// ODDO BHF     Suravenir    Cardif BNP Paribas    Oradea Vie    Generali Patrimoine     Swiss Life     AXA Thema

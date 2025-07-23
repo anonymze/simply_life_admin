@@ -122,8 +122,8 @@ export const Commissions: CollectionConfig = {
         },
       },
       label: {
-        en: "Broqueur",
-        fr: "Broqueur",
+        en: "Broker",
+        fr: "Broker",
       },
       required: false,
     },
