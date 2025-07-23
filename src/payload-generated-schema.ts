@@ -7,22 +7,22 @@
  */
 
 import type {} from "@payloadcms/db-vercel-postgres";
+import { relations } from "@payloadcms/db-vercel-postgres/drizzle";
 import {
-  pgTable,
-  index,
-  uniqueIndex,
+  boolean,
   foreignKey,
+  index,
+  integer,
+  jsonb,
+  numeric,
+  pgEnum,
+  pgTable,
+  serial,
+  timestamp,
+  uniqueIndex,
   uuid,
   varchar,
-  timestamp,
-  boolean,
-  numeric,
-  integer,
-  serial,
-  jsonb,
-  pgEnum,
 } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
-import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
 export const enum__locales = pgEnum("enum__locales", ["fr", "en"]);
 export const enum_reservations_desk = pgEnum("enum_reservations_desk", [
   "1",
@@ -40,7 +40,13 @@ export const enum_agency_life_type = pgEnum("enum_agency_life_type", [
   "sport",
   "seminaire",
   "food",
-  "birthday  ",
+  "birthday",
+  "meeting",
+]);
+export const enum_structured_broker = pgEnum("enum_structured_broker", [
+  "kepler",
+  "irbis",
+  "silex",
 ]);
 export const enum_sports_category = pgEnum("enum_sports_category", [
   "international",
@@ -708,6 +714,11 @@ export const app_users = pgTable(
       onDelete: "set null",
     }),
     notifications_token: varchar("notifications_token"),
+    entry_date: timestamp("entry_date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
     role: enum_app_users_role("role").notNull().default("independent"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
@@ -826,6 +837,7 @@ export const suppliers_commissions_column = pgTable(
     code_column_letter: varchar("code_column_letter").notNull(),
     type_column_letter: varchar("type_column_letter").notNull(),
     amount_column_letter: varchar("amount_column_letter").notNull(),
+    header_row: numeric("header_row").notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -860,7 +872,7 @@ export const agency_life = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     title: varchar("title").notNull(),
     annotation: varchar("annotation"),
-    type: enum_agency_life_type("type").notNull().default("general"),
+    type: varchar("type").notNull().default("general"),
     event_start: timestamp("event_start", {
       mode: "string",
       withTimezone: true,
@@ -1023,16 +1035,30 @@ export const structured = pgTable(
       .references(() => suppliers.id, {
         onDelete: "set null",
       }),
+    broker: enum_structured_broker("broker").notNull(),
     max: numeric("max").notNull(),
     current: numeric("current").notNull(),
-    coupon: numeric("coupon").notNull(),
-    barrier: numeric("barrier").notNull(),
+    start_comm: timestamp("start_comm", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    end_comm: timestamp("end_comm", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
     constatation: timestamp("constatation", {
       mode: "string",
       withTimezone: true,
       precision: 3,
     }).notNull(),
-    insurer: varchar("insurer").notNull(),
+    sousjacent: varchar("sousjacent").notNull(),
+    mature: varchar("mature").notNull(),
+    coupon: varchar("coupon").notNull(),
+    frequency: varchar("frequency").notNull(),
+    refund: varchar("refund").notNull(),
+    capital: varchar("capital").notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -2048,6 +2074,7 @@ type DatabaseSchema = {
   enum_reservations_desk: typeof enum_reservations_desk;
   enum_app_users_role: typeof enum_app_users_role;
   enum_agency_life_type: typeof enum_agency_life_type;
+  enum_structured_broker: typeof enum_structured_broker;
   enum_sports_category: typeof enum_sports_category;
   admins: typeof admins;
   supplier_categories_offers: typeof supplier_categories_offers;
