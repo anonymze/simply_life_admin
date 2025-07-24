@@ -269,7 +269,7 @@ export const AppUsers: CollectionConfig = {
               firstname: validatedData.firstname,
               phone: validatedData.phone,
               cabinet: validatedData.cabinet,
-              entry_date: validatedData.entry_date ?? undefined,
+              entry_date: validatedData.entry_date || undefined,
               photo: image?.id,
             },
           });
