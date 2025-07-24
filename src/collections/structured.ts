@@ -1,4 +1,4 @@
-import { canAccessApi } from "@/utils/helper";
+import { canAccessApi, validateMedia } from "@/utils/helper";
 import { type CollectionConfig } from "payload";
 
 export const Structured: CollectionConfig = {
@@ -162,6 +162,61 @@ export const Structured: CollectionConfig = {
         fr: "Seuil de perte en capital à maturité",
       },
       required: true,
+    },
+    {
+      name: "offers",
+      type: "array",
+      label: {
+        en: "Offers / Promotions / Brochures",
+        fr: "Offres / Promotions / Brochures",
+      },
+      labels: {
+        singular: {
+          en: "Offer / Promotion / Brochure",
+          fr: "Offre / Promotion / Brochure",
+        },
+        plural: {
+          en: "Offers / Promotions / Brochures",
+          fr: "Offres / Promotions / Brochures",
+        },
+      },
+      fields: [
+        {
+          name: "name",
+          type: "text",
+          label: {
+            en: "Brochure name",
+            fr: "Nom de la brochure",
+          },
+          required: true,
+        },
+        {
+          name: "file",
+          type: "upload",
+          relationTo: "media",
+          // @ts-expect-error
+          validate: (data) => {
+            return validateMedia(data, "application/pdf");
+          },
+          label: {
+            en: "Brochure File",
+            fr: "Fichier de la brochure",
+          },
+          admin: {
+            description: "Le fichier doit être au format PDF.",
+          },
+          required: true,
+        },
+        {
+          name: "description",
+          type: "text",
+          label: {
+            en: "Offer Description",
+            fr: "Description de l'offre",
+          },
+          required: false,
+        },
+      ],
     },
   ],
 };

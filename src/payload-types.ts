@@ -544,6 +544,17 @@ export interface Structured {
   frequency: string;
   refund: string;
   capital: string;
+  offers?:
+    | {
+        name: string;
+        /**
+         * Le fichier doit être au format PDF.
+         */
+        file: string | Media;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1058,6 +1069,14 @@ export interface StructuredSelect<T extends boolean = true> {
   frequency?: T;
   refund?: T;
   capital?: T;
+  offers?:
+    | T
+    | {
+        name?: T;
+        file?: T;
+        description?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
