@@ -34,6 +34,7 @@ const finalRegistrationSchema = z.object({
     }),
   lastname: z.string().min(1, { message: "Le nom est requis" }),
   firstname: z.string().min(1, { message: "Le prénom est requis" }),
+  cabinet: z.string().optional(),
   entry_date: z.string().optional(),
   phone: z
     .string()
@@ -267,7 +268,8 @@ export const AppUsers: CollectionConfig = {
               lastname: validatedData.lastname,
               firstname: validatedData.firstname,
               phone: validatedData.phone,
-              entry_date: validatedData.entry_date,
+              cabinet: validatedData.cabinet,
+              entry_date: validatedData.entry_date ?? undefined,
               photo: image?.id,
             },
           });
@@ -312,6 +314,15 @@ export const AppUsers: CollectionConfig = {
       label: {
         en: "Firstname",
         fr: "Prénom",
+      },
+    },
+    {
+      name: "cabinet",
+      type: "text",
+      required: false,
+      label: {
+        en: "Cabinet name",
+        fr: "Nom du cabinet",
       },
     },
     {

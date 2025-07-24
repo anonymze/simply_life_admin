@@ -45,6 +45,7 @@ const formSchema = z.object({
     }),
   lastname: z.string().min(1, { message: "Le nom est requis" }),
   firstname: z.string().min(1, { message: "Le prénom est requis" }),
+  cabinet: z.string().optional(),
   entry_date: z.string().optional(),
   phone: z
     .string()
@@ -82,6 +83,7 @@ export default function FormPage({
       password: "",
       lastname: "",
       firstname: "",
+      cabinet: "",
       phone: "",
       entry_date: "",
       image: null,
@@ -242,6 +244,20 @@ export default function FormPage({
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="cabinet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom du cabinet</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}

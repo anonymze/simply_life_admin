@@ -22,6 +22,7 @@ export default function FieldsEdit({ initialData }: { initialData: AppUser }) {
     firstname: initialData.firstname,
     phone: initialData.phone ?? "",
     entry_date: initialData.entry_date ?? undefined,
+    cabinet: "",
   });
   const { id: userId } = initialData;
 
@@ -274,6 +275,16 @@ export default function FieldsEdit({ initialData }: { initialData: AppUser }) {
             setFormData((prev) => ({ ...prev, firstname: e.target.value }))
           }
           value={formData.firstname}
+        />
+      </div>
+      <div className="field-type text">
+        <FieldLabel label={<span>Nom du cabinet</span>} />
+        <TextInput
+          path="cabinet"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData((prev) => ({ ...prev, cabinet: e.target.value }))
+          }
+          value={formData.cabinet}
         />
       </div>
       <div className="field-type text">

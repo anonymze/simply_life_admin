@@ -389,6 +389,7 @@ export interface AppUser {
   id: string;
   lastname: string;
   firstname: string;
+  cabinet?: string | null;
   phone?: string | null;
   /**
    * Le fichier doit être une image.
@@ -951,6 +952,7 @@ export interface ContactCategoriesSelect<T extends boolean = true> {
 export interface AppUsersSelect<T extends boolean = true> {
   lastname?: T;
   firstname?: T;
+  cabinet?: T;
   phone?: T;
   photo?: T;
   notifications_token?: T;
