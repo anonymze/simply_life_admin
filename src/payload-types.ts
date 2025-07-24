@@ -361,6 +361,10 @@ export interface Fundesy {
    * Le fichier doit être une vidéo.
    */
   video: string | Media;
+  /**
+   * Le fichier doit être au format Excel ou CSV.
+   */
+  excel: string | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -855,6 +859,7 @@ export interface FundesysSelect<T extends boolean = true> {
   date?: T;
   file?: T;
   video?: T;
+  excel?: T;
   updatedAt?: T;
   createdAt?: T;
 }

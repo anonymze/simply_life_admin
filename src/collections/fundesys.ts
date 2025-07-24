@@ -1,6 +1,5 @@
 import { canAccessApi, validateMedia } from "@/utils/helper";
-import { getPayload, type CollectionConfig } from "payload";
-import config from "@payload-config";
+import { type CollectionConfig } from "payload";
 
 export const Fundesys: CollectionConfig = {
   access: {
@@ -63,6 +62,23 @@ export const Fundesys: CollectionConfig = {
       },
       admin: {
         description: "Le fichier doit être une vidéo.",
+      },
+      required: true,
+    },
+    {
+      name: "excel",
+      type: "upload",
+      relationTo: "media",
+      label: {
+        en: "Excel",
+        fr: "Excel",
+      },
+      // @ts-expect-error
+      validate: (data) => {
+        return validateMedia(data, "sheet");
+      },
+      admin: {
+        description: "Le fichier doit être au format Excel ou CSV.",
       },
       required: true,
     },
