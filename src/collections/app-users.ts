@@ -174,37 +174,61 @@ export const AppUsers: CollectionConfig = {
           //   subject: "Création de compte Simply Life",
           // });
 
-          await sendEmail({
-            to: validatedData.email,
-            subject: "Création de compte Simply Life",
-            attachments: validatedData.apple_store_code
-              ? [
-                  {
-                    filename: "installation_app_mobile.pdf",
-                    path: join(
-                      process.cwd(),
-                      "src/assets/pdfs/installation_app_mobile.pdf",
-                    ),
-                    contentType: "application/pdf",
-                  },
-                ]
-              : undefined,
-            text: readFileSync(
-              join(
-                process.cwd(),
-                `src/emails/templates/${language}/subscription-app-user.txt`,
-              ),
-              "utf-8",
-            ).replace("{{registrationLink}}", fullLink),
+          if (validatedData.apple_store_code) {
+            await sendEmail({
+              to: validatedData.email,
+              subject: "Création de compte Simply Life",
+              attachments: [
+                {
+                  filename: "installation_app_mobile.pdf",
+                  path: join(
+                    process.cwd(),
+                    "src/assets/pdfs/installation_app_mobile.pdf",
+                  ),
+                  contentType: "application/pdf",
+                },
+              ],
+              text: readFileSync(
+                join(
+                  process.cwd(),
+                  `src/emails/templates/${language}/subscription-app-user-apple.txt`,
+                ),
+                "utf-8",
+              )
+                .replace("{{registrationLink}}", fullLink)
+                .replace("{{appStoreCode}}", validatedData.apple_store_code),
 
-            html: readFileSync(
-              join(
-                process.cwd(),
-                `src/emails/templates/${language}/subscription-app-user.html`,
-              ),
-              "utf-8",
-            ).replace("{{registrationLink}}", fullLink),
-          });
+              html: readFileSync(
+                join(
+                  process.cwd(),
+                  `src/emails/templates/${language}/subscription-app-user-apple.html`,
+                ),
+                "utf-8",
+              )
+                .replace("{{registrationLink}}", fullLink)
+                .replace("{{appStoreCode}}", validatedData.apple_store_code),
+            });
+          } else {
+            await sendEmail({
+              to: validatedData.email,
+              subject: "Création de compte Simply Life",
+              text: readFileSync(
+                join(
+                  process.cwd(),
+                  `src/emails/templates/${language}/subscription-app-user.txt`,
+                ),
+                "utf-8",
+              ).replace("{{registrationLink}}", fullLink),
+
+              html: readFileSync(
+                join(
+                  process.cwd(),
+                  `src/emails/templates/${language}/subscription-app-user.html`,
+                ),
+                "utf-8",
+              ).replace("{{registrationLink}}", fullLink),
+            });
+          }
 
           return Response.json({
             message: "OK",
