@@ -15,6 +15,7 @@ import { z } from "zod";
 export const initialRegistrationSchema = z.object({
   email: z.string().email(),
   role: z.enum(enum_app_users_role.enumValues),
+  apple_store_code: z.string().optional(),
 });
 
 const finalRegistrationSchema = z.object({
@@ -156,6 +157,7 @@ export const AppUsers: CollectionConfig = {
             data: {
               email: validatedData.email,
               role: validatedData.role,
+              apple_store_code: validatedData.apple_store_code || undefined,
             },
           });
 

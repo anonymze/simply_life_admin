@@ -592,6 +592,10 @@ export interface TemporaryAppUser {
   id: string;
   email: string;
   role: 'associate' | 'employee' | 'independent' | 'visitor';
+  /**
+   * Si l'utilisteur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription.
+   */
+  apple_store_code?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1111,6 +1115,7 @@ export interface SignaturesSelect<T extends boolean = true> {
 export interface TemporaryAppUsersSelect<T extends boolean = true> {
   email?: T;
   role?: T;
+  apple_store_code?: T;
   updatedAt?: T;
   createdAt?: T;
 }
