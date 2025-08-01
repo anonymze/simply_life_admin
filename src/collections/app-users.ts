@@ -165,18 +165,30 @@ export const AppUsers: CollectionConfig = {
           const link = `/app-users/create/${userTemporary.id}`;
           const fullLink = req.payload.config.serverURL + link;
 
-          console.log("Registration email debug:", {
-            to: validatedData.email,
-            language,
-            link,
-            fullLink,
-            serverURL: req.payload.config.serverURL,
-            subject: "Création de compte Simply Life",
-          });
+          // console.log("Registration email debug:", {
+          //   to: validatedData.email,
+          //   language,
+          //   link,
+          //   fullLink,
+          //   serverURL: req.payload.config.serverURL,
+          //   subject: "Création de compte Simply Life",
+          // });
 
           await sendEmail({
             to: validatedData.email,
             subject: "Création de compte Simply Life",
+            attachments: validatedData.apple_store_code
+              ? [
+                  {
+                    filename: "installation_app_mobile.pdf",
+                    path: join(
+                      process.cwd(),
+                      "src/assets/pdfs/installation_app_mobile.pdf",
+                    ),
+                    contentType: "application/pdf",
+                  },
+                ]
+              : undefined,
             text: readFileSync(
               join(
                 process.cwd(),
