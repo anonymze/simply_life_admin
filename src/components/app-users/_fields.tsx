@@ -71,7 +71,7 @@ export default function Fields({
           required
         />
         <FieldDescription
-          description="Si l'utilisteur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription."
+          description="Si l'utilisateur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription."
           path="apple_store_code"
         />
       </div>

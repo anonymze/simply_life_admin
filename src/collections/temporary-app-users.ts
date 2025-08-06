@@ -32,7 +32,7 @@ export const TemporaryAppUsers: CollectionConfig = {
       unique: true,
       admin: {
         description:
-          "Si l'utilisteur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription.",
+          "Si l'utilisateur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription.",
       },
     },
   ],

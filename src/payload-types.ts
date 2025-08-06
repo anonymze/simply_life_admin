@@ -593,7 +593,7 @@ export interface TemporaryAppUser {
   email: string;
   role: 'associate' | 'employee' | 'independent' | 'visitor';
   /**
-   * Si l'utilisteur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription.
+   * Si l'utilisateur utilise un iPhone (Apple), renseignez un code de téléchargement unique ici. Il recevra une notice explicative sur le téléchargement dans le mail d'inscription.
    */
   apple_store_code?: string | null;
   updatedAt: string;
