@@ -87,6 +87,7 @@ export default function FormPage({
       cabinet: "",
       phone: "",
       entry_date: "",
+      birthday: "",
       image: null,
     },
   });
