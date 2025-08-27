@@ -33,6 +33,15 @@ export const Structured: CollectionConfig = {
       required: true,
     },
     {
+      name: "name",
+      type: "text",
+      label: {
+        en: "Name product",
+        fr: "Nom du produit",
+      },
+      required: true,
+    },
+    {
       name: "broker",
       type: "select",
       label: {
@@ -151,6 +160,15 @@ export const Structured: CollectionConfig = {
       label: {
         en: "Seuil de remboursement anticipé",
         fr: "Seuil de remboursement anticipé :",
+      },
+      required: true,
+    },
+    {
+      name: "airbag",
+      type: "text",
+      label: {
+        en: "Seuil de récupération de l'intégrité des coupons à maturité (airbag)",
+        fr: "Seuil de récupération de l'intégrité des coupons à maturité (airbag)",
       },
       required: true,
     },

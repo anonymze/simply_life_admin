@@ -533,6 +533,7 @@ export interface Message {
 export interface Structured {
   id: string;
   supplier: string | Supplier;
+  name: string;
   broker: 'kepler' | 'irbis' | 'silex';
   max: number;
   current: number;
@@ -544,6 +545,7 @@ export interface Structured {
   coupon: string;
   frequency: string;
   refund: string;
+  airbag: string;
   capital: string;
   offers?:
     | {
@@ -1063,6 +1065,7 @@ export interface MessagesSelect<T extends boolean = true> {
  */
 export interface StructuredSelect<T extends boolean = true> {
   supplier?: T;
+  name?: T;
   broker?: T;
   max?: T;
   current?: T;
@@ -1074,6 +1077,7 @@ export interface StructuredSelect<T extends boolean = true> {
   coupon?: T;
   frequency?: T;
   refund?: T;
+  airbag?: T;
   capital?: T;
   offers?:
     | T
