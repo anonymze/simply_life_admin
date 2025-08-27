@@ -104,7 +104,7 @@ export const Structured: CollectionConfig = {
       name: "constatation",
       type: "date",
       label: {
-        en: "date constations",
+        en: "date constatation",
         fr: "Date de constatation",
       },
       required: true,

@@ -47,6 +47,7 @@ export default function FieldsEdit({ initialData }: { initialData: AppUser }) {
         body: JSON.stringify({
           ...formData,
           entry_date: formData.entry_date || undefined,
+          birthday: formData.birthday || undefined,
         }),
       });
 
@@ -308,6 +309,22 @@ export default function FieldsEdit({ initialData }: { initialData: AppUser }) {
           }
           value={
             formData.entry_date ? new Date(formData.entry_date) : undefined
+          }
+          placeholder="Sélectionnez une date"
+          displayFormat="dd/MM/yyyy"
+        />
+      </div>
+      <div className="field-type text">
+        <FieldLabel label={"Date de naissance"} />
+        <DatePicker
+          onChange={(date: Date | null) =>
+            setFormData((prev) => ({
+              ...prev,
+              birthday: date ? date.toISOString().split("T")[0] : undefined,
+            }))
+          }
+          value={
+            formData.birthday ? new Date(formData.birthday) : undefined
           }
           placeholder="Sélectionnez une date"
           displayFormat="dd/MM/yyyy"

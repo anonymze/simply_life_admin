@@ -36,6 +36,7 @@ const finalRegistrationSchema = z.object({
   lastname: z.string().min(1, { message: "Le nom est requis" }),
   firstname: z.string().min(1, { message: "Le prénom est requis" }),
   cabinet: z.string().optional(),
+  birthday: z.string().optional(),
   entry_date: z.string().optional(),
   phone: z
     .string()
@@ -307,6 +308,7 @@ export const AppUsers: CollectionConfig = {
               firstname: validatedData.firstname,
               phone: validatedData.phone,
               cabinet: validatedData.cabinet,
+              birthday: validatedData.birthday || undefined,
               entry_date: validatedData.entry_date || undefined,
               photo: image?.id,
             },
@@ -420,6 +422,15 @@ export const AppUsers: CollectionConfig = {
       },
     },
     {
+      name: "birthday",
+      type: "date",
+      required: false,
+      label: {
+        en: "Birthday",
+        fr: "Date de naissance",
+      },
+    },
+    {
       name: "role",
       type: "select",
       required: true,
@@ -434,7 +445,6 @@ export const AppUsers: CollectionConfig = {
     {
       name: "description-below-password",
       type: "ui",
-
       admin: {
         components: {
           Field: "/components/description-below-password.tsx",

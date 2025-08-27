@@ -401,6 +401,7 @@ export interface AppUser {
   photo?: (string | null) | Media;
   notifications_token?: string | null;
   entry_date?: string | null;
+  birthday?: string | null;
   role: 'associate' | 'employee' | 'independent' | 'visitor';
   updatedAt: string;
   createdAt: string;
@@ -977,6 +978,7 @@ export interface AppUsersSelect<T extends boolean = true> {
   photo?: T;
   notifications_token?: T;
   entry_date?: T;
+  birthday?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;
