@@ -70,6 +70,43 @@ export const AgencyLife: CollectionConfig = {
       required: false,
     },
     {
+      name: "intervenants",
+      type: "array",
+      label: {
+        en: "Intervenants",
+        fr: "Intervenants",
+      },
+      fields: [
+        {
+          name: "name",
+          type: "text",
+          label: {
+            en: "Name",
+            fr: "Nom et prénom",
+          },
+          required: true,
+        },
+        {
+          name: "company",
+          type: "text",
+          label: {
+            en: "Company",
+            fr: "Société",
+          },
+          required: false,
+        },
+        {
+          name: "theme",
+          type: "text",
+          label: {
+            en: "Email",
+            fr: "Thème",
+          },
+          required: false,
+        }
+      ]
+    },
+    {
       name: "type",
       type: "select",
       required: true,

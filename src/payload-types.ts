@@ -492,6 +492,14 @@ export interface AgencyLife {
   id: string;
   title: string;
   annotation?: string | null;
+  intervenants?:
+    | {
+        name: string;
+        company?: string | null;
+        theme?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   type: 'general' | 'sport' | 'seminaire' | 'food' | 'birthday' | 'meeting';
   event_start: string;
   event_end: string;
@@ -1027,6 +1035,14 @@ export interface SuppliersCommissionsColumnSelect<T extends boolean = true> {
 export interface AgencyLifeSelect<T extends boolean = true> {
   title?: T;
   annotation?: T;
+  intervenants?:
+    | T
+    | {
+        name?: T;
+        company?: T;
+        theme?: T;
+        id?: T;
+      };
   type?: T;
   event_start?: T;
   event_end?: T;
