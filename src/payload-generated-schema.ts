@@ -7,22 +7,22 @@
  */
 
 import type {} from "@payloadcms/db-vercel-postgres";
-import { relations } from "@payloadcms/db-vercel-postgres/drizzle";
 import {
-  boolean,
-  foreignKey,
-  index,
-  integer,
-  jsonb,
-  numeric,
-  pgEnum,
   pgTable,
-  serial,
-  timestamp,
+  index,
   uniqueIndex,
+  foreignKey,
   uuid,
   varchar,
+  timestamp,
+  boolean,
+  numeric,
+  integer,
+  serial,
+  jsonb,
+  pgEnum,
 } from "@payloadcms/db-vercel-postgres/drizzle/pg-core";
+import { sql, relations } from "@payloadcms/db-vercel-postgres/drizzle";
 export const enum__locales = pgEnum("enum__locales", ["fr", "en"]);
 export const enum_reservations_desk = pgEnum("enum_reservations_desk", [
   "1",
@@ -355,6 +355,11 @@ export const fundesys = pgTable(
       .references(() => media.id, {
         onDelete: "set null",
       }),
+    excel: uuid("excel_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -373,6 +378,7 @@ export const fundesys = pgTable(
   (columns) => ({
     fundesys_file_idx: index("fundesys_file_idx").on(columns.file),
     fundesys_video_idx: index("fundesys_video_idx").on(columns.video),
+    fundesys_excel_idx: index("fundesys_excel_idx").on(columns.excel),
     fundesys_updated_at_idx: index("fundesys_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -709,12 +715,18 @@ export const app_users = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     lastname: varchar("lastname").notNull(),
     firstname: varchar("firstname").notNull(),
+    cabinet: varchar("cabinet"),
     phone: varchar("phone"),
     photo: uuid("photo_id").references(() => media.id, {
       onDelete: "set null",
     }),
     notifications_token: varchar("notifications_token"),
     entry_date: timestamp("entry_date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    birthday: timestamp("birthday", {
       mode: "string",
       withTimezone: true,
       precision: 3,
@@ -866,13 +878,36 @@ export const suppliers_commissions_column = pgTable(
   }),
 );
 
+export const agency_life_intervenants = pgTable(
+  "agency_life_intervenants",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    name: varchar("name").notNull(),
+    company: varchar("company"),
+    theme: varchar("theme"),
+  },
+  (columns) => ({
+    _orderIdx: index("agency_life_intervenants_order_idx").on(columns._order),
+    _parentIDIdx: index("agency_life_intervenants_parent_id_idx").on(
+      columns._parentID,
+    ),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [agency_life.id],
+      name: "agency_life_intervenants_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
 export const agency_life = pgTable(
   "agency_life",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     title: varchar("title").notNull(),
     annotation: varchar("annotation"),
-    type: varchar("type").notNull().default("general"),
+    type: enum_agency_life_type("type").notNull().default("general"),
     event_start: timestamp("event_start", {
       mode: "string",
       withTimezone: true,
@@ -1026,6 +1061,36 @@ export const messages = pgTable(
   }),
 );
 
+export const structured_offers = pgTable(
+  "structured_offers",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: uuid("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    name: varchar("name").notNull(),
+    file: uuid("file_id")
+      .notNull()
+      .references(() => media.id, {
+        onDelete: "set null",
+      }),
+    description: varchar("description"),
+  },
+  (columns) => ({
+    _orderIdx: index("structured_offers_order_idx").on(columns._order),
+    _parentIDIdx: index("structured_offers_parent_id_idx").on(
+      columns._parentID,
+    ),
+    structured_offers_file_idx: index("structured_offers_file_idx").on(
+      columns.file,
+    ),
+    _parentIDFk: foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [structured.id],
+      name: "structured_offers_parent_id_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
 export const structured = pgTable(
   "structured",
   {
@@ -1035,6 +1100,7 @@ export const structured = pgTable(
       .references(() => suppliers.id, {
         onDelete: "set null",
       }),
+    name: varchar("name").notNull(),
     broker: enum_structured_broker("broker").notNull(),
     max: numeric("max").notNull(),
     current: numeric("current").notNull(),
@@ -1058,6 +1124,7 @@ export const structured = pgTable(
     coupon: varchar("coupon").notNull(),
     frequency: varchar("frequency").notNull(),
     refund: varchar("refund").notNull(),
+    airbag: varchar("airbag").notNull(),
     capital: varchar("capital").notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
@@ -1167,6 +1234,7 @@ export const temporary_app_users = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     email: varchar("email").notNull(),
     role: enum_app_users_role("role").notNull(),
+    apple_store_code: varchar("apple_store_code"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -1183,6 +1251,9 @@ export const temporary_app_users = pgTable(
       .notNull(),
   },
   (columns) => ({
+    temporary_app_users_apple_store_code_idx: uniqueIndex(
+      "temporary_app_users_apple_store_code_idx",
+    ).on(columns.apple_store_code),
     temporary_app_users_updated_at_idx: index(
       "temporary_app_users_updated_at_idx",
     ).on(columns.updatedAt),
@@ -1686,6 +1757,11 @@ export const relations_fundesys = relations(fundesys, ({ one }) => ({
     references: [media.id],
     relationName: "video",
   }),
+  excel: one(media, {
+    fields: [fundesys.excel],
+    references: [media.id],
+    relationName: "excel",
+  }),
 }));
 export const relations_commissions_rels = relations(
   commissions_rels,
@@ -1821,7 +1897,21 @@ export const relations_suppliers_commissions_column = relations(
     }),
   }),
 );
-export const relations_agency_life = relations(agency_life, () => ({}));
+export const relations_agency_life_intervenants = relations(
+  agency_life_intervenants,
+  ({ one }) => ({
+    _parentID: one(agency_life, {
+      fields: [agency_life_intervenants._parentID],
+      references: [agency_life.id],
+      relationName: "intervenants",
+    }),
+  }),
+);
+export const relations_agency_life = relations(agency_life, ({ many }) => ({
+  intervenants: many(agency_life_intervenants, {
+    relationName: "intervenants",
+  }),
+}));
 export const relations_chat_rooms_rels = relations(
   chat_rooms_rels,
   ({ one }) => ({
@@ -1864,11 +1954,29 @@ export const relations_messages = relations(messages, ({ one }) => ({
     relationName: "file",
   }),
 }));
-export const relations_structured = relations(structured, ({ one }) => ({
+export const relations_structured_offers = relations(
+  structured_offers,
+  ({ one }) => ({
+    _parentID: one(structured, {
+      fields: [structured_offers._parentID],
+      references: [structured.id],
+      relationName: "offers",
+    }),
+    file: one(media, {
+      fields: [structured_offers.file],
+      references: [media.id],
+      relationName: "file",
+    }),
+  }),
+);
+export const relations_structured = relations(structured, ({ one, many }) => ({
   supplier: one(suppliers, {
     fields: [structured.supplier],
     references: [suppliers.id],
     relationName: "supplier",
+  }),
+  offers: many(structured_offers, {
+    relationName: "offers",
   }),
 }));
 export const relations_sports = relations(sports, () => ({}));
@@ -2097,10 +2205,12 @@ type DatabaseSchema = {
   app_users_commissions_code_code: typeof app_users_commissions_code_code;
   app_users_commissions_code: typeof app_users_commissions_code;
   suppliers_commissions_column: typeof suppliers_commissions_column;
+  agency_life_intervenants: typeof agency_life_intervenants;
   agency_life: typeof agency_life;
   chat_rooms: typeof chat_rooms;
   chat_rooms_rels: typeof chat_rooms_rels;
   messages: typeof messages;
+  structured_offers: typeof structured_offers;
   structured: typeof structured;
   sports: typeof sports;
   signatures: typeof signatures;
@@ -2132,10 +2242,12 @@ type DatabaseSchema = {
   relations_app_users_commissions_code_code: typeof relations_app_users_commissions_code_code;
   relations_app_users_commissions_code: typeof relations_app_users_commissions_code;
   relations_suppliers_commissions_column: typeof relations_suppliers_commissions_column;
+  relations_agency_life_intervenants: typeof relations_agency_life_intervenants;
   relations_agency_life: typeof relations_agency_life;
   relations_chat_rooms_rels: typeof relations_chat_rooms_rels;
   relations_chat_rooms: typeof relations_chat_rooms;
   relations_messages: typeof relations_messages;
+  relations_structured_offers: typeof relations_structured_offers;
   relations_structured: typeof relations_structured;
   relations_sports: typeof relations_sports;
   relations_signatures: typeof relations_signatures;

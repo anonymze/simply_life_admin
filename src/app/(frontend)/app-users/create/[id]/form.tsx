@@ -108,6 +108,7 @@ export default function FormPage({
     // Reset the file input
     const fileInput = document.getElementById(
       "profile-image",
+
     ) as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   };
@@ -134,8 +135,6 @@ export default function FormPage({
           body: formData,
         },
       );
-
-      console.log(response);
 
       if (!response.ok) {
         throw new Error();

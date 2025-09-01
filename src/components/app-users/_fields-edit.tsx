@@ -21,9 +21,9 @@ export default function FieldsEdit({ initialData }: { initialData: AppUser }) {
     lastname: initialData.lastname,
     firstname: initialData.firstname,
     phone: initialData.phone ?? "",
+    cabinet: initialData.cabinet ?? "",
     entry_date: initialData.entry_date ?? undefined,
     birthday: initialData.birthday ?? undefined,
-    cabinet: "",
   });
   const { id: userId } = initialData;
 
