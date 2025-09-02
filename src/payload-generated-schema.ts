@@ -52,6 +52,10 @@ export const enum_sports_category = pgEnum("enum_sports_category", [
   "international",
   "fiscal",
 ]);
+export const enum_agency_life_status_status = pgEnum(
+  "enum_agency_life_status_status",
+  ["yes", "no", "waiting"],
+);
 
 export const admins = pgTable(
   "admins",
@@ -944,6 +948,35 @@ export const agency_life = pgTable(
   }),
 );
 
+export const agency_life_rels = pgTable(
+  "agency_life_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: uuid("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    "agency-life-statusID": uuid("agency_life_status_id"),
+  },
+  (columns) => ({
+    order: index("agency_life_rels_order_idx").on(columns.order),
+    parentIdx: index("agency_life_rels_parent_idx").on(columns.parent),
+    pathIdx: index("agency_life_rels_path_idx").on(columns.path),
+    agency_life_rels_agency_life_status_id_idx: index(
+      "agency_life_rels_agency_life_status_id_idx",
+    ).on(columns["agency-life-statusID"]),
+    parentFk: foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [agency_life.id],
+      name: "agency_life_rels_parent_fk",
+    }).onDelete("cascade"),
+    "agency-life-statusIdFk": foreignKey({
+      columns: [columns["agency-life-statusID"]],
+      foreignColumns: [agency_life_status.id],
+      name: "agency_life_rels_agency_life_status_fk",
+    }).onDelete("cascade"),
+  }),
+);
+
 export const chat_rooms = pgTable(
   "chat_rooms",
   {
@@ -1308,6 +1341,52 @@ export const commission_imports = pgTable(
   }),
 );
 
+export const agency_life_status = pgTable(
+  "agency_life_status",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    app_user: uuid("app_user_id")
+      .notNull()
+      .references(() => app_users.id, {
+        onDelete: "set null",
+      }),
+    agency_life: uuid("agency_life_id")
+      .notNull()
+      .references(() => agency_life.id, {
+        onDelete: "set null",
+      }),
+    status: enum_agency_life_status_status("status").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    agency_life_status_app_user_idx: index(
+      "agency_life_status_app_user_idx",
+    ).on(columns.app_user),
+    agency_life_status_agency_life_idx: index(
+      "agency_life_status_agency_life_idx",
+    ).on(columns.agency_life),
+    agency_life_status_updated_at_idx: index(
+      "agency_life_status_updated_at_idx",
+    ).on(columns.updatedAt),
+    agency_life_status_created_at_idx: index(
+      "agency_life_status_created_at_idx",
+    ).on(columns.createdAt),
+  }),
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -1371,6 +1450,7 @@ export const payload_locked_documents_rels = pgTable(
     signaturesID: uuid("signatures_id"),
     "temporary-app-usersID": uuid("temporary_app_users_id"),
     "commission-importsID": uuid("commission_imports_id"),
+    "agency-life-statusID": uuid("agency_life_status_id"),
   },
   (columns) => ({
     order: index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -1447,6 +1527,9 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_commission_imports_id_idx: index(
       "payload_locked_documents_rels_commission_imports_id_idx",
     ).on(columns["commission-importsID"]),
+    payload_locked_documents_rels_agency_life_status_id_idx: index(
+      "payload_locked_documents_rels_agency_life_status_id_idx",
+    ).on(columns["agency-life-statusID"]),
     parentFk: foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -1566,6 +1649,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["commission-importsID"]],
       foreignColumns: [commission_imports.id],
       name: "payload_locked_documents_rels_commission_imports_fk",
+    }).onDelete("cascade"),
+    "agency-life-statusIdFk": foreignKey({
+      columns: [columns["agency-life-statusID"]],
+      foreignColumns: [agency_life_status.id],
+      name: "payload_locked_documents_rels_agency_life_status_fk",
     }).onDelete("cascade"),
   }),
 );
@@ -1907,9 +1995,27 @@ export const relations_agency_life_intervenants = relations(
     }),
   }),
 );
+export const relations_agency_life_rels = relations(
+  agency_life_rels,
+  ({ one }) => ({
+    parent: one(agency_life, {
+      fields: [agency_life_rels.parent],
+      references: [agency_life.id],
+      relationName: "_rels",
+    }),
+    "agency-life-statusID": one(agency_life_status, {
+      fields: [agency_life_rels["agency-life-statusID"]],
+      references: [agency_life_status.id],
+      relationName: "agency-life-status",
+    }),
+  }),
+);
 export const relations_agency_life = relations(agency_life, ({ many }) => ({
   intervenants: many(agency_life_intervenants, {
     relationName: "intervenants",
+  }),
+  _rels: many(agency_life_rels, {
+    relationName: "_rels",
   }),
 }));
 export const relations_chat_rooms_rels = relations(
@@ -2008,6 +2114,21 @@ export const relations_commission_imports = relations(
       fields: [commission_imports.file],
       references: [media.id],
       relationName: "file",
+    }),
+  }),
+);
+export const relations_agency_life_status = relations(
+  agency_life_status,
+  ({ one }) => ({
+    app_user: one(app_users, {
+      fields: [agency_life_status.app_user],
+      references: [app_users.id],
+      relationName: "app_user",
+    }),
+    agency_life: one(agency_life, {
+      fields: [agency_life_status.agency_life],
+      references: [agency_life.id],
+      relationName: "agency_life",
     }),
   }),
 );
@@ -2134,6 +2255,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [commission_imports.id],
       relationName: "commission-imports",
     }),
+    "agency-life-statusID": one(agency_life_status, {
+      fields: [payload_locked_documents_rels["agency-life-statusID"]],
+      references: [agency_life_status.id],
+      relationName: "agency-life-status",
+    }),
   }),
 );
 export const relations_payload_locked_documents = relations(
@@ -2184,6 +2310,7 @@ type DatabaseSchema = {
   enum_agency_life_type: typeof enum_agency_life_type;
   enum_structured_broker: typeof enum_structured_broker;
   enum_sports_category: typeof enum_sports_category;
+  enum_agency_life_status_status: typeof enum_agency_life_status_status;
   admins: typeof admins;
   supplier_categories_offers: typeof supplier_categories_offers;
   supplier_categories: typeof supplier_categories;
@@ -2207,6 +2334,7 @@ type DatabaseSchema = {
   suppliers_commissions_column: typeof suppliers_commissions_column;
   agency_life_intervenants: typeof agency_life_intervenants;
   agency_life: typeof agency_life;
+  agency_life_rels: typeof agency_life_rels;
   chat_rooms: typeof chat_rooms;
   chat_rooms_rels: typeof chat_rooms_rels;
   messages: typeof messages;
@@ -2216,6 +2344,7 @@ type DatabaseSchema = {
   signatures: typeof signatures;
   temporary_app_users: typeof temporary_app_users;
   commission_imports: typeof commission_imports;
+  agency_life_status: typeof agency_life_status;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -2243,6 +2372,7 @@ type DatabaseSchema = {
   relations_app_users_commissions_code: typeof relations_app_users_commissions_code;
   relations_suppliers_commissions_column: typeof relations_suppliers_commissions_column;
   relations_agency_life_intervenants: typeof relations_agency_life_intervenants;
+  relations_agency_life_rels: typeof relations_agency_life_rels;
   relations_agency_life: typeof relations_agency_life;
   relations_chat_rooms_rels: typeof relations_chat_rooms_rels;
   relations_chat_rooms: typeof relations_chat_rooms;
@@ -2253,6 +2383,7 @@ type DatabaseSchema = {
   relations_signatures: typeof relations_signatures;
   relations_temporary_app_users: typeof relations_temporary_app_users;
   relations_commission_imports: typeof relations_commission_imports;
+  relations_agency_life_status: typeof relations_agency_life_status;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

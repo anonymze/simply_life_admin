@@ -91,6 +91,7 @@ export interface Config {
     signatures: Signature;
     'temporary-app-users': TemporaryAppUser;
     'commission-imports': CommissionImport;
+    'agency-life-status': AgencyLifeStatus;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -120,6 +121,7 @@ export interface Config {
     signatures: SignaturesSelect<false> | SignaturesSelect<true>;
     'temporary-app-users': TemporaryAppUsersSelect<false> | TemporaryAppUsersSelect<true>;
     'commission-imports': CommissionImportsSelect<false> | CommissionImportsSelect<true>;
+    'agency-life-status': AgencyLifeStatusSelect<false> | AgencyLifeStatusSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -490,6 +492,7 @@ export interface SuppliersCommissionsColumn {
  */
 export interface AgencyLife {
   id: string;
+  status_user?: (string | AgencyLifeStatus)[] | null;
   title: string;
   annotation?: string | null;
   intervenants?:
@@ -504,6 +507,18 @@ export interface AgencyLife {
   event_start: string;
   event_end: string;
   address?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agency-life-status".
+ */
+export interface AgencyLifeStatus {
+  id: string;
+  app_user: string | AppUser;
+  agency_life: string | AgencyLife;
+  status: 'yes' | 'no';
   updatedAt: string;
   createdAt: string;
 }
@@ -722,6 +737,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'commission-imports';
         value: string | CommissionImport;
+      } | null)
+    | ({
+        relationTo: 'agency-life-status';
+        value: string | AgencyLifeStatus;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1033,6 +1052,7 @@ export interface SuppliersCommissionsColumnSelect<T extends boolean = true> {
  * via the `definition` "agency-life_select".
  */
 export interface AgencyLifeSelect<T extends boolean = true> {
+  status_user?: T;
   title?: T;
   annotation?: T;
   intervenants?:
@@ -1148,6 +1168,17 @@ export interface TemporaryAppUsersSelect<T extends boolean = true> {
 export interface CommissionImportsSelect<T extends boolean = true> {
   supplier?: T;
   file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agency-life-status_select".
+ */
+export interface AgencyLifeStatusSelect<T extends boolean = true> {
+  app_user?: T;
+  agency_life?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

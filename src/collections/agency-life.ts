@@ -49,8 +49,48 @@ export const AgencyLife: CollectionConfig = {
         return;
       },
     ],
+    // afterChange: [
+    //   async ({ doc, operation, req }) => {
+    //     if (operation !== "create") return;
+
+    //     if (!doc.id) return;
+
+    //     const users = await req.payload.find({
+    //       collection: "app-users",
+    //       limit: 0,
+    //     });
+
+    //     await Promise.all(
+    //       users.docs.map((user) => {
+    //         return req.payload.create({
+    //           collection: "agency-life-status",
+    //           data: {
+    //             app_user: user.id,
+    //             agency_life: doc.id,
+    //             status: "waiting",
+    //           },
+    //         });
+    //       }),
+    //     );
+    //     return;
+    //   },
+    // ],
   },
   fields: [
+    {
+      name: "status_user",
+      type: "relationship",
+      relationTo: "agency-life-status",
+      admin: {
+        hidden: true,
+      },
+      label: {
+        en: "Status",
+        fr: "Statut",
+      },
+      hasMany: true,
+      required: false,
+    },
     {
       name: "title",
       type: "text",
@@ -103,8 +143,8 @@ export const AgencyLife: CollectionConfig = {
             fr: "Thème",
           },
           required: false,
-        }
-      ]
+        },
+      ],
     },
     {
       name: "type",
@@ -200,6 +240,16 @@ export const AgencyLife: CollectionConfig = {
         fr: "Adresse de l'évènement",
       },
       required: false,
+    },
+    {
+      name: "actions",
+      type: "ui",
+      admin: {
+        position: "sidebar",
+        components: {
+          Field: "src/components/track-event.tsx",
+        },
+      },
     },
   ],
 };

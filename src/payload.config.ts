@@ -1,8 +1,8 @@
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
+import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
-import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import nodemailer from "nodemailer";
 import path from "path";
 import { buildConfig } from "payload";
@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 
 import { Admins } from "./collections/admins";
 import { AgencyLife } from "./collections/agency-life";
+import { AgencyLifeStatus } from "./collections/agency-life-status";
 import { AppUsers } from "./collections/app-users";
 import { AppUsersCommissionsCode } from "./collections/app-users-commissions-code";
 import { ChatRooms } from "./collections/chat-rooms";
@@ -143,6 +144,7 @@ export default buildConfig({
     Signatures,
     TemporaryAppUsers,
     CommissionImports,
+    AgencyLifeStatus,
   ],
   // globals: [CommissionImports],
   editor: lexicalEditor(),
