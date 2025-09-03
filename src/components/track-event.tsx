@@ -30,8 +30,6 @@ const CustomServerButton: UIFieldServerComponent = async (props: UIFieldServerPr
       )
     );
 
-  console.log(usersWithStatus)
-
   // Compter les statuts
   const statusCounts = usersWithStatus.reduce((acc, user) => {
     const status = user.status || 'waiting';
