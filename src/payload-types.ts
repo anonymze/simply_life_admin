@@ -267,26 +267,22 @@ export interface Supplier {
     email?: string | null;
     password?: string | null;
   };
-  other_information?: {
-    /**
-     * Séparez les thématiques par une virgule.
-     */
-    theme?: string | null;
-    annotation?: string | null;
-    minimum_versement?: string | null;
-    foundment_euro?: boolean | null;
-    subscription_fee?: string | null;
-    duration?: string | null;
-    rentability?: string | null;
-    rentability_n1?: string | null;
-    commission?: string | null;
-    commission_public_offer?: string | null;
-    commission_offer_group_valorem?: string | null;
-    /**
-     * Séparez les SCPI par une virgule.
-     */
-    scpi?: string | null;
-  };
+  other_information?:
+    | {
+        scpi?: string | null;
+        theme?: string | null;
+        annotation?: string | null;
+        minimum_versement?: string | null;
+        foundment_euro?: boolean | null;
+        subscription_fee?: string | null;
+        duration?: string | null;
+        rentability_n1?: string | null;
+        commission?: string | null;
+        commission_public_offer?: string | null;
+        commission_offer_group_valorem?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -884,18 +880,18 @@ export interface SuppliersSelect<T extends boolean = true> {
   other_information?:
     | T
     | {
+        scpi?: T;
         theme?: T;
         annotation?: T;
         minimum_versement?: T;
         foundment_euro?: T;
         subscription_fee?: T;
         duration?: T;
-        rentability?: T;
         rentability_n1?: T;
         commission?: T;
         commission_public_offer?: T;
         commission_offer_group_valorem?: T;
-        scpi?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
