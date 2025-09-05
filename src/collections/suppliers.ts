@@ -242,6 +242,9 @@ export const Suppliers: CollectionConfig = {
 						en: "Duration",
 						fr: "Durée",
 					},
+					admin: {
+						description: "Séparez les durées par une virgule.",
+					},
 					required: false,
 				},
 				{
@@ -250,6 +253,9 @@ export const Suppliers: CollectionConfig = {
 					label: {
 						en: "Rentability",
 						fr: "Rentabilité",
+					},
+					admin: {
+						description: "Séparez les % de rentabilités par un espace.",
 					},
 					required: false,
 				},
@@ -261,7 +267,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Rentabilité N1",
 					},
 					admin: {
-						description: "Séparez les frais de souscription par un espace.",
+						description: "Séparez les % de rentabilités par un espace.",
 					},
 					required: false,
 				},
@@ -273,7 +279,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Commission",
 					},
 					admin: {
-						description: "Séparez les frais de souscription par un espace.",
+						description: "Séparez les % de commission par un espace.",
 					},
 					required: false,
 				},
@@ -285,7 +291,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Commission pour l'offre publique",
 					},
 					admin: {
-						description: "Séparez les frais de souscription par un espace.",
+						description: "Séparez les % de commission par un espace.",
 					},
 					required: false,
 				},
@@ -297,7 +303,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Commission pour l'offre Groupe Valorem",
 					},
 					admin: {
-						description: "Séparez les frais de souscription par un espace.",
+						description: "Séparez les % de commission par un espace.",
 					},
 					required: false,
 				},
