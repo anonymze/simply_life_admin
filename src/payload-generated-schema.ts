@@ -54,7 +54,7 @@ export const enum_sports_category = pgEnum("enum_sports_category", [
 ]);
 export const enum_agency_life_status_status = pgEnum(
   "enum_agency_life_status_status",
-  ["yes", "no", "waiting"],
+  ["yes", "no"],
 );
 
 export const admins = pgTable(
@@ -290,6 +290,12 @@ export const suppliers = pgTable(
     connexion_password: varchar("connexion_password"),
     other_information_theme: varchar("other_information_theme"),
     other_information_annotation: varchar("other_information_annotation"),
+    other_information_minimum_versement: varchar(
+      "other_information_minimum_versement",
+    ),
+    other_information_foundment_euro: boolean(
+      "other_information_foundment_euro",
+    ),
     other_information_subscription_fee: varchar(
       "other_information_subscription_fee",
     ),

@@ -206,11 +206,32 @@ export const Suppliers: CollectionConfig = {
 					required: false,
 				},
 				{
+					name: "minimum_versement",
+					type: "text",
+					label: {
+						en: "Minimum versement",
+						fr: "Minimum de versement",
+					},
+					required: false,
+				},
+				{
+					name: "foundment_euro",
+					type: "checkbox",
+					label: {
+						en: "Foundment euro",
+						fr: "Fond euro",
+					},
+					required: false,
+				},
+				{
 					name: "subscription_fee",
 					type: "text",
 					label: {
 						en: "Subscription Fee",
 						fr: "Frais de souscription",
+					},
+					admin: {
+						description: "Séparez les frais de souscription par un espace.",
 					},
 					required: false,
 				},
@@ -239,6 +260,9 @@ export const Suppliers: CollectionConfig = {
 						en: "Rentability N1",
 						fr: "Rentabilité N1",
 					},
+					admin: {
+						description: "Séparez les frais de souscription par un espace.",
+					},
 					required: false,
 				},
 				{
@@ -247,6 +271,9 @@ export const Suppliers: CollectionConfig = {
 					label: {
 						en: "Commission",
 						fr: "Commission",
+					},
+					admin: {
+						description: "Séparez les frais de souscription par un espace.",
 					},
 					required: false,
 				},
@@ -257,6 +284,9 @@ export const Suppliers: CollectionConfig = {
 						en: "Commision public offer",
 						fr: "Commission pour l'offre publique",
 					},
+					admin: {
+						description: "Séparez les frais de souscription par un espace.",
+					},
 					required: false,
 				},
 				{
@@ -265,6 +295,9 @@ export const Suppliers: CollectionConfig = {
 					label: {
 						en: "Commission offer Groupe Valorem",
 						fr: "Commission pour l'offre Groupe Valorem",
+					},
+					admin: {
+						description: "Séparez les frais de souscription par un espace.",
 					},
 					required: false,
 				},

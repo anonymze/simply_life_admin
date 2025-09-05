@@ -273,6 +273,8 @@ export interface Supplier {
      */
     theme?: string | null;
     annotation?: string | null;
+    minimum_versement?: string | null;
+    foundment_euro?: boolean | null;
     subscription_fee?: string | null;
     duration?: string | null;
     rentability?: string | null;
@@ -884,6 +886,8 @@ export interface SuppliersSelect<T extends boolean = true> {
     | {
         theme?: T;
         annotation?: T;
+        minimum_versement?: T;
+        foundment_euro?: T;
         subscription_fee?: T;
         duration?: T;
         rentability?: T;
