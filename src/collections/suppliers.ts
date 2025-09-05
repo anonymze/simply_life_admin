@@ -279,7 +279,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Commission",
 					},
 					admin: {
-						description: "Séparez les % de commission par un espace.",
+						description: "Séparez les % de commissions par un espace.",
 					},
 					required: false,
 				},
@@ -291,7 +291,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Commission pour l'offre publique",
 					},
 					admin: {
-						description: "Séparez les % de commission par un espace.",
+						description: "Séparez les % de commissions par un espace.",
 					},
 					required: false,
 				},
@@ -303,7 +303,7 @@ export const Suppliers: CollectionConfig = {
 						fr: "Commission pour l'offre Groupe Valorem",
 					},
 					admin: {
-						description: "Séparez les % de commission par un espace.",
+						description: "Séparez les % de commissions par un espace.",
 					},
 					required: false,
 				},
