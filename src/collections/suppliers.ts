@@ -203,6 +203,9 @@ export const Suppliers: CollectionConfig = {
 						en: "Annotation",
 						fr: "Remarque",
 					},
+					admin: {
+						description: "Séparez les remarques par une virgule.",
+					},
 					required: false,
 				},
 				{
@@ -211,6 +214,9 @@ export const Suppliers: CollectionConfig = {
 					label: {
 						en: "Minimum versement",
 						fr: "Minimum de versement",
+					},
+					admin: {
+						description: "Séparez les versements par un espace.",
 					},
 					required: false,
 				},
