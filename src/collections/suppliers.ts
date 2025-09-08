@@ -149,6 +149,53 @@ export const Suppliers: CollectionConfig = {
       ],
     },
     {
+      name: "enveloppe",
+      type: "group",
+      label: {
+        en: "Enveloppe",
+        fr: "Enveloppe CIF",
+      },
+      fields: [
+        {
+          name: "amount",
+          type: "number",
+          label: {
+            en: "Contact Lastname",
+            fr: "Montant enveloppe",
+          },
+          required: false,
+        },
+        {
+          name: "echeance",
+          type: "date",
+          label: {
+            en: "Contact Firstname",
+            fr: "Echéance de l'enveloppe",
+          },
+          required: false,
+        },
+        {
+          name: "reduction",
+          type: "number",
+          label: {
+            en: "Contact Firstname",
+            fr: "Réduction d'impôt",
+          },
+          required: false,
+        },
+        {
+          name: "actualisation",
+          type: "date",
+          label: {
+            en: "Contact Firstname",
+            fr: "Date d'actualisation",
+          },
+          required: false,
+        },
+
+      ],
+    },
+    {
       name: "connexion",
       type: "group",
       label: {

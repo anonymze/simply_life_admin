@@ -263,6 +263,12 @@ export interface Supplier {
      */
     phone?: string | null;
   };
+  enveloppe?: {
+    amount?: number | null;
+    echeance?: string | null;
+    reduction?: number | null;
+    actualisation?: string | null;
+  };
   connexion?: {
     email?: string | null;
     password?: string | null;
@@ -315,6 +321,10 @@ export interface Contact {
   id: string;
   name: string;
   category: string | ContactCategory;
+  /**
+   * Séparer les spécialisations par des virgules.
+   */
+  specialisation?: string | null;
   phone?: string | null;
   website?: string | null;
   latitude: string;
@@ -836,6 +846,7 @@ export interface SupplierCategoriesSelect<T extends boolean = true> {
 export interface ContactsSelect<T extends boolean = true> {
   name?: T;
   category?: T;
+  specialisation?: T;
   phone?: T;
   website?: T;
   latitude?: T;
@@ -870,6 +881,14 @@ export interface SuppliersSelect<T extends boolean = true> {
         firstname?: T;
         email?: T;
         phone?: T;
+      };
+  enveloppe?:
+    | T
+    | {
+        amount?: T;
+        echeance?: T;
+        reduction?: T;
+        actualisation?: T;
       };
   connexion?:
     | T

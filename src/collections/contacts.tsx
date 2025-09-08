@@ -70,6 +70,18 @@ export const Contacts: CollectionConfig = {
 			},
 		},
 		{
+			name: "specialisation",
+			type: "text",
+			required: false,
+			label: {
+				en: "Specialisation",
+				fr: "Specialisations",
+			},
+			admin: {
+				description: "Séparer les spécialisations par des virgules.",
+			}
+		},
+		{
 			name: "address",
 			type: "ui",
 			label: {
