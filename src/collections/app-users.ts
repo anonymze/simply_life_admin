@@ -542,14 +542,14 @@ async function createTemporaryUserAndSendEmail(
         `src/emails/templates/${language}/subscription-app-user-apple.txt`,
       ),
       "utf-8",
-    ).replace("{{appStoreCode}}", userData.apple_store_code || ""),
+    ).replace("{{appStoreCode}}", userData?.apple_store_code ?? ""),
     html: readFileSync(
       join(
         process.cwd(),
         `src/emails/templates/${language}/subscription-app-user-apple.html`,
       ),
       "utf-8",
-    ).replace("{{appStoreCode}}", userData.apple_store_code || ""),
+    ).replace("{{appStoreCode}}", userData?.apple_store_code ?? ""),
   });
 
   return tempUser;
