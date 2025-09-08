@@ -527,16 +527,16 @@ async function createTemporaryUserAndSendEmail(
   await sendEmail({
     to: userData.email,
     subject: "Création de compte Simply Life",
-    attachments: [
-      {
-        filename: "installation_app_mobile.pdf",
-        path: join(
-          process.cwd(),
-          "src/assets/pdfs/installation_app_mobile.pdf",
-        ),
-        contentType: "application/pdf",
-      },
-    ],
+    // attachments: [
+    //   {
+    //     filename: "installation_app_mobile.pdf",
+    //     path: join(
+    //       process.cwd(),
+    //       "src/assets/pdfs/installation_app_mobile.pdf",
+    //     ),
+    //     contentType: "application/pdf",
+    //   },
+    // ],
     text: readFileSync(
       join(
         process.cwd(),
