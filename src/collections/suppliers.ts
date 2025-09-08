@@ -181,11 +181,11 @@ export const Suppliers: CollectionConfig = {
       type: "array",
       label: {
         en: "Other Information",
-        fr: "Autres informations",
+        fr: "Ajouter un produit",
       },
       labels: {
         singular: "Autres informations",
-        plural: "Autres informations",
+        plural: "Ajouter un produit",
       },
       fields: [
         {
