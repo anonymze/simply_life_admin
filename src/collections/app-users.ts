@@ -527,13 +527,13 @@ async function createTemporaryUserAndSendEmail(
         "utf-8"
       )
         .replace("{{registrationLink}}", fullLink)
-        .replace("{{appStoreCode}}", userData.apple_store_code),
+        .replace("{{appStoreCode}}", userData.apple_store_code || ""),
       html: readFileSync(
         join(process.cwd(), `src/emails/templates/${language}/subscription-app-user-apple.html`),
         "utf-8"
       )
         .replace("{{registrationLink}}", fullLink)
-        .replace("{{appStoreCode}}", userData.apple_store_code),
+        .replace("{{appStoreCode}}", userData.apple_store_code || ""),
     });
   } else {
     await sendEmail({
