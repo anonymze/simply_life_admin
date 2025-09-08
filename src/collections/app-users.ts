@@ -495,8 +495,6 @@ async function createTemporaryUserAndSendEmail(
     where: { email: { equals: userData.email } },
   });
 
-    console.log("laaaaa")
-
   if (existingUser.docs.length > 0) {
     throw new Error(`L'utilisateur ${userData.email} existe déjà`);
   }
@@ -524,8 +522,6 @@ async function createTemporaryUserAndSendEmail(
   const language = req.i18n.language === "fr" ? "fr" : "en";
   const link = `/app-users/create/${tempUser.id}`;
   const fullLink = req.payload.config.serverURL + link;
-
-  console.log("ici")
 
   // Envoyer l'email selon le type
   await sendEmail({
