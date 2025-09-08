@@ -521,7 +521,6 @@ async function createTemporaryUserAndSendEmail(
   // Préparer l'email
   const language = req.i18n.language === "fr" ? "fr" : "en";
   const link = `/app-users/create/${tempUser.id}`;
-  const fullLink = req.payload.config.serverURL + link;
 
   // Envoyer l'email selon le type
   await sendEmail({
@@ -543,18 +542,14 @@ async function createTemporaryUserAndSendEmail(
         `src/emails/templates/${language}/subscription-app-user-apple.txt`,
       ),
       "utf-8",
-    )
-      .replace("{{registrationLink}}", fullLink)
-      .replace("{{appStoreCode}}", userData.apple_store_code || ""),
+    ).replace("{{appStoreCode}}", userData.apple_store_code || ""),
     html: readFileSync(
       join(
         process.cwd(),
         `src/emails/templates/${language}/subscription-app-user-apple.html`,
       ),
       "utf-8",
-    )
-      .replace("{{registrationLink}}", fullLink)
-      .replace("{{appStoreCode}}", userData.apple_store_code || ""),
+    ).replace("{{appStoreCode}}", userData.apple_store_code || ""),
   });
 
   return tempUser;
