@@ -18,7 +18,6 @@ export const initialRegistrationSchema = z.object({
   apple_store_code: z.string().optional(),
 });
 
-
 const finalRegistrationSchema = z.object({
   id: z.string(),
   email: z.string().email({ message: "Entrez une adresse mail valide" }),
@@ -120,7 +119,7 @@ export const AppUsers: CollectionConfig = {
           await createTemporaryUserAndSendEmail(req, {
             email: validatedData.email,
             role: validatedData.role,
-            apple_store_code: validatedData.apple_store_code
+            apple_store_code: validatedData.apple_store_code,
           });
 
           return Response.json({
@@ -234,42 +233,47 @@ export const AppUsers: CollectionConfig = {
       handler: async (req) => {
         try {
           const formData = await req.formData?.();
-          const file = formData?.get('file') as File;
+          const file = formData?.get("file") as File;
 
           if (!file) {
             return Response.json(
-              { error: 'Aucun fichier fourni' },
-              { status: 400 }
+              { error: "Aucun fichier fourni" },
+              { status: 400 },
             );
           }
 
           // Vérifier le type de fichier
           const allowedTypes = [
-            'text/csv',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            "text/csv",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           ];
 
           if (!allowedTypes.includes(file.type)) {
             return Response.json(
-              { error: 'Type de fichier non supporté. Utilisez CSV ou Excel.' },
-              { status: 400 }
+              { error: "Type de fichier non supporté. Utilisez CSV ou Excel." },
+              { status: 400 },
             );
           }
 
           // Convertir le fichier en buffer et parser
-          const XLSX = await import('xlsx');
+          const XLSX = await import("xlsx");
           const bytes = await file.arrayBuffer();
           const buffer = Buffer.from(bytes);
 
-          const workbook = XLSX.read(buffer, { type: 'buffer' });
+          const workbook = XLSX.read(buffer, { type: "buffer" });
           const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-          const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+          const data = XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+          }) as any[][];
 
           if (data.length < 2) {
             return Response.json(
-              { error: 'Le fichier doit contenir au moins 2 lignes (en-têtes + données)' },
-              { status: 400 }
+              {
+                error:
+                  "Le fichier doit contenir au moins 2 lignes (en-têtes + données)",
+              },
+              { status: 400 },
             );
           }
 
@@ -280,9 +284,9 @@ export const AppUsers: CollectionConfig = {
 
           for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-            const email = row[0]?.toString().trim() || '';
-            const role = row[1]?.toString().trim() || '';
-            const apple_store_code = row[2]?.toString().trim() || '';
+            const email = row[0]?.toString().trim() || "";
+            const role = row[1]?.toString().trim() || "";
+            const apple_store_code = row[2]?.toString().trim() || "";
 
             // Ignorer les lignes vides
             if (!email && !role) continue;
@@ -299,23 +303,30 @@ export const AppUsers: CollectionConfig = {
               continue;
             }
 
-            const validRoles = ['associate', 'employee', 'independent', 'visitor'];
+            const validRoles = [
+              "associate",
+              "employee",
+              "independent",
+              "visitor",
+            ];
             if (!validRoles.includes(role.toLowerCase())) {
-              errors.push(`Ligne ${i + 2}: rôle invalide. Rôles valides: ${validRoles.join(', ')}`);
+              errors.push(
+                `Ligne ${i + 2}: rôle invalide. Rôles valides: ${validRoles.join(", ")}`,
+              );
               continue;
             }
 
             validUsers.push({
               email,
               role: role.toLowerCase(),
-              apple_store_code: apple_store_code || undefined
+              apple_store_code: apple_store_code || undefined,
             });
           }
 
           if (errors.length > 0) {
             return Response.json(
-              { error: `Erreurs détectées:\n${errors.join('\n')}` },
-              { status: 400 }
+              { error: `Erreurs détectées:\n${errors.join("\n")}` },
+              { status: 400 },
             );
           }
 
@@ -323,7 +334,10 @@ export const AppUsers: CollectionConfig = {
           const createdUsers = [];
           for (const userData of validUsers) {
             try {
-              const tempUser = await createTemporaryUserAndSendEmail(req, userData);
+              const tempUser = await createTemporaryUserAndSendEmail(
+                req,
+                userData,
+              );
               createdUsers.push(tempUser);
             } catch (error: any) {
               errors.push(`${userData.email}: ${error.message}`);
@@ -335,20 +349,19 @@ export const AppUsers: CollectionConfig = {
               success: true,
               message: `${createdUsers.length} utilisateurs créés avec succès`,
               errors: errors,
-              partialSuccess: true
+              partialSuccess: true,
             });
           }
 
           return Response.json({
             success: true,
-            message: `${createdUsers.length} utilisateurs temporaires créés et emails envoyés avec succès`
+            message: `${createdUsers.length} utilisateurs temporaires créés et emails envoyés avec succès`,
           });
-
         } catch (error: any) {
-          console.error('Erreur bulk upload:', error);
+          console.error("Erreur bulk upload:", error);
           return Response.json(
-            { error: error.message || 'Erreur lors du traitement du fichier' },
-            { status: 500 }
+            { error: error.message || "Erreur lors du traitement du fichier" },
+            { status: 500 },
           );
         }
       },
@@ -474,12 +487,12 @@ export const AppUsers: CollectionConfig = {
 // Fonction réutilisable pour créer un utilisateur temporaire et envoyer l'email
 async function createTemporaryUserAndSendEmail(
   req: any,
-  userData: { email: string; role: string; apple_store_code?: string }
+  userData: { email: string; role: string; apple_store_code?: string },
 ) {
   // Vérifier si l'utilisateur existe déjà
   const existingUser = await req.payload.find({
     collection: "app-users",
-    where: { email: { equals: userData.email } }
+    where: { email: { equals: userData.email } },
   });
 
   if (existingUser.docs.length > 0) {
@@ -489,20 +502,20 @@ async function createTemporaryUserAndSendEmail(
   // Supprimer l'utilisateur temporaire existant s'il existe
   const existingTemp = await req.payload.find({
     collection: "temporary-app-users",
-    where: { email: { equals: userData.email } }
+    where: { email: { equals: userData.email } },
   });
 
   if (existingTemp.docs.length > 0) {
     await req.payload.delete({
       collection: "temporary-app-users",
-      id: existingTemp.docs[0].id
+      id: existingTemp.docs[0].id,
     });
   }
 
   // Créer l'utilisateur temporaire
   const tempUser = await req.payload.create({
     collection: "temporary-app-users",
-    data: userData
+    data: userData,
   });
 
   // Préparer l'email
@@ -511,44 +524,38 @@ async function createTemporaryUserAndSendEmail(
   const fullLink = req.payload.config.serverURL + link;
 
   // Envoyer l'email selon le type
-  if (userData.apple_store_code) {
-    await sendEmail({
-      to: userData.email,
-      subject: "Création de compte Simply Life",
-      attachments: [
-        {
-          filename: "installation_app_mobile.pdf",
-          path: join(process.cwd(), "src/assets/pdfs/installation_app_mobile.pdf"),
-          contentType: "application/pdf",
-        },
-      ],
-      text: readFileSync(
-        join(process.cwd(), `src/emails/templates/${language}/subscription-app-user-apple.txt`),
-        "utf-8"
-      )
-        .replace("{{registrationLink}}", fullLink)
-        .replace("{{appStoreCode}}", userData.apple_store_code || ""),
-      html: readFileSync(
-        join(process.cwd(), `src/emails/templates/${language}/subscription-app-user-apple.html`),
-        "utf-8"
-      )
-        .replace("{{registrationLink}}", fullLink)
-        .replace("{{appStoreCode}}", userData.apple_store_code || ""),
-    });
-  } else {
-    await sendEmail({
-      to: userData.email,
-      subject: "Création de compte Simply Life",
-      text: readFileSync(
-        join(process.cwd(), `src/emails/templates/${language}/subscription-app-user.txt`),
-        "utf-8"
-      ).replace("{{registrationLink}}", fullLink),
-      html: readFileSync(
-        join(process.cwd(), `src/emails/templates/${language}/subscription-app-user.html`),
-        "utf-8"
-      ).replace("{{registrationLink}}", fullLink),
-    });
-  }
+  await sendEmail({
+    to: userData.email,
+    subject: "Création de compte Simply Life",
+    attachments: [
+      {
+        filename: "installation_app_mobile.pdf",
+        path: join(
+          process.cwd(),
+          "src/assets/pdfs/installation_app_mobile.pdf",
+        ),
+        contentType: "application/pdf",
+      },
+    ],
+    text: readFileSync(
+      join(
+        process.cwd(),
+        `src/emails/templates/${language}/subscription-app-user-apple.txt`,
+      ),
+      "utf-8",
+    )
+      .replace("{{registrationLink}}", fullLink)
+      .replace("{{appStoreCode}}", userData.apple_store_code || ""),
+    html: readFileSync(
+      join(
+        process.cwd(),
+        `src/emails/templates/${language}/subscription-app-user-apple.html`,
+      ),
+      "utf-8",
+    )
+      .replace("{{registrationLink}}", fullLink)
+      .replace("{{appStoreCode}}", userData.apple_store_code || ""),
+  });
 
   return tempUser;
 }
