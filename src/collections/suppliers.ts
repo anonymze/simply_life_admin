@@ -161,8 +161,13 @@ export const Suppliers: CollectionConfig = {
           name: "echeance",
           type: "date",
           label: {
-            en: "Contact Firstname",
+            en: "Echéance de l'enveloppe",
             fr: "Echéance de l'enveloppe",
+          },
+          admin: {
+            date: {
+              displayFormat: "dd/MM/yyyy",
+            },
           },
           required: false,
         },
@@ -170,12 +175,16 @@ export const Suppliers: CollectionConfig = {
           name: "actualisation",
           type: "date",
           label: {
-            en: "Contact Firstname",
+            en: "Date d'actualisatio",
             fr: "Date d'actualisation",
+          },
+          admin: {
+            date: {
+              displayFormat: "dd/MM/yyyy",
+            },
           },
           required: false,
         },
-
       ],
     },
     {
