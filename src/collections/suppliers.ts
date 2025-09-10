@@ -43,7 +43,7 @@ export const Suppliers: CollectionConfig = {
         const results = await req.payload.find({
           collection: "suppliers",
           where: {
-            "selection_selection": {
+            "selection.selection": {
               equals: query.where?.selection_selection?.equals,
             },
           },
