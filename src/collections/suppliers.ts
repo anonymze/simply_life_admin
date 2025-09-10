@@ -38,6 +38,8 @@ export const Suppliers: CollectionConfig = {
       handler: async (req) => {
         const query = optionalQuerySchema.parse(req.query);
 
+        console.log(query)
+
         const results = await req.payload.find({
           collection: "suppliers",
           where: {
