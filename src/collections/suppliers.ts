@@ -188,6 +188,51 @@ export const Suppliers: CollectionConfig = {
       ],
     },
     {
+      name: "selection",
+      type: "group",
+      label: {
+        en: "Selection",
+        fr: "Notre sélection",
+      },
+      fields: [
+        {
+          name: "selection",
+          type: "checkbox",
+          label: {
+            en: "Mettre en sélection du moment",
+            fr: "Mettre en sélection du moment",
+          },
+          required: false,
+        },
+        {
+          name: "category",
+          type: "text",
+          label: {
+            en: "Category",
+            fr: "Catégorie",
+          },
+          required: false,
+        },
+        {
+          name: "brochure",
+          type: "upload",
+          relationTo: "media",
+          admin: {
+            description: "Le fichier doit être au format PDF.",
+          },
+          // @ts-expect-error
+          validate: (data) => {
+            return validateMedia(data, "application/pdf");
+          },
+          label: {
+            en: "Brochure",
+            fr: "Brochure",
+          },
+          required: false,
+        },
+      ],
+    },
+    {
       name: "connexion",
       type: "group",
       label: {

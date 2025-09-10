@@ -265,6 +265,14 @@ export interface Supplier {
     echeance?: string | null;
     actualisation?: string | null;
   };
+  selection?: {
+    selection?: boolean | null;
+    category?: string | null;
+    /**
+     * Le fichier doit être au format PDF.
+     */
+    brochure?: (string | null) | Media;
+  };
   connexion?: {
     email?: string | null;
     password?: string | null;
@@ -887,6 +895,13 @@ export interface SuppliersSelect<T extends boolean = true> {
         reduction?: T;
         echeance?: T;
         actualisation?: T;
+      };
+  selection?:
+    | T
+    | {
+        selection?: T;
+        category?: T;
+        brochure?: T;
       };
   connexion?:
     | T
