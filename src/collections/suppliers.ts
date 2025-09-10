@@ -1,4 +1,6 @@
+import { supplier_products_rels } from "@/payload-generated-schema";
 import { canAccessApi, validateMedia } from "@/utils/helper";
+import { eq } from "@payloadcms/db-vercel-postgres/drizzle";
 import { type CollectionConfig } from "payload";
 
 export const Suppliers: CollectionConfig = {
@@ -28,7 +30,38 @@ export const Suppliers: CollectionConfig = {
     useAsTitle: "name",
   },
   slug: "suppliers",
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        if (operation !== "create" && operation !== "update") return doc;
 
+        const supplierId = doc.id;
+        const supplierProductId = req.data?.supplier_product_id;
+        const payload = req.payload;
+
+        if (!supplierId) return;
+
+        try {
+          await payload.db.drizzle
+            .delete(supplier_products_rels)
+            .where(eq(supplier_products_rels.suppliersID, supplierId));
+        } catch (error) {}
+
+        // Create new relation
+        try {
+          if (supplierProductId) {
+            await payload.db.drizzle.insert(supplier_products_rels).values({
+              parent: supplierProductId,
+              suppliersID: supplierId,
+              path: "suppliers",
+            });
+          }
+        } catch (error) {}
+
+        return doc;
+      },
+    ],
+  },
   fields: [
     {
       name: "name",
@@ -38,6 +71,16 @@ export const Suppliers: CollectionConfig = {
         fr: "Nom",
       },
       required: true,
+    },
+    {
+      name: "product",
+      type: "ui",
+      admin: {
+        position: "sidebar",
+        components: {
+          Field: "src/components/supplier-product.tsx",
+        },
+      },
     },
     {
       name: "website",

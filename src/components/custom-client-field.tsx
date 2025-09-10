@@ -22,4 +22,4 @@ const CustomClientField: UIFieldClientComponent = (props: UIFieldClientProps) =>
   )
 }
 
-export default CustomClientField 
+export default CustomClientField

@@ -5,7 +5,6 @@ import { AButton } from './action-button'
 
 const CustomServerButton: UIFieldServerComponent = async (props: UIFieldServerProps) => {
   const { siblingData } = props
-	console.log('siblingData', siblingData)
   return (
     <div>
       <h3>Custom Server Button Wrapper</h3>
