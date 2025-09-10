@@ -250,10 +250,6 @@ export interface Supplier {
    * Le fichier doit être une image.
    */
   logo_full?: (string | null) | Media;
-  /**
-   * Le fichier doit être au format PDF.
-   */
-  brochure?: (string | null) | Media;
   contact_info?: {
     lastname?: string | null;
     firstname?: string | null;
@@ -265,8 +261,8 @@ export interface Supplier {
   };
   enveloppe?: {
     amount?: number | null;
-    echeance?: string | null;
     reduction?: number | null;
+    echeance?: string | null;
     actualisation?: string | null;
   };
   connexion?: {
@@ -277,15 +273,18 @@ export interface Supplier {
     | {
         scpi?: string | null;
         theme?: string | null;
+        /**
+         * Le fichier doit être au format PDF.
+         */
+        brochure?: (string | null) | Media;
         annotation?: string | null;
+        epargne?: boolean | null;
         minimum_versement?: string | null;
-        foundment_euro?: boolean | null;
         subscription_fee?: string | null;
         duration?: string | null;
         rentability_n1?: string | null;
-        commission?: string | null;
-        commission_public_offer?: string | null;
         commission_offer_group_valorem?: string | null;
+        commission_public_offer?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -873,7 +872,6 @@ export interface SuppliersSelect<T extends boolean = true> {
   website?: T;
   logo_mini?: T;
   logo_full?: T;
-  brochure?: T;
   contact_info?:
     | T
     | {
@@ -886,8 +884,8 @@ export interface SuppliersSelect<T extends boolean = true> {
     | T
     | {
         amount?: T;
-        echeance?: T;
         reduction?: T;
+        echeance?: T;
         actualisation?: T;
       };
   connexion?:
@@ -901,15 +899,15 @@ export interface SuppliersSelect<T extends boolean = true> {
     | {
         scpi?: T;
         theme?: T;
+        brochure?: T;
         annotation?: T;
+        epargne?: T;
         minimum_versement?: T;
-        foundment_euro?: T;
         subscription_fee?: T;
         duration?: T;
         rentability_n1?: T;
-        commission?: T;
-        commission_public_offer?: T;
         commission_offer_group_valorem?: T;
+        commission_public_offer?: T;
         id?: T;
       };
   updatedAt?: T;

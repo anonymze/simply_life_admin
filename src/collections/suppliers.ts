@@ -83,23 +83,6 @@ export const Suppliers: CollectionConfig = {
       required: false,
     },
     {
-      name: "brochure",
-      type: "upload",
-      relationTo: "media",
-      admin: {
-        description: "Le fichier doit être au format PDF.",
-      },
-      // @ts-expect-error
-      validate: (data) => {
-        return validateMedia(data, "application/pdf");
-      },
-      label: {
-        en: "Brochure",
-        fr: "Brochure",
-      },
-      required: false,
-    },
-    {
       name: "contact_info",
       type: "group",
       label: {
@@ -166,20 +149,20 @@ export const Suppliers: CollectionConfig = {
           required: false,
         },
         {
-          name: "echeance",
-          type: "date",
-          label: {
-            en: "Contact Firstname",
-            fr: "Echéance de l'enveloppe",
-          },
-          required: false,
-        },
-        {
           name: "reduction",
           type: "number",
           label: {
             en: "Contact Firstname",
             fr: "Réduction d'impôt",
+          },
+          required: false,
+        },
+        {
+          name: "echeance",
+          type: "date",
+          label: {
+            en: "Contact Firstname",
+            fr: "Echéance de l'enveloppe",
           },
           required: false,
         },
@@ -228,10 +211,10 @@ export const Suppliers: CollectionConfig = {
       type: "array",
       label: {
         en: "Other Information",
-        fr: "Ajouter un produit",
+        fr: "Ajouter des produits",
       },
       labels: {
-        singular: "Autres informations",
+        singular: "Ajouter un produit",
         plural: "Ajouter un produit",
       },
       fields: [
@@ -254,6 +237,23 @@ export const Suppliers: CollectionConfig = {
           required: false,
         },
         {
+          name: "brochure",
+          type: "upload",
+          relationTo: "media",
+          admin: {
+            description: "Le fichier doit être au format PDF.",
+          },
+          // @ts-expect-error
+          validate: (data) => {
+            return validateMedia(data, "application/pdf");
+          },
+          label: {
+            en: "Brochure",
+            fr: "Brochure",
+          },
+          required: false,
+        },
+        {
           name: "annotation",
           type: "text",
           label: {
@@ -263,20 +263,20 @@ export const Suppliers: CollectionConfig = {
           required: false,
         },
         {
+          name: "epargne",
+          type: "checkbox",
+          label: {
+            en: "Epargne",
+            fr: "Epargne",
+          },
+          required: false,
+        },
+        {
           name: "minimum_versement",
           type: "text",
           label: {
             en: "Minimum versement",
             fr: "Minimum de versement",
-          },
-          required: false,
-        },
-        {
-          name: "foundment_euro",
-          type: "checkbox",
-          label: {
-            en: "Foundment euro",
-            fr: "Fond euro",
           },
           required: false,
         },
@@ -308,11 +308,11 @@ export const Suppliers: CollectionConfig = {
           required: false,
         },
         {
-          name: "commission",
+          name: "commission_offer_group_valorem",
           type: "text",
           label: {
-            en: "Commission",
-            fr: "Commission",
+            en: "Commission offer Groupe Valorem",
+            fr: "Commission pour l'offre Groupe Valorem",
           },
           required: false,
         },
@@ -322,15 +322,6 @@ export const Suppliers: CollectionConfig = {
           label: {
             en: "Commision public offer",
             fr: "Commission pour l'offre publique",
-          },
-          required: false,
-        },
-        {
-          name: "commission_offer_group_valorem",
-          type: "text",
-          label: {
-            en: "Commission offer Groupe Valorem",
-            fr: "Commission pour l'offre Groupe Valorem",
           },
           required: false,
         },
