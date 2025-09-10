@@ -36,19 +36,17 @@ export const Suppliers: CollectionConfig = {
       method: "get",
       path: "/selection",
       handler: async (req) => {
-        const query = optionalQuerySchema.parse(req.query);
-
-        console.log(req.query)
+        // const query = optionalQuerySchema.parse(req.query);
 
         const results = await req.payload.find({
           collection: "suppliers",
           where: {
             "selection.selection": {
-              equals: query.where?.["selection.selection"]?.equals ?? true,
+              equals: true,
             },
           },
-          sort: query.sort,
-          limit: query.limit,
+          // sort: query.sort,
+          limit: 10,
         });
 
         return Response.json(results);
