@@ -2,6 +2,7 @@ import { supplier_products_rels } from "@/payload-generated-schema";
 import { canAccessApi, validateMedia } from "@/utils/helper";
 import { eq } from "@payloadcms/db-vercel-postgres/drizzle";
 import { type CollectionConfig } from "payload";
+import { z } from "zod";
 
 export const Suppliers: CollectionConfig = {
   access: {
@@ -30,6 +31,28 @@ export const Suppliers: CollectionConfig = {
     useAsTitle: "name",
   },
   slug: "suppliers",
+  endpoints: [
+    {
+      method: "get",
+      path: "/selection",
+      handler: async (req) => {
+        const query = optionalQuerySchema.parse(req.query);
+
+        const results = await req.payload.find({
+          collection: "suppliers",
+          where: {
+            "selection_selection": {
+              equals: query.where?.selection_selection?.equals,
+            },
+          },
+          sort: query.sort,
+          limit: query.limit,
+        });
+
+        return Response.json(results);
+      },
+    },
+  ],
   hooks: {
     afterChange: [
       async ({ doc, operation, req }) => {
@@ -41,15 +64,13 @@ export const Suppliers: CollectionConfig = {
 
         if (!supplierId) return;
 
-        try {
-          await payload.db.drizzle
-            .delete(supplier_products_rels)
-            .where(eq(supplier_products_rels.suppliersID, supplierId));
-        } catch (error) {}
-
         // Create new relation
         try {
           if (supplierProductId) {
+            await payload.db.drizzle
+              .delete(supplier_products_rels)
+              .where(eq(supplier_products_rels.suppliersID, supplierId));
+
             await payload.db.drizzle.insert(supplier_products_rels).values({
               parent: supplierProductId,
               suppliersID: supplierId,
@@ -426,3 +447,20 @@ export const Suppliers: CollectionConfig = {
     },
   ],
 };
+
+const optionalQuerySchema = z.object({
+	where: z
+		.object({
+			selection_selection: z
+				.object({
+					equals: z.boolean(),
+				})
+				.optional(),
+		})
+		.optional(),
+	sort: z.string().optional(),
+	limit: z
+		.string()
+		.optional()
+		.transform((val) => parseInt(val ?? "10")),
+});
