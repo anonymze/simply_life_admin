@@ -38,14 +38,11 @@ export const Suppliers: CollectionConfig = {
       handler: async (req) => {
         const query = optionalQuerySchema.parse(req.query);
 
-        console.log(query)
-        console.log(req.query)
-
         const results = await req.payload.find({
           collection: "suppliers",
           where: {
             "selection.selection": {
-              equals: true,
+              equals: query.where?.["selection.selection"]?.equals ?? true,
             },
           },
           sort: query.sort,
@@ -452,18 +449,18 @@ export const Suppliers: CollectionConfig = {
 };
 
 const optionalQuerySchema = z.object({
-	where: z
-		.object({
-			selection_selection: z
-				.object({
-					equals: z.boolean(),
-				})
-				.optional(),
-		})
-		.optional(),
-	sort: z.string().optional(),
-	limit: z
-		.string()
-		.optional()
-		.transform((val) => parseInt(val ?? "10")),
+  where: z
+    .object({
+      "selection.selection": z
+        .object({
+          equals: z.boolean(),
+        })
+        .optional(),
+    })
+    .optional(),
+  sort: z.string().optional(),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => parseInt(val ?? "10")),
 });
